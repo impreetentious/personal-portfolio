@@ -1,0 +1,29 @@
+/**
+ * Central schema registry for the Sanity studio.
+ * Add every new schema here AND to the schemaTypes array below.
+ * The order of schemaTypes controls the order of document types
+ * in the Sanity studio sidebar.
+ */
+
+import {heroSchema} from './hero'
+import {experienceSchema} from './experience'
+import {projectsSchema} from './projects'
+import {metricsSchema} from './metrics'
+import {educationSchema} from './education'
+import {skillsSchema} from './skills'
+import {achievementsSchema} from './achievements'
+
+export const schemaTypes = [
+  // Singleton
+  heroSchema,
+
+  // Ordered collections
+  experienceSchema,
+  projectsSchema,
+  metricsSchema,
+
+  // Supporting sections
+  educationSchema,
+  skillsSchema,
+  achievementsSchema,
+]
