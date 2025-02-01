@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  background: #07070f;
+  color: #abb2bf;
+}
+
+body::before {
+  position: fixed;
+  z-index: -1;
+  top: -18rem;
+  right: -18rem;
+  width: 48rem;
+  height: 48rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(78, 168, 248, 0.09), transparent 68%);
+  filter: blur(72px);
+  content: '';
+  pointer-events: none;
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  ::selection {
+    background: rgba(97, 175, 239, 0.3);
+    color: #f8fafc;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hover-glow {
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease,
+      color 200ms ease,
+      box-shadow 200ms ease,
+      transform 200ms ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 28px rgba(78, 168, 248, 0.15);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.surface {
+  background-color: theme('colors.surface');
+  border: 1px solid theme('colors.hairline');
+}
+
+.surface-2 {
+  background-color: theme('colors.surface2');
+}
