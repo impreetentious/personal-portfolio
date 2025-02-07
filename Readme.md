@@ -1,6 +1,6 @@
 # Version Control
-- Base Format Version: 1.6
-- Portfolio Version: v1.6.0_2025-02-05_23:26:51 (IST)
+- Base Format Version: 2.0
+- Portfolio Version: v2.0.0_2025-02-05_23:51:13 (IST)
 
 # Personal Portfolio
 
