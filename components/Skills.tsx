@@ -1,41 +1,125 @@
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type SkillItem = {
+  name: string
+  description?: string
+}
+
 type SkillsEntry = {
   category: 'Tools' | 'Skills'
-  items: string[]
+  items: SkillItem[]
 }
+
+// ─── SectionLabel ─────────────────────────────────────────────────────────────
+
+type SectionLabelProps = {
+  /** Human-readable section name rendered in the accent colour. */
+  label: string
+  /**
+   * Optional dev-facing import hint shown above the label in a monospace
+   * style — purely decorative, communicates the data source.
+   */
+  devLabel?: string
+}
+
+function SectionLabel({ label, devLabel }: SectionLabelProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      {devLabel && (
+        <code className="font-mono font-medium text-[11px] tracking-wide text-success/50 select-none">
+          {devLabel}
+        </code>
+      )}
+      <p className="text-sm uppercase tracking-[0.3em] text-accent">{label}</p>
+    </div>
+  )
+}
+
+// ─── Fallback data ────────────────────────────────────────────────────────────
 
 const skillEntries: SkillsEntry[] = [
   {
     category: 'Tools',
     items: [
-      'Next.js',
-      'Sanity.io',
-      'Tailwind CSS',
-      'Framer Motion',
-      'GitHub',
-      'VS Code',
+      {
+        name: 'Next.js',
+        description:
+          'React framework for production — App Router, RSC, streaming SSR, and edge-ready deployments out of the box.',
+      },
+      {
+        name: 'Sanity.io',
+        description:
+          'Structured content platform with GROQ querying, typed schemas, and real-time collaborative editing.',
+      },
+      {
+        name: 'Tailwind CSS',
+        description:
+          'Utility-first CSS framework enabling rapid, consistent, and design-token-driven styling at scale.',
+      },
+      {
+        name: 'Framer Motion',
+        description:
+          'Production-ready animation library for React with gesture support, layout animations, and shared layouts.',
+      },
+      {
+        name: 'GitHub',
+        description:
+          'Version control and collaboration via pull requests, Actions CI/CD pipelines, and conventional branch workflows.',
+      },
+      {
+        name: 'VS Code',
+        description:
+          'Primary editor configured with TypeScript strict mode, ESLint, Prettier, and workspace-scoped settings.',
+      },
     ],
   },
   {
     category: 'Skills',
     items: [
-      'Frontend Architecture',
-      'Responsive Design',
-      'Component Systems',
-      'Content Modeling',
-      'Performance Thinking',
-      'UI Polish',
+      {
+        name: 'Frontend Architecture',
+        description:
+          'Designing scalable component hierarchies, predictable data-flow patterns, and maintainable file structure conventions.',
+      },
+      {
+        name: 'Responsive Design',
+        description:
+          'Building fluid layouts with mobile-first breakpoints, fluid typography via clamp(), and adaptive spacing scales.',
+      },
+      {
+        name: 'Component Systems',
+        description:
+          'Authoring reusable, accessible, and composable design-system primitives with clearly typed, minimal-surface APIs.',
+      },
+      {
+        name: 'Content Modeling',
+        description:
+          'Structuring Sanity schemas to mirror UI needs while keeping the editorial authoring experience intuitive and safe.',
+      },
+      {
+        name: 'Performance Thinking',
+        description:
+          'Applying Core Web Vitals analysis, route-level code splitting, and image optimisation strategies to hit green scores.',
+      },
+      {
+        name: 'UI Polish',
+        description:
+          'Crafting micro-interactions, precise transition timing curves, and visual details that lift perceived quality.',
+      },
     ],
   },
 ]
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function Skills() {
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,
-    items: [],
+    items: [] as SkillItem[],
   }
   const skills = skillEntries.find((entry) => entry.category === 'Skills') ?? {
     category: 'Skills' as const,
-    items: [],
+    items: [] as SkillItem[],
   }
 
   return (
@@ -43,7 +127,12 @@ export function Skills() {
       id="skills"
       className="mx-auto max-w-6xl border-t border-accent/15 py-12"
     >
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">Skills</p>
+      {/* ── Section header ── */}
+      <SectionLabel
+        label="Skills"
+        devLabel="import { skills } from './stack'"
+      />
+
       <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
         Tools and strengths organized for fast scanning
       </h2>
@@ -52,23 +141,62 @@ export function Skills() {
         to dynamic content cleanly later.
       </p>
 
+      {/* ── Grid ── */}
       <div className="mt-8 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
         {[tools, skills].map((entry) => (
           <div
             key={entry.category}
-            className="border-l border-accent/20 pl-5"
+            className="min-w-0 border-l border-accent/20 pl-5"
           >
             <p className="text-sm font-medium uppercase tracking-[0.22em] text-success">
               {entry.category}
             </p>
+
             <div className="mt-5 flex flex-wrap gap-3">
               {entry.items.map((item) => (
-                <span
-                  key={item}
-                  className="hover-glow rounded-full border border-white/12 px-4 py-2 text-sm text-foreground hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-accent"
-                >
-                  {item}
-                </span>
+                // ── Tooltip wrapper ──────────────────────────────────────────
+                <div key={item.name} className="relative group">
+
+                  {/* Tooltip card — only renders when description is present */}
+                  {item.description && (
+                    <div
+                      className={[
+                        // Positioning
+                        'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
+                        // Visibility
+                        'opacity-0 group-hover:opacity-100',
+                        // Interaction & stacking
+                        'pointer-events-none z-20',
+                        // Sizing
+                        'w-56',
+                        // Transition
+                        'transition-opacity duration-200 ease-out',
+                      ].join(' ')}
+                      role="tooltip"
+                    >
+                      {/* Card body */}
+                      <div className="rounded-lg border border-white/10 bg-zinc-900/95 px-3 py-2.5 text-xs leading-relaxed text-foreground/75 shadow-2xl backdrop-blur-sm">
+                        {item.description}
+                      </div>
+
+                      {/* Arrow — a transparent border trick pointing downward */}
+                      <div className="absolute left-1/2 top-full -translate-x-1/2 border-[5px] border-transparent border-t-white/10" />
+                    </div>
+                  )}
+
+                  {/* Skill tag */}
+                  <span
+                    className={[
+                      'hover-glow',
+                      'inline-block cursor-default select-none',
+                      'rounded-full border border-white/12 px-4 py-2 text-sm',
+                      'text-foreground transition-all duration-150',
+                      'hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-accent',
+                    ].join(' ')}
+                  >
+                    {item.name}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

@@ -3,23 +3,21 @@
 import {motion, useMotionValueEvent, useScroll, useTransform} from 'framer-motion'
 import {useEffect, useRef, useState} from 'react'
 import {
+  BarChart,
   Briefcase,
-  FolderKanban,
   GraduationCap,
+  Mail,
   Sparkles,
   Trophy,
-  User,
-  Users,
 } from 'lucide-react'
 
 const navigationItems = [
-  {label: 'About', href: '#about', icon: User},
-  {label: 'Experience', href: '#experience', icon: Briefcase},
-  {label: 'Skills', href: '#skills', icon: Sparkles},
-  {label: 'Leadership', href: '#leadership', icon: Users},
-  {label: 'Education', href: '#education', icon: GraduationCap},
-  {label: 'Achievements', href: '#achievements', icon: Trophy},
-  {label: 'Projects', href: '#projects', icon: FolderKanban},
+  {label: 'Experience',   href: '#experience',   icon: Briefcase},
+  {label: 'Skills',       href: '#skills',        icon: Sparkles},
+  {label: 'Metrics',      href: '#metrics',       icon: BarChart},
+  {label: 'Achievements', href: '#achievements',  icon: Trophy},
+  {label: 'Education',    href: '#education',     icon: GraduationCap},
+  {label: 'Contact',      href: '#contact',       icon: Mail},
 ]
 
 /**
@@ -31,9 +29,9 @@ const OBSERVED_SECTIONS = [
   'home',
   'experience',
   'skills',
-  'projects',
-  'education',
+  'metrics',
   'achievements',
+  'education',
   'contact',
 ]
 
