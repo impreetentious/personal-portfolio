@@ -1,3 +1,5 @@
+import { SectionLabel } from "@/components/ui/SectionLabel";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type SkillItem = {
@@ -8,31 +10,6 @@ type SkillItem = {
 type SkillsEntry = {
   category: 'Tools' | 'Skills'
   items: SkillItem[]
-}
-
-// ─── SectionLabel ─────────────────────────────────────────────────────────────
-
-type SectionLabelProps = {
-  /** Human-readable section name rendered in the accent colour. */
-  label: string
-  /**
-   * Optional dev-facing import hint shown above the label in a monospace
-   * style — purely decorative, communicates the data source.
-   */
-  devLabel?: string
-}
-
-function SectionLabel({ label, devLabel }: SectionLabelProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      {devLabel && (
-        <code className="font-mono font-medium text-[11px] tracking-wide text-success/50 select-none">
-          {devLabel}
-        </code>
-      )}
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">{label}</p>
-    </div>
-  )
 }
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
@@ -125,7 +102,7 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="mx-auto max-w-6xl border-t border-accent/15 py-12"
+      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       {/* ── Section header ── */}
       <SectionLabel

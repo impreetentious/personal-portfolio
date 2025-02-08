@@ -3,21 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import type { ReactNode } from "react";
-
-// ─── Internal: SectionLabel ───────────────────────────────────────────────────
-
-function SectionLabel({ label, devLabel }: { label: string; devLabel?: string }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      {devLabel && (
-        <code className="font-mono font-medium text-[11px] tracking-wide text-success/50 select-none">
-          {devLabel}
-        </code>
-      )}
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">{label}</p>
-    </div>
-  );
-}
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
 
@@ -127,7 +113,7 @@ export function Contact() {
       ref={sectionRef}
       id="contact"
       aria-label="Contact"
-      className="w-full bg-[#07070F] border-t border-white/[0.06] flex flex-col min-h-[480px]"
+      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       {/* Cursor blink keyframe — scoped to this section */}
       <style>{`@keyframes vscode-cursor-blink{0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0}}`}</style>

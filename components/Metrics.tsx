@@ -2,26 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-// ─── Internal: SectionLabel ────────────────────────────────────────────────────
-function SectionLabel({
-  label,
-  devLabel,
-}: {
-  label: string;
-  devLabel?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      {devLabel && (
-        <code className="font-mono font-medium text-[11px] tracking-wide text-success/50 select-none">
-          {devLabel}
-        </code>
-      )}
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">{label}</p>
-    </div>
-  );
-}
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface Metric {
@@ -85,12 +66,18 @@ export function Metrics() {
   const inView = useInView(gridRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="border-t border-accent/15 py-20 px-6 md:px-10 lg:px-16">
+    <section
+      id="metrics"
+      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
+    >
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-          <SectionLabel devLabel="SELECT * FROM impact" label="Impact" />
+          <SectionLabel
+            label="Metrics"
+            devLabel="SELECT * FROM metrics"
+          />
           <p className="text-xs font-mono text-muted-foreground hidden md:block">
             {metrics.length}&nbsp;records returned
           </p>

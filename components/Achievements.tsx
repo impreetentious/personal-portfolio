@@ -2,26 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-// ─── Internal: SectionLabel ────────────────────────────────────────────────────
-function SectionLabel({
-  label,
-  devLabel,
-}: {
-  label: string;
-  devLabel?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      {devLabel && (
-        <code className="font-mono font-medium text-[11px] tracking-wide text-success/50 select-none">
-          {devLabel}
-        </code>
-      )}
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">{label}</p>
-    </div>
-  );
-}
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type Badge = "gold" | "silver" | "bronze";
@@ -131,7 +112,7 @@ export function Achievements() {
   const inView = useInView(wrapperRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="border-t border-accent/15 py-20 px-6 md:px-10 lg:px-16">
+    <section className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}

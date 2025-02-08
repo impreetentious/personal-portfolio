@@ -1,3 +1,5 @@
+import { SectionLabel } from "@/components/ui/SectionLabel";
+
 type EducationItem = {
   institution: string
   degree: string
@@ -21,9 +23,12 @@ export function Education() {
   return (
     <section
       id="education"
-      className="mx-auto max-w-6xl border-t border-accent/15 py-12"
+      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">Education</p>
+      <SectionLabel
+        label="Education"
+        devLabel="Promise.all([degrees])"
+      />
       <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
         Academic background and continued learning
       </h2>

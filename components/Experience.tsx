@@ -1,8 +1,9 @@
 'use client'
 
-import {AnimatePresence, motion, useScroll, useSpring} from 'framer-motion'
-import {ChevronDown, MapPin} from 'lucide-react'
-import {useRef, useState} from 'react'
+import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { ChevronDown, MapPin } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { SectionLabel } from '@/components/ui/SectionLabel'
 
 type ExperienceItem = {
   company: string
@@ -61,7 +62,7 @@ export function Experience() {
     experienceItems[0]?.company ?? null
   )
   const timelineRef = useRef<HTMLDivElement>(null)
-  const {scrollYProgress} = useScroll({
+  const { scrollYProgress } = useScroll({
     target: timelineRef,
     offset: ['start 75%', 'end 35%'],
   })
@@ -76,9 +77,12 @@ export function Experience() {
   return (
     <section
       id="experience"
-      className="mx-auto max-w-6xl border-t border-accent/15 py-12"
+      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
-      <p className="text-sm uppercase tracking-[0.3em] text-accent">Experience</p>
+      <SectionLabel
+        label="Experience"
+        devLabel="console.trace('career')"
+      />
       <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
         Selected roles and the work behind them
       </h2>
@@ -90,7 +94,7 @@ export function Experience() {
       <div ref={timelineRef} className="relative mt-8 pl-8 sm:pl-12">
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
-          style={{scaleY: timelineProgress}}
+          style={{ scaleY: timelineProgress }}
           className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#4ea8f8] via-[#4ea8f8] to-[#f97316] shadow-[0_0_18px_rgba(78,168,248,0.55)] sm:left-2"
         />
         {visibleItems.map((item) => {
@@ -118,8 +122,8 @@ export function Experience() {
                       {item.company}
                     </h3>
                     <motion.span
-                      animate={{rotate: isOpen ? 180 : 0}}
-                      transition={{duration: 0.2, ease: 'easeOut'}}
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
                       className="text-accent"
                     >
                       <ChevronDown className="h-4 w-4" />
@@ -139,10 +143,10 @@ export function Experience() {
                 {isOpen ? (
                   <motion.div
                     key="content"
-                    initial={{height: 0, opacity: 0}}
-                    animate={{height: 'auto', opacity: 1}}
-                    exit={{height: 0, opacity: 0}}
-                    transition={{duration: 0.28, ease: 'easeInOut'}}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: 'easeInOut' }}
                     className="overflow-hidden"
                   >
                     <div className="border-t border-accent/10 pb-8 pt-6">
