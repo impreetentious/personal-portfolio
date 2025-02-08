@@ -41,10 +41,6 @@ export function Hero({data}: HeroProps) {
     }
   }, [])
 
-  // scrollY and viewportHeight together drive the delayed indicator fade-out.
-  // viewportHeight initialises to 0 so SSR/hydration is always safe.
-  // Stays fully visible until the user scrolls past 50% of the viewport,
-  // then fades to 0 over the next 150 px.
   const scrollThreshold = viewportHeight * 0.5
   const scrollIndicatorOpacity =
     viewportHeight === 0 || scrollY <= scrollThreshold
@@ -54,11 +50,13 @@ export function Hero({data}: HeroProps) {
   return (
     <section
       id="home"
-      className="relative min-h-screen overflow-hidden px-6 py-16 sm:px-8 md:px-12 md:py-20"
+      /* Removed symmetric top padding variables to shift the element block higher */
+      className="relative min-h-screen overflow-hidden px-6 pt-2 pb-16 sm:px-8 md:px-12 md:pt-4 md:pb-20"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(78,168,248,0.16),transparent_26rem)]" />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-8rem)] max-w-6xl items-center">
+      {/* Lifted viewport baseline constraint upwards to clear footer bounds */}
+      <div className="relative mx-auto flex min-h-[calc(100vh-12rem)] max-w-6xl items-center">
         <motion.div
           initial={{opacity: 0, y: 24}}
           animate={{opacity: 1, y: 0}}
@@ -73,13 +71,6 @@ export function Hero({data}: HeroProps) {
         </motion.div>
       </div>
 
-      {/*
-        Scroll indicator — two-layer opacity system:
-          1. Outer div: CSS transition driven by scrollY state → smooth fade-out
-             as user scrolls. pointerEvents:none prevents layout interference.
-          2. Inner motion.div: timed entry animation (delay 1.4s) completely
-             independent of the scroll fade so both can coexist without conflict.
-      */}
       <div
         aria-hidden="true"
         className="absolute bottom-6 left-1/2 -translate-x-1/2"

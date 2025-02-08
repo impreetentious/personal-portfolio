@@ -126,12 +126,12 @@ export function Achievements() {
           </p>
         </div>
 
-        {/* ── Table ── */}
+        {/* ── Table — single element is both scroll container and border frame ── */}
         <div
           ref={wrapperRef}
-          className="border border-accent/10 rounded-sm overflow-hidden"
+          className="w-full overflow-x-auto rounded-sm border border-accent/10 pb-0.5"
         >
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full min-w-[600px] text-sm border-collapse">
 
             {/* Table head */}
             <thead>
@@ -230,6 +230,7 @@ export function Achievements() {
             </motion.tbody>
           </table>
         </div>
+
       </div>
     </section>
   );

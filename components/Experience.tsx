@@ -58,9 +58,8 @@ const experienceItems: ExperienceItem[] = [
 ]
 
 export function Experience() {
-  const [activeCompany, setActiveCompany] = useState<string | null>(
-    experienceItems[0]?.company ?? null
-  )
+  const [activeCompany, setActiveCompany] = useState<string | null>(null)
+
   const timelineRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: timelineRef,

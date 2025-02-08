@@ -52,7 +52,7 @@ type PropertyRowProps = {
 
 function PropertyRow({ propKey, value, href }: PropertyRowProps) {
   const valueNode = href ? (
-    <a 
+    <a
       href={href}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -101,6 +101,7 @@ function MinimizeIcon() {
   )
 }
 
+// ────────────────────────────────── icons ─────────────────────────────────────
 function MaximizeIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
@@ -215,7 +216,8 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         {/* ════════════════════════ HERO BLOCK ═══════════════════════════════ */}
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
 
-          <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
+          {/* Comment header hidden on mobile screen sizes to clear real estate */}
+          <p className="hidden sm:block font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
             {'/** @profile – Sidakpreet Singh · 2025 */'}
           </p>
 

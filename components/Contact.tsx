@@ -84,7 +84,7 @@ function ConsoleLine({
   );
 }
 
-// ─── Contact (replace these three constants before shipping) ──────────────────
+// ─── Contact constants (replace before shipping) ──────────────────────────────
 
 const EMAIL           = "hello@sidakpreetsingh.com";
 const LINKEDIN_HANDLE = "linkedin.com/in/sidakpreetsingh";
@@ -120,6 +120,8 @@ export function Contact() {
 
       {/* ── Panel Title Bar ──────────────────────────────────────────────── */}
       <div className="flex items-end justify-between px-5 border-b border-white/[0.06] h-[38px] shrink-0">
+
+        {/* IDE tabs — left-aligned group */}
         <div className="flex h-full items-end gap-0">
           <PanelTab label="OUTPUT"        active />
           <PanelTab label="TERMINAL"              />
@@ -127,8 +129,8 @@ export function Contact() {
           <PanelTab label="DEBUG CONSOLE"         />
         </div>
 
-        {/* SectionLabel sits flush with the tab bar bottom edge */}
-        <div className="pb-2 pr-1">
+        {/* ml-auto pushes wrapper to the far right; flex justify-end anchors SectionLabel inside it */}
+        <div className="pb-2 pr-1 ml-auto flex justify-end">
           <SectionLabel
             devLabel="npm run connect"
             label="Contact"
@@ -184,9 +186,7 @@ export function Contact() {
 
         {/* — contact.send() call — */}
         <ConsoleLine lineNumber={5} delay={0.36} isVisible={isInView}>
-          <span style={{ color: TOKEN.dim }}>
-            {">"}&nbsp;
-          </span>
+          <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span style={{ color: TOKEN.identifier }}>contact</span>
           <span style={{ color: TOKEN.punct }}>.</span>
           <span style={{ color: TOKEN.fn }}>send</span>
@@ -296,7 +296,6 @@ export function Contact() {
         className="h-[22px] border-t border-white/[0.04] px-4 flex items-center gap-3 shrink-0"
         style={{ backgroundColor: "#09091A" }}
       >
-        {/* Ready indicator */}
         <span
           className="text-[10px] font-mono flex items-center gap-1.5"
           style={{ color: TOKEN.success }}
