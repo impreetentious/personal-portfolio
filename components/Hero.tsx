@@ -63,7 +63,7 @@ export function Hero({data}: HeroProps) {
           initial={{opacity: 0, y: 24}}
           animate={{opacity: 1, y: 0}}
           transition={{type: 'tween', ease: 'easeOut', duration: 0.6}}
-          className="w-full border-l border-accent/30 pl-6 sm:pl-8 md:pl-10"
+          className="w-full border-l-0 pl-0 md:border-l md:border-accent/30 md:pl-10"
         >
           <WindowsTerminal
             name={hero.name}

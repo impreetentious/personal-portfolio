@@ -73,10 +73,10 @@ export function Metrics() {
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
           <SectionLabel
             label="Metrics"
-            devLabel="SELECT * FROM metrics"
+            devLabel="const indicators = outcomes.filter(significant)"
           />
           <p className="text-xs font-mono text-muted-foreground hidden md:block">
             {metrics.length}&nbsp;records returned

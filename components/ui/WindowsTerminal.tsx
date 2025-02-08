@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+// ─────────────────────────────── types ────────────────────────────────────────
+
 type WindowsTerminalProps = {
   name: string
   tagline: string
@@ -19,24 +21,28 @@ type Skill = {
   dot: string
 }
 
+// ────────────────────────────── static data ───────────────────────────────────
+
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
   { key: 'Email',    value: 'hello@sidakpreet.dev', href: 'mailto:hello@sidakpreet.dev' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [
-  { key: 'Phone',    value: '+91 98765 43210',      href: 'tel:+919876543210' },
-  { key: 'LinkedIn', value: 'in/sidakpreetsingh',   href: 'https://linkedin.com/in/sidakpreetsingh' },
+  { key: 'Phone',    value: '+91 98765 43210',    href: 'tel:+919876543210' },
+  { key: 'LinkedIn', value: 'in/sidakpreetsingh', href: 'https://linkedin.com/in/sidakpreetsingh' },
 ]
 
 const skills: Skill[] = [
-  { label: 'React',       dot: '#61AFEF' },
-  { label: 'Next.js',     dot: '#4EC9B0' },
-  { label: 'TypeScript',  dot: '#4FC1FF' },
-  { label: 'Tailwind',    dot: '#38BDF8' },
-  { label: 'Python',      dot: '#DCDCAA' },
-  { label: 'Node.js',     dot: '#A3E635' },
+  { label: 'React',      dot: '#61AFEF' },
+  { label: 'Next.js',    dot: '#4EC9B0' },
+  { label: 'TypeScript', dot: '#4FC1FF' },
+  { label: 'Tailwind',   dot: '#38BDF8' },
+  { label: 'Python',     dot: '#DCDCAA' },
+  { label: 'Node.js',    dot: '#A3E635' },
 ]
+
+// ───────────────────────────── sub-components ─────────────────────────────────
 
 type PropertyRowProps = {
   propKey: string
@@ -46,7 +52,7 @@ type PropertyRowProps = {
 
 function PropertyRow({ propKey, value, href }: PropertyRowProps) {
   const valueNode = href ? (
-    <a
+    <a 
       href={href}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -59,34 +65,33 @@ function PropertyRow({ propKey, value, href }: PropertyRowProps) {
   )
 
   return (
-    <div className="flex items-baseline font-mono text-base">
-      <span className="text-[#4bd0e7ff] shrink-0 w-[7.5rem]">{propKey}</span>
+    <div className="flex items-baseline font-mono text-xs sm:text-sm">
+      <span className="text-[#4bd0e7ff] shrink-0 w-[4.75rem] sm:w-[6rem]">{propKey}</span>
       <span className="text-foreground/24 shrink-0">:</span>
-      <span className="ml-2 text-[#ce9178]">
-        <span className="text-foreground/18">"</span>
+      <span className="ml-2 text-[#ce9178] min-w-0 break-all sm:break-normal">
+        <span className="text-foreground/18">&quot;</span>
         {valueNode}
-        <span className="text-foreground/18">"</span>
+        <span className="text-foreground/18">&quot;</span>
       </span>
-      <span className="ml-0.5 text-foreground/14">;</span>
+      <span className="ml-0.5 text-foreground/14 shrink-0">;</span>
     </div>
   )
 }
 
 function SkillChip({ label, dot }: Skill) {
   return (
-    <span className="font-mono text-xs sm:text-sm bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-md text-foreground/90 flex items-center gap-2 whitespace-nowrap select-none">
+    <span className="font-mono text-xs bg-white/[0.03] border border-white/10 px-2.5 py-1 rounded-md text-foreground/90 flex items-center gap-1.5 whitespace-nowrap select-none">
       <span
         aria-hidden="true"
         className="w-1.5 h-1.5 rounded-full shrink-0"
-        style={{
-          backgroundColor: dot,
-          boxShadow: `0 0 6px ${dot}99`,
-        }}
+        style={{ backgroundColor: dot, boxShadow: `0 0 6px ${dot}99` }}
       />
       {label}
     </span>
   )
 }
+
+// ────────────────────────────────── icons ─────────────────────────────────────
 
 function MinimizeIcon() {
   return (
@@ -148,6 +153,8 @@ function GitBranchIcon() {
   )
 }
 
+// ─────────────────────────────── main component ───────────────────────────────
+
 export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
 
@@ -161,87 +168,123 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
 
   const displayedBio   = bio.slice(0, displayedChars)
   const displayedLines = displayedBio.split('\n')
+  const bioLines       = bio.split('\n')
 
   return (
-    <div className="surface rounded-xl overflow-hidden shadow-panel w-full">
-      <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05]">
+    <div className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0">
+
+      {/* ════════════════ TITLE BAR – pinned, never flex-compressed ════════════ */}
+      <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05] shrink-0">
+
         <div className="flex items-stretch flex-1 min-w-0">
-          <div className="relative flex items-center gap-[7px] bg-[#13161c] px-3.5 border-r border-white/[0.08] select-none">
+          <div className="relative flex items-center gap-[7px] bg-[#13161c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
             <PSIcon />
-            <span className="font-mono text-xs text-foreground/55 whitespace-nowrap tracking-tight">
-              Windows PowerShell
+            <span className="font-mono tracking-tight truncate text-foreground/55">
+              <span className="text-[10px] sm:hidden">PS</span>
+              <span className="hidden sm:inline text-xs whitespace-nowrap">Windows PowerShell</span>
             </span>
-            <span className="ml-1 font-mono text-sm leading-none cursor-default text-foreground/18 hover:text-foreground/45 transition-colors duration-100">
+            <span className="ml-0.5 sm:ml-1 font-mono text-sm leading-none cursor-default text-foreground/18 hover:text-foreground/45 transition-colors duration-100 shrink-0">
               ×
             </span>
           </div>
           <button
             aria-hidden="true"
             tabIndex={-1}
-            className="flex items-center justify-center w-9 h-full cursor-default select-none text-foreground/18 hover:text-foreground/45 hover:bg-white/[0.04] transition-colors duration-100 text-lg leading-none"
+            className="flex items-center justify-center w-9 h-full cursor-default select-none text-foreground/18 hover:text-foreground/45 hover:bg-white/[0.04] transition-colors duration-100 text-lg leading-none shrink-0"
           >
             +
           </button>
         </div>
 
+        {/* Window controls: w-9 on mobile, w-11 from sm up */}
         <div className="flex items-stretch h-9 shrink-0">
-          <div aria-hidden="true" className="flex items-center justify-center w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
+          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
             <MinimizeIcon />
           </div>
-          <div aria-hidden="true" className="flex items-center justify-center w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
+          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
             <MaximizeIcon />
           </div>
-          <div aria-hidden="true" className="flex items-center justify-center w-11 cursor-default select-none text-foreground/20 hover:text-white hover:bg-[#c42b1c] transition-colors duration-100">
+          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-white hover:bg-[#c42b1c] transition-colors duration-100">
             <CloseXIcon />
           </div>
         </div>
       </div>
 
-      <div className="surface-2">
-        <div className="px-12 pt-14 pb-14 border-b border-white/[0.04]">
-          <p className="font-mono text-sm text-foreground/22 mb-7 tracking-tight select-none">
+      <div className="surface-2 overflow-y-auto flex-1 max-md:border-l-0">
+
+        {/* ════════════════════════ HERO BLOCK ═══════════════════════════════ */}
+        <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
+
+          <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
             {'/** @profile – Sidakpreet Singh · 2025 */'}
           </p>
+
           <h1
-            className="font-sans font-bold text-white text-5xl md:text-6xl leading-tight"
-            style={{ letterSpacing: '-0.025em' }}
+            className="font-inter font-bold text-white text-4xl md:text-5xl leading-tight"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif', letterSpacing: '-0.025em' }}
           >
             {name}
           </h1>
-          <p className="mt-10 font-mono text-base text-accent/60 tracking-normal leading-snug">
+
+          <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/60 tracking-normal leading-snug">
             <span className="text-foreground/20 select-none mr-1.5">//</span>
             {tagline}
           </p>
-          <div className="mt-10">
-            {displayedLines.map((line, i) => (
-              <p
-                key={i}
-                className="font-mono text-base text-foreground/70 break-words"
-                style={{ lineHeight: '2rem' }}
-              >
-                <span className="text-green-400 mr-2.5 select-none font-bold">{'>'}</span>
-                {line}
-                {i === displayedLines.length - 1 && (
-                  <span className="animate-cursor-blink text-orange-400 ml-px inline-block scale-x-[1.2] origin-left">
-                    ▍
-                  </span>
-                )}
-              </p>
-            ))}
+
+          <div className="relative mt-4 sm:mt-6">
+
+            {/* Height anchor — invisible, full bio, non-interactive */}
+            <div aria-hidden="true" className="invisible pointer-events-none select-none">
+              {bioLines.map((line, i) => (
+                <p
+                  key={i}
+                  className="font-mono text-xs sm:text-sm text-foreground/70 break-words"
+                  style={{ lineHeight: '1.75rem' }}
+                >
+                  <span className="text-green-400 mr-2 font-bold">{'>'}</span>
+                  {line}
+                  {i === bioLines.length - 1 && (
+                    <span className="ml-px inline-block scale-x-[1.2] origin-left">▍</span>
+                  )}
+                </p>
+              ))}
+            </div>
+
+            {/* Live typed overlay — absolutely fills ghost footprint */}
+            <div className="absolute inset-0">
+              {displayedLines.map((line, i) => (
+                <p
+                  key={i}
+                  className="font-mono text-xs sm:text-sm text-foreground/70 break-words"
+                  style={{ lineHeight: '1.75rem' }}
+                >
+                  <span className="text-green-400 mr-2 select-none font-bold">{'>'}</span>
+                  {line}
+                  {i === displayedLines.length - 1 && (
+                    <span className="animate-cursor-blink text-orange-400 ml-px inline-block scale-x-[1.2] origin-left">
+                      ▍
+                    </span>
+                  )}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="px-12 py-11 border-b border-white/[0.04]">
-          <p className="font-mono text-sm text-foreground mb-10 select-none uppercase tracking-[0.2em]">
+        {/* ════════════════════ PROPERTIES BLOCK ════════════════════════════ */}
+        <div className="px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
+
+          <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
             {'// properties'}
           </p>
-          <div className="grid grid-cols-2 gap-x-16 gap-y-4">
-            <div className="space-y-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-14 gap-y-3">
+            <div className="space-y-3">
               {leftColumnProps.map((entry) => (
                 <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.href} />
               ))}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {rightColumnProps.map((entry) => (
                 <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.href} />
               ))}
@@ -249,28 +292,36 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
         </div>
 
-        <div>
+        {/* ════════════════════════ SKILLS PANEL ════════════════════════════ */}
+        <div className="max-md:border-l-0">
+
           <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
             <div className="flex items-stretch h-full">
-              <div className="flex items-center px-6 bg-[#13161c] border-r border-white/[0.08] font-mono text-sm text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
+              <div className="flex items-center px-4 sm:px-5 bg-[#13161c] border-r border-white/[0.08] font-mono text-[10px] sm:text-xs text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
                 // SKILLS
               </div>
             </div>
             <div className="flex items-center h-full pr-0.5">
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none">+</button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100"><TrashIcon /></button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100"><CloseXIcon size={9} /></button>
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none">
+                +
+              </button>
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100">
+                <TrashIcon />
+              </button>
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100">
+                <CloseXIcon size={9} />
+              </button>
             </div>
           </div>
 
-          <div className="px-12 py-9 bg-[#0e1014]">
-            <p className="font-mono text-base leading-relaxed whitespace-nowrap overflow-x-auto">
+          <div className="px-4 sm:px-6 md:px-10 py-4 sm:py-5 bg-[#0e1014]">
+            <p className="font-mono text-xs sm:text-sm leading-relaxed whitespace-nowrap overflow-x-auto">
               <span className="text-[#4bd0e7ff] select-none">PS </span>
               <span className="text-[#4bd0e7ff]">C:\Users\SidakpreetSingh</span>
               <span className="text-white/40 mx-0.5">{'>'}</span>
               <span className="text-[#ce9178]"> show-skills --active</span>
             </p>
-            <div className="flex flex-wrap gap-2.5 mt-3">
+            <div className="flex flex-wrap gap-2 mt-3">
               {skills.map((skill) => (
                 <SkillChip key={skill.label} {...skill} />
               ))}
@@ -279,15 +330,16 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between h-[22px] bg-[#007acc] px-3 select-none">
-        <div className="flex items-center gap-4">
+      {/* ═══════════ STATUS BAR – pinned, never flex-compressed ════════════ */}
+      <div className="flex items-center justify-between min-h-[22px] py-[3px] sm:py-0 sm:h-[22px] bg-[#007acc] px-3 select-none flex-wrap sm:flex-nowrap gap-x-3 shrink-0">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-[5px]">
             <GitBranchIcon />
             <span className="font-mono text-xs text-white/85 leading-none">main</span>
           </div>
           <span className="font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-3 sm:gap-4">
           <span className="font-mono text-xs text-white/70 leading-none">UTF-8</span>
           <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
           <span className="font-mono text-xs text-white/70 leading-none">Ln 1, Col 1</span>

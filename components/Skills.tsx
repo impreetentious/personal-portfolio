@@ -110,16 +110,8 @@ export function Skills() {
         devLabel="import { skills } from './stack'"
       />
 
-      <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
-        Tools and strengths organized for fast scanning
-      </h2>
-      <p className="mt-4 max-w-2xl text-base leading-7 text-foreground/78">
-        The structure mirrors the Sanity schema so this section can be swapped
-        to dynamic content cleanly later.
-      </p>
-
       {/* ── Grid ── */}
-      <div className="mt-8 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
+      <div className="mt-6 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
         {[tools, skills].map((entry) => (
           <div
             key={entry.category}
@@ -132,7 +124,7 @@ export function Skills() {
             <div className="mt-5 flex flex-wrap gap-3">
               {entry.items.map((item) => (
                 // ── Tooltip wrapper ──────────────────────────────────────────
-                <div key={item.name} className="relative group">
+                <div key={item.name} className="group relative">
 
                   {/* Tooltip card — only renders when description is present */}
                   {item.description && (

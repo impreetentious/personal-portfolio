@@ -83,20 +83,14 @@ export function Experience() {
         label="Experience"
         devLabel="console.trace('career')"
       />
-      <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
-        Selected roles and the work behind them
-      </h2>
-      <p className="mt-4 max-w-2xl text-base leading-7 text-foreground/78">
-        Each card expands to reveal impact highlights and the tools used across
-        the role.
-      </p>
 
-      <div ref={timelineRef} className="relative mt-8 pl-8 sm:pl-12">
+      <div ref={timelineRef} className="relative mt-6 pl-8 sm:pl-12">
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
           style={{ scaleY: timelineProgress }}
           className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#4ea8f8] via-[#4ea8f8] to-[#f97316] shadow-[0_0_18px_rgba(78,168,248,0.55)] sm:left-2"
         />
+
         {visibleItems.map((item) => {
           const isOpen = activeCompany === item.company
 

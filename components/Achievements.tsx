@@ -116,7 +116,7 @@ export function Achievements() {
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
           <SectionLabel
             devLabel='git tag -l "award-*"'
             label="Achievements"

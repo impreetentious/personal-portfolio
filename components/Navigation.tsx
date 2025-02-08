@@ -102,6 +102,12 @@ export function Navigation() {
 
   return (
     <>
+      {/*
+        Top-left path label — hidden on mobile (handled by outer hidden md:flex).
+        Two inner variants handle the md→lg and lg+ breakpoints:
+          • md up to lg: shortened prompt  →  C:\>  cd \
+          • lg and above: full path        →  C:\Users\SidakpreetSingh>
+      */}
       <motion.div
         initial={{y: -20, opacity: 0}}
         animate={!isOnHome ? {y: 0, opacity: 1} : {y: -20, opacity: 0}}
@@ -113,10 +119,24 @@ export function Navigation() {
           aria-label="Go to top"
           className="group whitespace-nowrap font-mono text-base font-semibold tracking-tight"
         >
-          <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
-            C:\Users\SidakpreetSingh
+          {/* Full path — lg screens and above */}
+          <span className="hidden lg:inline">
+            <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
+              C:\Users\SidakpreetSingh
+            </span>
+            <span className="text-orange-500">&gt;</span>
           </span>
-          <span className="text-orange-500">&gt;</span>
+
+          {/* Short path — md screens up to lg */}
+          <span className="inline lg:hidden">
+            <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
+              C:\
+            </span>
+            <span className="text-orange-500">&gt;</span>
+            <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
+              {' '}cd \
+            </span>
+          </span>
         </a>
       </motion.div>
 

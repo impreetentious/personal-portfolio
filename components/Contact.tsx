@@ -8,12 +8,12 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
 
 const TOKEN = {
-  identifier : "#9CDCFE",              // light blue  — variables, object keys
-  string     : "#CE9178",              // salmon      — string literals
-  fn         : "#DCDCAA",              // yellow-gold — function / method names
-  punct      : "#6B7280",              // mid-gray    — brackets, commas, colons
-  comment    : "#6A9955",              // muted green — // comments
-  success    : "#4EC9B0",              // teal        — [SUCCESS] label
+  identifier : "#9CDCFE",
+  string     : "#CE9178",
+  fn         : "#DCDCAA",
+  punct      : "#6B7280",
+  comment    : "#6caa4fff",
+  success    : "#4EC9B0",
   dim        : "rgba(255,255,255,0.20)",
 } as const;
 
@@ -129,7 +129,12 @@ export function Contact() {
 
         {/* SectionLabel sits flush with the tab bar bottom edge */}
         <div className="pb-2 pr-1">
-          <SectionLabel devLabel="npm run connect" label="Contact" />
+          <SectionLabel
+            devLabel="npm run connect"
+            label="Contact"
+            titleClassName="text-lg sm:text-xl font-bold"
+            align="right"
+          />
         </div>
       </div>
 

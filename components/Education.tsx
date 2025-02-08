@@ -29,11 +29,8 @@ export function Education() {
         label="Education"
         devLabel="Promise.all([degrees])"
       />
-      <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
-        Academic background and continued learning
-      </h2>
 
-      <div className="mt-8 border-t border-white/10">
+      <div className="mt-6 border-t border-white/10">
         {educationItems.map((item) => (
           <article
             key={`${item.institution}-${item.years}`}
