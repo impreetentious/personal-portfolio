@@ -7,6 +7,7 @@ import {Navigation} from '@/components/Navigation'
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-inter',
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -18,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Sidakpreet Singh | Portfolio',
-  description: 'Interactive personal portfolio for Sidakpreet Singh.',
+  description: "Sidakpreet Singh's interactive portfolio",
 }
 
 export default function RootLayout({
@@ -29,11 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} ${jetbrainsMono.variable} bg-background text-foreground antialiased`}
+                className={`${inter.className} ${inter.variable} ${jetbrainsMono.variable} bg-background text-foreground antialiased`}
       >
         <div className="min-h-screen">
           <Navigation />
-          <main className="min-h-screen pb-24 md:pb-0">{children}</main>
+          <main className="min-h-screen pb-3 md:pb-4">{children}</main>
         </div>
       </body>
     </html>

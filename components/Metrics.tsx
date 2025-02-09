@@ -72,15 +72,16 @@ export function Metrics() {
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+        {/* ── Header ── */}    
+        <div className="mb-6">
           <SectionLabel
             label="Metrics"
             devLabel="const indicators = outcomes.filter(significant)"
-          />
-          <p className="text-xs font-mono text-muted-foreground hidden md:block">
-            {metrics.length}&nbsp;records returned
-          </p>
+          >
+            <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
+              {metrics.length}&nbsp;records returned
+            </p>
+          </SectionLabel>
         </div>
 
         {/* ── Grid ── */}

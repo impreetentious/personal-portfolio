@@ -1,35 +1,43 @@
+import React from "react";
+
 export function SectionLabel({
   label,
   devLabel,
   titleClassName,
   align,
+  children,
 }: {
   label: string;
   devLabel?: string;
   titleClassName?: string;
-  align?: 'left' | 'right';
+  align?: "left" | "right";
+  children?: React.ReactNode;
 }) {
-  const isRight = align === 'right';
+  const isRight = align === "right";
 
   return (
-    <div
-      className={`flex flex-col gap-[18px]${
-        isRight ? ' items-end text-right' : ' items-start text-left'
-      }`}
-    >
+    <div className={isRight ? "text-right" : "text-left"}>
       {devLabel && (
-        <code className="font-mono font-medium text-[11px] tracking-wide text-metaphor/70 select-none">
+        <code className="block font-mono font-medium text-[10px] sm:text-[12px] tracking-wide text-metaphor/70 select-none mb-3 sm:mb-5">
           {devLabel}
         </code>
       )}
-      <p
-        className={`font-sans font-bold text-3xl tracking-tight leading-none text-accent antialiased subpixel-antialiased sm:text-4xl${
-          titleClassName ? ` ${titleClassName}` : ''
+      
+      <div
+        className={`flex items-center gap-6 w-full ${
+          isRight ? "justify-end" : "justify-between"
         }`}
-        style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
       >
-        {label}
-      </p>
+        <p
+          className={`font-semibold text-[33px] tracking-tight text-accent antialiased subpixel-antialiased sm:text-4xl${
+            titleClassName ? ` ${titleClassName}` : ""
+          }`}
+        >
+          {label}
+        </p>
+        
+        {children}
+      </div>
     </div>
   );
 }

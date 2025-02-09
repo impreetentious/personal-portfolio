@@ -1,4 +1,3 @@
-// components/ui/WindowsTerminal.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -30,8 +29,8 @@ const leftColumnProps: PropertyEntry[] = [
 ]
 
 const rightColumnProps: PropertyEntry[] = [
-  { key: 'Phone',    value: '+91 98765 43210',    href: 'tel:+919876543210' },
-  { key: 'LinkedIn', value: 'in/sidakpreetsingh', href: 'https://linkedin.com/in/sidakpreetsingh' },
+  { key: 'Phone',    value: '+91 90344 31886',    href: 'tel:+919034431886' },
+  { key: 'LinkedIn', value: 'SidakpreetSingh', href: 'https://linkedin.com/in/sidakpreetsinghk' },
 ]
 
 const skills: Skill[] = [
@@ -213,18 +212,14 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
 
       <div className="surface-2 overflow-y-auto flex-1 max-md:border-l-0">
 
-        {/* ════════════════════════ HERO BLOCK ═══════════════════════════════ */}
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
 
-          {/* TASK 2a: Removed `hidden sm:block` — comment header now visible on all viewports */}
           <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
             {'/** @profile – Sidakpreet Singh · 2025 */'}
           </p>
 
           <h1
-            className="font-inter font-bold text-white text-4xl md:text-5xl leading-tight"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif', letterSpacing: '-0.025em' }}
-          >
+            className="font-semibold tracking-normal text-white text-3xl md:text-5xl">
             {name}
           </h1>
 
@@ -235,7 +230,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
 
           <div className="relative mt-4 sm:mt-6">
 
-            {/* Height anchor — invisible, full bio, non-interactive */}
             <div aria-hidden="true" className="invisible pointer-events-none select-none">
               {bioLines.map((line, i) => (
                 <p
@@ -252,7 +246,7 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
               ))}
             </div>
 
-            {/* Live typed overlay — absolutely fills ghost footprint */}
+
             <div className="absolute inset-0">
               {displayedLines.map((line, i) => (
                 <p
@@ -274,7 +268,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
 
         {/* ════════════════════ PROPERTIES BLOCK ════════════════════════════ */}
-        {/* TASK 2b: Added `hidden sm:block` to outermost div — entire block hidden on mobile */}
         <div className="hidden sm:block px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
 
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
@@ -329,7 +322,7 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
               <span className="text-white/40 mx-0.5">{'>'}</span>
               <span className="text-[#ce9178]"> show-skills --active</span>
             </p>
-            {/* TASK 1-3: mt-5 on mobile (was mt-3), sm:mt-3 desktop unchanged */}
+            
             <div className="flex flex-wrap gap-2 mt-5 sm:mt-3">
               {skills.map((skill) => (
                 <SkillChip key={skill.label} {...skill} />

@@ -116,14 +116,15 @@ export function Achievements() {
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+        <div className="mb-6">
           <SectionLabel
             devLabel='git tag -l "award-*"'
             label="Achievements"
-          />
-          <p className="text-xs font-mono text-muted-foreground hidden md:block">
-            {achievements.length}&nbsp;tags found
-          </p>
+          >
+            <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
+              {achievements.length}&nbsp;tags found
+            </p>
+          </SectionLabel>
         </div>
 
         {/* ── Table — single element is both scroll container and border frame ── */}

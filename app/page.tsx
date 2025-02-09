@@ -16,7 +16,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       <Hero data={heroData} />
-      <div className="space-y-24 px-6 py-8 sm:px-8 md:px-12 md:pt-16">
+      <div className="space-y-24 px-6 pt-8 pb-0 sm:px-8 md:px-12 md:pt-16">
         <ScrollReveal>
           <Experience />
         </ScrollReveal>

@@ -3,7 +3,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import type { ReactNode } from "react";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
 
@@ -16,10 +15,6 @@ const TOKEN = {
   success    : "#4EC9B0",
   dim        : "rgba(255,255,255,0.20)",
 } as const;
-
-// ─── Internal: PanelTab ───────────────────────────────────────────────────────
-// `className` defaults to "flex" so callers that need hidden sm:flex don't fight
-// the old hard-coded `flex` that used to live in the base class string.
 
 function PanelTab({
   label,
@@ -101,7 +96,18 @@ type BrandIconProps = {
   className?: string
 }
 
-// ─── Social Icons (ported from Footer) ───────────────────────────────────────
+// ─── Social Icons ────────────────────────────────────────────────────────────
+
+function PhoneIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#38BDF8" // Sky blue
+        d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+      />
+    </svg>
+  )
+}
 
 function MailIcon({ className }: BrandIconProps) {
   return (
@@ -150,7 +156,8 @@ function GitHubIcon({ className }: BrandIconProps) {
 // ─── Social Links Data ────────────────────────────────────────────────────────
 
 const SOCIAL_LINKS = [
-  { label: 'Email',    href: 'mailto:hello@example.com',       icon: MailIcon     },
+  { label: 'Phone',    href: 'tel:+919034431886',               icon: PhoneIcon    },
+  { label: 'Email',    href: 'mailto:hello@example.com',        icon: MailIcon     },
   { label: 'LinkedIn', href: 'https://www.linkedin.com',        icon: LinkedInIcon },
   { label: 'WhatsApp', href: 'https://wa.me/10000000000',       icon: WhatsAppIcon },
   { label: 'GitHub',   href: 'https://github.com/ItsMonarch04', icon: GitHubIcon   },
@@ -172,10 +179,9 @@ export function Contact() {
       {/* Cursor blink keyframe — scoped to this section */}
       <style>{`@keyframes vscode-cursor-blink{0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0}}`}</style>
 
-      {/* ── Panel Title Bar — h-[44px] for extra headroom ───────────────── */}
-      <div className="flex items-end justify-between px-5 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
+      {/* ── Panel Title Bar — locked to exactly h-[44px] ───────────────── */}
+      <div className="flex items-center justify-between px-4 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
 
-        {/* OUTPUT always visible; other tabs collapse on mobile */}
         <div className="flex h-full items-end gap-0">
           <PanelTab label="OUTPUT"        active />
           <PanelTab label="TERMINAL"      className="hidden sm:flex" />
@@ -183,19 +189,19 @@ export function Contact() {
           <PanelTab label="DEBUG CONSOLE" className="hidden sm:flex" />
         </div>
 
-        {/* ml-auto pushes wrapper to far right; pb-2.5 compensates for the taller bar */}
-        <div className="pb-2.5 pr-1 ml-auto flex justify-end">
-          <SectionLabel
-            devLabel="npm run connect"
-            label="Contact"
-            titleClassName="text-lg sm:text-xl font-bold"
-            align="right"
-          />
+        {/* Custom compact Contact Header */}
+        <div className="ml-auto flex flex-col items-end justify-center pb-1">
+          <code className="block font-mono font-medium text-[10px] sm:text-[12px] tracking-wide text-metaphor/70 select-none mb-3 sm:mb-4">
+            npm run connect
+          </code>
+          <p className="font-semibold text-[21px] sm:text-2xl tracking-tight text-accent mb-6 sm:mb-11">
+            Contact
+          </p>
         </div>
       </div>
 
       {/* ── Channel Bar ─────────────────────────────────────────────────── */}
-      {/* LF + its dot deleted. UTF-8 · TypeScript group hidden on mobile.  */}
+      {/* UTF-8 · TypeScript group hidden on mobile.  */}
       <div
         className="flex items-center gap-2.5 px-5 sm:px-6 py-[7px] border-b border-white/[0.04] shrink-0"
         style={{ backgroundColor: "#07070F" }}
@@ -218,7 +224,6 @@ export function Contact() {
       <div className="flex-1 px-3 sm:px-8 py-7 sm:py-8 space-y-3.5">
 
         {/* — Preamble log lines — */}
-        {/* T2: text-[11px] sm:text-[11.5px] demotes these to background metadata */}
         <ConsoleLine lineNumber={1} timestamp="00:00:00" delay={0.00} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// Initializing contact module...`}
@@ -241,7 +246,7 @@ export function Contact() {
         <div className="h-5" aria-hidden="true" />
 
         {/* — contact.getSocialLinks() call — */}
-        <ConsoleLine lineNumber={5} delay={0.36} isVisible={isInView}>
+        <ConsoleLine lineNumber={5} delay={0.40} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span style={{ color: TOKEN.identifier }}>contact</span>
           <span style={{ color: TOKEN.punct }}>.</span>
@@ -250,8 +255,7 @@ export function Contact() {
         </ConsoleLine>
 
         {/* — Social icon buttons (no line-number gutter — visual output block) — */}
-        {/* T3: full-width justify-between on mobile; auto-width gap row on sm+  */}
-        <ConsoleLine delay={0.50} isVisible={isInView}>
+        <ConsoleLine delay={0.60} isVisible={isInView}>
           <div className="flex py-2 w-full justify-between sm:w-auto sm:justify-start sm:gap-5">
             {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
               <a
@@ -260,9 +264,9 @@ export function Contact() {
                 aria-label={label}
                 target={href.startsWith('http') ? '_blank' : undefined}
                 rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="hover-glow inline-flex h-12 w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10"
+                className="hover-glow inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10"
               >
-                <Icon className="h-6 w-6" />
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </a>
             ))}
           </div>
@@ -272,15 +276,15 @@ export function Contact() {
         <div className="h-5" aria-hidden="true" />
 
         {/* — Success response — */}
-        <ConsoleLine lineNumber={8} timestamp="09:41:05" delay={0.80} isVisible={isInView}>
+        <ConsoleLine lineNumber={8} timestamp="00:00:00" delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.success }}>[SUCCESS]&nbsp;</span>
           <span style={{ color: "rgba(255,255,255,0.35)" }}>
-            4 endpoints securely loaded.
+            - 5 endpoints securely loaded.
           </span>
         </ConsoleLine>
 
         {/* — Live cursor — */}
-        <ConsoleLine lineNumber={9} delay={0.92} isVisible={isInView}>
+        <ConsoleLine lineNumber={9} delay={0.90} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span
             className="inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"
@@ -291,7 +295,6 @@ export function Contact() {
       </div>
 
       {/* ── VS Code Status Bar ───────────────────────────────────────────── */}
-      {/* "Ln 11, Col 3" + trailing dot deleted. TypeScript JSX → ml-auto hidden sm:block. */}
       <div
         className="h-[22px] border-t border-white/[0.04] px-4 flex items-center gap-3 shrink-0"
         style={{ backgroundColor: "#09091A" }}
