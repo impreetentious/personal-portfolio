@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { ReactNode } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 
@@ -12,21 +12,32 @@ const TOKEN = {
   string     : "#CE9178",
   fn         : "#DCDCAA",
   punct      : "#6B7280",
-  comment    : "#6caa4fff",
+  comment    : "#8f928eff",
   success    : "#4EC9B0",
   dim        : "rgba(255,255,255,0.20)",
 } as const;
 
 // ─── Internal: PanelTab ───────────────────────────────────────────────────────
+// `className` defaults to "flex" so callers that need hidden sm:flex don't fight
+// the old hard-coded `flex` that used to live in the base class string.
 
-function PanelTab({ label, active }: { label: string; active?: boolean }) {
+function PanelTab({
+  label,
+  active,
+  className = "flex",
+}: {
+  label     : string
+  active?   : boolean
+  className?: string
+}) {
   return (
     <div
       className={[
-        "px-3.5 h-full flex items-center text-[10.5px] font-mono tracking-widest select-none",
+        "px-3.5 h-full items-center text-[10.5px] font-mono tracking-widest select-none",
         active
           ? "bg-[#0E0E1C] text-white/70 border-t border-x border-white/[0.08]"
           : "text-white/18 border-t border-x border-transparent",
+        className,
       ].join(" ")}
     >
       {label}
@@ -84,11 +95,66 @@ function ConsoleLine({
   );
 }
 
-// ─── Contact constants (replace before shipping) ──────────────────────────────
+// ─── Brand Icon Types ─────────────────────────────────────────────────────────
 
-const EMAIL           = "hello@sidakpreetsingh.com";
-const LINKEDIN_HANDLE = "linkedin.com/in/sidakpreetsingh";
-const LINKEDIN_URL    = "https://linkedin.com/in/sidakpreetsingh";
+type BrandIconProps = {
+  className?: string
+}
+
+// ─── Social Icons (ported from Footer) ───────────────────────────────────────
+
+function MailIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#EA4335"
+        d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2Zm0 4.2-8 5-8-5V7l8 5 8-5v2.2Z"
+      />
+    </svg>
+  )
+}
+
+function LinkedInIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#0A66C2"
+        d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.99h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.61 0 4.27 2.38 4.27 5.46v6.28ZM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.02H3.54V8.59H7.1v11.46Z"
+      />
+    </svg>
+  )
+}
+
+function WhatsAppIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#25D366"
+        d="M12.04 2.25a9.63 9.63 0 0 0-8.2 14.68L2.75 21.75l4.94-1.06a9.61 9.61 0 1 0 4.35-18.44Zm0 17.51a7.93 7.93 0 0 1-4.05-1.11l-.29-.17-2.93.63.64-2.86-.19-.3a7.94 7.94 0 1 1 6.82 3.81Zm4.35-5.94c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.47-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.39 1.37.5.58.18 1.1.16 1.51.1.46-.07 1.4-.57 1.6-1.13.2-.55.2-1.03.14-1.13-.06-.1-.22-.16-.46-.28Z"
+      />
+    </svg>
+  )
+}
+
+function GitHubIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#F0F6FC"
+        d="M12 2.25c-5.38 0-9.75 4.37-9.75 9.75 0 4.31 2.8 7.96 6.68 9.25.49.09.67-.21.67-.47v-1.71c-2.72.59-3.29-1.16-3.29-1.16-.44-1.13-1.08-1.43-1.08-1.43-.89-.61.07-.6.07-.6.98.07 1.5 1.01 1.5 1.01.87 1.49 2.28 1.06 2.84.81.09-.63.34-1.06.62-1.31-2.17-.25-4.45-1.09-4.45-4.83 0-1.07.38-1.94 1.01-2.62-.1-.25-.44-1.24.1-2.59 0 0 .82-.26 2.68 1a9.25 9.25 0 0 1 4.88 0c1.86-1.26 2.68-1 2.68-1 .54 1.35.2 2.34.1 2.59.63.68 1.01 1.55 1.01 2.62 0 3.75-2.29 4.58-4.47 4.82.35.3.66.9.66 1.81v2.68c0 .26.18.57.67.47A9.76 9.76 0 0 0 21.75 12c0-5.38-4.37-9.75-9.75-9.75Z"
+      />
+    </svg>
+  )
+}
+
+// ─── Social Links Data ────────────────────────────────────────────────────────
+
+const SOCIAL_LINKS = [
+  { label: 'Email',    href: 'mailto:hello@example.com',       icon: MailIcon     },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com',        icon: LinkedInIcon },
+  { label: 'WhatsApp', href: 'https://wa.me/10000000000',       icon: WhatsAppIcon },
+  { label: 'GitHub',   href: 'https://github.com/ItsMonarch04', icon: GitHubIcon   },
+]
 
 // ─── Contact Section ──────────────────────────────────────────────────────────
 
@@ -96,41 +162,29 @@ export function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView   = useInView(sectionRef, { once: true, amount: 0.15 });
 
-  const [emailCopied, setEmailCopied] = useState(false);
-
-  const handleEmailCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2600);
-    } catch {
-      window.location.href = `mailto:${EMAIL}`;
-    }
-  };
-
   return (
     <section
       ref={sectionRef}
       id="contact"
       aria-label="Contact"
-      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
+      className="relative mx-auto w-full max-w-6xl px-4 md:pl-28 lg:pl-32 xl:px-8 pt-14 pb-6 sm:pt-20 sm:pb-10"
     >
       {/* Cursor blink keyframe — scoped to this section */}
       <style>{`@keyframes vscode-cursor-blink{0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0}}`}</style>
 
-      {/* ── Panel Title Bar ──────────────────────────────────────────────── */}
-      <div className="flex items-end justify-between px-5 border-b border-white/[0.06] h-[38px] shrink-0">
+      {/* ── Panel Title Bar — h-[44px] for extra headroom ───────────────── */}
+      <div className="flex items-end justify-between px-5 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
 
-        {/* IDE tabs — left-aligned group */}
+        {/* OUTPUT always visible; other tabs collapse on mobile */}
         <div className="flex h-full items-end gap-0">
           <PanelTab label="OUTPUT"        active />
-          <PanelTab label="TERMINAL"              />
-          <PanelTab label="PROBLEMS"              />
-          <PanelTab label="DEBUG CONSOLE"         />
+          <PanelTab label="TERMINAL"      className="hidden sm:flex" />
+          <PanelTab label="PROBLEMS"      className="hidden sm:flex" />
+          <PanelTab label="DEBUG CONSOLE" className="hidden sm:flex" />
         </div>
 
-        {/* ml-auto pushes wrapper to the far right; flex justify-end anchors SectionLabel inside it */}
-        <div className="pb-2 pr-1 ml-auto flex justify-end">
+        {/* ml-auto pushes wrapper to far right; pb-2.5 compensates for the taller bar */}
+        <div className="pb-2.5 pr-1 ml-auto flex justify-end">
           <SectionLabel
             devLabel="npm run connect"
             label="Contact"
@@ -141,8 +195,9 @@ export function Contact() {
       </div>
 
       {/* ── Channel Bar ─────────────────────────────────────────────────── */}
+      {/* LF + its dot deleted. UTF-8 · TypeScript group hidden on mobile.  */}
       <div
-        className="flex items-center gap-2.5 px-5 py-[5px] border-b border-white/[0.04] shrink-0"
+        className="flex items-center gap-2.5 px-5 sm:px-6 py-[7px] border-b border-white/[0.04] shrink-0"
         style={{ backgroundColor: "#07070F" }}
       >
         <span className="text-[10px] font-mono" style={{ color: TOKEN.dim }}>
@@ -151,137 +206,81 @@ export function Contact() {
         <span className="text-[10px] font-mono text-white/35">
           Contact API v1.0
         </span>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto hidden sm:flex items-center gap-3">
           <span className="text-[10px] font-mono text-white/[0.13]">UTF-8</span>
-          <span className="text-white/[0.09] text-[10px]">·</span>
-          <span className="text-[10px] font-mono text-white/[0.13]">LF</span>
           <span className="text-white/[0.09] text-[10px]">·</span>
           <span className="text-[10px] font-mono text-white/[0.13]">TypeScript</span>
         </div>
       </div>
 
       {/* ── Console Output Body ──────────────────────────────────────────── */}
-      <div className="flex-1 px-5 py-5 space-y-1.5">
+      {/* T1: px-6 → px-3 to reclaim mobile horizontal real estate           */}
+      <div className="flex-1 px-3 sm:px-8 py-7 sm:py-8 space-y-3.5">
 
         {/* — Preamble log lines — */}
-        <ConsoleLine lineNumber={1} timestamp="09:41:03" delay={0.00} isVisible={isInView}>
-          <span style={{ color: TOKEN.comment }}>
+        {/* T2: text-[11px] sm:text-[11.5px] demotes these to background metadata */}
+        <ConsoleLine lineNumber={1} timestamp="00:00:00" delay={0.00} isVisible={isInView}>
+          <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// Initializing contact module...`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={2} timestamp="09:41:03" delay={0.11} isVisible={isInView}>
-          <span style={{ color: TOKEN.comment }}>
+        <ConsoleLine lineNumber={2} timestamp="08:00:00" delay={0.15} isVisible={isInView}>
+          <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// Loading endpoint configuration...`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={3} timestamp="09:41:04" delay={0.22} isVisible={isInView}>
-          <span style={{ color: TOKEN.comment }}>
+        <ConsoleLine lineNumber={3} timestamp="16:00:00" delay={0.30} isVisible={isInView}>
+          <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// All systems nominal. Ready to receive.`}
           </span>
         </ConsoleLine>
 
-        <div className="h-3" aria-hidden="true" />
+        {/* spacer */}
+        <div className="h-5" aria-hidden="true" />
 
-        {/* — contact.send() call — */}
+        {/* — contact.getSocialLinks() call — */}
         <ConsoleLine lineNumber={5} delay={0.36} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span style={{ color: TOKEN.identifier }}>contact</span>
           <span style={{ color: TOKEN.punct }}>.</span>
-          <span style={{ color: TOKEN.fn }}>send</span>
-          <span style={{ color: TOKEN.punct }}>{"({"}</span>
+          <span style={{ color: TOKEN.fn }}>getSocialLinks</span>
+          <span style={{ color: TOKEN.punct }}>{"()"}</span>
         </ConsoleLine>
 
-        {/* — email property — */}
-        <ConsoleLine lineNumber={6} delay={0.46} isVisible={isInView}>
-          <span className="pl-5 flex items-center flex-wrap gap-0">
-            <span style={{ color: TOKEN.identifier }}>email</span>
-            <span style={{ color: TOKEN.punct }}>:&nbsp;</span>
-
-            <button
-              type="button"
-              onClick={handleEmailCopy}
-              className="group/email focus:outline-none focus-visible:ring-1 focus-visible:ring-accent/40 rounded-[2px]"
-              aria-label={`Copy email address: ${EMAIL}`}
-              title="Click to copy email address"
-            >
-              <span
-                className="transition-opacity duration-150 group-hover/email:opacity-50"
-                style={{ color: TOKEN.string }}
+        {/* — Social icon buttons (no line-number gutter — visual output block) — */}
+        {/* T3: full-width justify-between on mobile; auto-width gap row on sm+  */}
+        <ConsoleLine delay={0.50} isVisible={isInView}>
+          <div className="flex py-2 w-full justify-between sm:w-auto sm:justify-start sm:gap-5">
+            {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="hover-glow inline-flex h-12 w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10"
               >
-                &apos;{EMAIL}&apos;
-              </span>
-            </button>
-
-            <span style={{ color: TOKEN.punct }}>,</span>
-
-            <motion.span
-              className="ml-4 text-[10.5px] font-mono"
-              initial={{ opacity: 0 }}
-              animate={
-                isInView
-                  ? { opacity: emailCopied ? 1 : 0.35 }
-                  : { opacity: 0 }
-              }
-              transition={{ type: "tween", ease: "easeOut", duration: 0.25 }}
-              style={{ color: emailCopied ? TOKEN.success : TOKEN.dim }}
-            >
-              {emailCopied ? "// ✓ copied to clipboard" : "// click to copy"}
-            </motion.span>
-          </span>
+                <Icon className="h-6 w-6" />
+              </a>
+            ))}
+          </div>
         </ConsoleLine>
 
-        {/* — linkedin property — */}
-        <ConsoleLine lineNumber={7} delay={0.56} isVisible={isInView}>
-          <span className="pl-5 flex items-center flex-wrap gap-0">
-            <span style={{ color: TOKEN.identifier }}>linkedin</span>
-            <span style={{ color: TOKEN.punct }}>:&nbsp;</span>
-
-            <a
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/li focus:outline-none focus-visible:ring-1 focus-visible:ring-accent/40 rounded-[2px]"
-              aria-label={`Open LinkedIn profile: ${LINKEDIN_HANDLE}`}
-              title="Open LinkedIn profile in a new tab"
-            >
-              <span
-                className="transition-opacity duration-150 group-hover/li:opacity-50"
-                style={{ color: TOKEN.string }}
-              >
-                &apos;{LINKEDIN_HANDLE}&apos;
-              </span>
-            </a>
-
-            <span style={{ color: TOKEN.punct }}>,</span>
-
-            <span
-              className="ml-4 text-[10.5px] font-mono"
-              style={{ color: TOKEN.dim }}
-            >
-              {"// ↗ opens in new tab"}
-            </span>
-          </span>
-        </ConsoleLine>
-
-        {/* — closing bracket — */}
-        <ConsoleLine lineNumber={8} delay={0.66} isVisible={isInView}>
-          <span style={{ color: TOKEN.punct }}>{"})"}</span>
-        </ConsoleLine>
-
-        <div className="h-3" aria-hidden="true" />
+        {/* spacer */}
+        <div className="h-5" aria-hidden="true" />
 
         {/* — Success response — */}
-        <ConsoleLine lineNumber={10} timestamp="09:41:05" delay={0.80} isVisible={isInView}>
+        <ConsoleLine lineNumber={8} timestamp="09:41:05" delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.success }}>[SUCCESS]&nbsp;</span>
           <span style={{ color: "rgba(255,255,255,0.35)" }}>
-            Message endpoint initialised. Awaiting your signal.
+            4 endpoints securely loaded.
           </span>
         </ConsoleLine>
 
         {/* — Live cursor — */}
-        <ConsoleLine lineNumber={11} delay={0.92} isVisible={isInView}>
+        <ConsoleLine lineNumber={9} delay={0.92} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span
             className="inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"
@@ -292,6 +291,7 @@ export function Contact() {
       </div>
 
       {/* ── VS Code Status Bar ───────────────────────────────────────────── */}
+      {/* "Ln 11, Col 3" + trailing dot deleted. TypeScript JSX → ml-auto hidden sm:block. */}
       <div
         className="h-[22px] border-t border-white/[0.04] px-4 flex items-center gap-3 shrink-0"
         style={{ backgroundColor: "#09091A" }}
@@ -311,11 +311,9 @@ export function Contact() {
 
         <span className="text-[10px] font-mono text-white/[0.22]">contact.ts</span>
 
-        <span className="ml-auto text-[10px] font-mono text-white/[0.10]">
-          Ln 11, Col 3
+        <span className="ml-auto hidden sm:block text-[10px] font-mono text-white/[0.18]">
+          TypeScript JSX
         </span>
-        <span className="text-white/[0.07] text-[10px]" aria-hidden="true">·</span>
-        <span className="text-[10px] font-mono text-white/[0.18]">TypeScript JSX</span>
       </div>
     </section>
   );

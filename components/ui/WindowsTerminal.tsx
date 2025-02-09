@@ -1,3 +1,4 @@
+// components/ui/WindowsTerminal.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -101,7 +102,6 @@ function MinimizeIcon() {
   )
 }
 
-// ────────────────────────────────── icons ─────────────────────────────────────
 function MaximizeIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
@@ -216,8 +216,8 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         {/* ════════════════════════ HERO BLOCK ═══════════════════════════════ */}
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
 
-          {/* Comment header hidden on mobile screen sizes to clear real estate */}
-          <p className="hidden sm:block font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
+          {/* TASK 2a: Removed `hidden sm:block` — comment header now visible on all viewports */}
+          <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
             {'/** @profile – Sidakpreet Singh · 2025 */'}
           </p>
 
@@ -274,7 +274,8 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
 
         {/* ════════════════════ PROPERTIES BLOCK ════════════════════════════ */}
-        <div className="px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
+        {/* TASK 2b: Added `hidden sm:block` to outermost div — entire block hidden on mobile */}
+        <div className="hidden sm:block px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
 
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
             {'// properties'}
@@ -316,14 +317,20 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
             </div>
           </div>
 
-          <div className="px-4 sm:px-6 md:px-10 py-4 sm:py-5 bg-[#0e1014]">
+          {/* TASK 1-2: pt-6 pb-8 on mobile (was py-4), sm:py-5 desktop unchanged */}
+          <div className="px-4 sm:px-6 md:px-10 pt-6 pb-8 sm:py-5 bg-[#0e1014]">
             <p className="font-mono text-xs sm:text-sm leading-relaxed whitespace-nowrap overflow-x-auto">
               <span className="text-[#4bd0e7ff] select-none">PS </span>
-              <span className="text-[#4bd0e7ff]">C:\Users\SidakpreetSingh</span>
+              {/* TASK 1-1: Truncated path on mobile only */}
+              <span className="text-[#4bd0e7ff]">
+                <span className="sm:hidden">C:\Users</span>
+                <span className="hidden sm:inline">C:\Users\SidakpreetSingh</span>
+              </span>
               <span className="text-white/40 mx-0.5">{'>'}</span>
               <span className="text-[#ce9178]"> show-skills --active</span>
             </p>
-            <div className="flex flex-wrap gap-2 mt-3">
+            {/* TASK 1-3: mt-5 on mobile (was mt-3), sm:mt-3 desktop unchanged */}
+            <div className="flex flex-wrap gap-2 mt-5 sm:mt-3">
               {skills.map((skill) => (
                 <SkillChip key={skill.label} {...skill} />
               ))}

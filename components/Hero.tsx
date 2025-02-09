@@ -1,3 +1,4 @@
+// components/Hero.tsx
 'use client'
 
 import {useEffect, useState} from 'react'
@@ -48,14 +49,13 @@ export function Hero({data}: HeroProps) {
       : Math.max(0, 1 - (scrollY - scrollThreshold) / 150)
 
   return (
+    // TASK 2: pt-4 pb-16 → pt-10 pb-40 on mobile (20% top / 80% bottom asymmetry).
+    // md: overrides left completely untouched.
     <section
       id="home"
-      /* Removed symmetric top padding variables to shift the element block higher */
-      className="relative min-h-screen overflow-hidden px-6 pt-2 pb-16 sm:px-8 md:px-12 md:pt-4 md:pb-20"
+      className="relative min-h-screen overflow-hidden px-6 pt-10 pb-40 sm:px-8 md:px-12 md:pt-8 md:pb-20"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(78,168,248,0.16),transparent_26rem)]" />
-
-      {/* Lifted viewport baseline constraint upwards to clear footer bounds */}
       <div className="relative mx-auto flex min-h-[calc(100vh-12rem)] max-w-6xl items-center">
         <motion.div
           initial={{opacity: 0, y: 24}}

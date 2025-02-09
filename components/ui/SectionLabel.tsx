@@ -23,7 +23,7 @@ export function SectionLabel({
         </code>
       )}
       <p
-        className={`font-sans font-bold text-3xl uppercase tracking-tight leading-none text-accent antialiased subpixel-antialiased sm:text-4xl${
+        className={`font-sans font-bold text-3xl tracking-tight leading-none text-accent antialiased subpixel-antialiased sm:text-4xl${
           titleClassName ? ` ${titleClassName}` : ''
         }`}
         style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
