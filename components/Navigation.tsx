@@ -12,12 +12,12 @@ import {
 } from 'lucide-react'
 
 const navigationItems = [
-  {label: 'Experience', href: '#experience',   icon: Briefcase},
-  {label: 'Skills',     href: '#skills',        icon: Sparkles},
-  {label: 'Metrics',    href: '#metrics',       icon: BarChart},
-  {label: 'Awards',     href: '#achievements',  icon: Trophy},
-  {label: 'Education',  href: '#education',     icon: GraduationCap},
-  {label: 'Contact',    href: '#contact',       icon: Mail},
+  {label: 'Experience', href: '#experience',  icon: Briefcase},
+  {label: 'Skills',     href: '#skills',       icon: Sparkles},
+  {label: 'Metrics',    href: '#metrics',      icon: BarChart},
+  {label: 'Awards',     href: '#achievements', icon: Trophy},
+  {label: 'Education',  href: '#education',    icon: GraduationCap},
+  {label: 'Contact',    href: '#contact',      icon: Mail},
 ]
 
 const OBSERVED_SECTIONS = [
@@ -31,10 +31,9 @@ const OBSERVED_SECTIONS = [
 ]
 
 export function Navigation() {
-  const {scrollY} = useScroll()
+  const {scrollY, scrollYProgress} = useScroll()
   const [heroExit, setHeroExit] = useState(720)
   const [activeSection, setActiveSection] = useState<string>('home')
-
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
 
@@ -48,11 +47,8 @@ export function Navigation() {
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const direction = latest > lastScrollY.current ? 'down' : 'up'
     const delta = Math.abs(latest - lastScrollY.current)
-
     if (latest > 80) {
-      if (delta > 10) {
-        setMobileNavHidden(direction === 'down')
-      }
+      if (delta > 10) setMobileNavHidden(direction === 'down')
     } else {
       setMobileNavHidden(false)
     }
@@ -63,40 +59,39 @@ export function Navigation() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id)
-          }
+          if (entry.isIntersecting) setActiveSection(entry.target.id)
         })
       },
       {rootMargin: '-20% 0px -60% 0px'},
     )
-
     OBSERVED_SECTIONS.forEach((id) => {
       const el = document.getElementById(id)
       if (el) observer.observe(el)
     })
-
     return () => observer.disconnect()
   }, [])
 
-  const desktopNavOpacity = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
-  const desktopNavX = useTransform(scrollY, [heroExit - 40, heroExit + 120], [-32, 0])
-
-  const desktopNavVisibility = useTransform(
-    scrollY,
-    (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'),
-  )
-
-  const mobileNavOpacity = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
-  const mobileNavVisibility = useTransform(
-    scrollY,
-    (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'),
-  )
+  const desktopNavOpacity    = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
+  const desktopNavX          = useTransform(scrollY, [heroExit - 40, heroExit + 120], [-32, 0])
+  const desktopNavVisibility = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
+  const mobileNavOpacity     = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
+  const mobileNavVisibility  = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
 
   const isOnHome = activeSection === 'home'
 
   return (
     <>
+      {/* ── Scroll progress bar ── */}
+      <motion.div
+        aria-hidden="true"
+        className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left pointer-events-none"
+        style={{
+          scaleX: scrollYProgress,
+          background: 'linear-gradient(to right, #4fc7ef, #f97316)',
+        }}
+      />
+
+      {/* ── Desktop wordmark ── */}
       <motion.div
         initial={{y: -20, opacity: 0}}
         animate={!isOnHome ? {y: 0, opacity: 1} : {y: -20, opacity: 0}}
@@ -118,11 +113,9 @@ export function Navigation() {
         </a>
       </motion.div>
 
+      {/* ── Mobile bottom nav ── */}
       <motion.nav
-        style={{
-          opacity: mobileNavOpacity,
-          visibility: mobileNavVisibility,
-        }}
+        style={{opacity: mobileNavOpacity, visibility: mobileNavVisibility}}
         animate={{y: mobileNavHidden ? '100%' : '0%'}}
         transition={{type: 'tween', ease: 'easeOut', duration: 0.28}}
         className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-[#07070F]/80 backdrop-blur-md border-t border-white/10"
@@ -158,6 +151,7 @@ export function Navigation() {
         </div>
       </motion.nav>
 
+      {/* ── Desktop side rail ── */}
       <motion.nav
         style={{
           opacity: desktopNavOpacity,
@@ -173,7 +167,6 @@ export function Navigation() {
               aria-hidden="true"
               className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-white/10 -z-10"
             />
-
             {navigationItems.map(({label, href, icon: Icon}) => {
               const isActive = activeSection === href.slice(1)
               return (

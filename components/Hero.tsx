@@ -12,7 +12,7 @@ interface HeroData {
 
 const FALLBACK_HERO: HeroData = {
   name: 'Sidakpreet Singh',
-  tagline: 'Building thoughtful products with code, grit, clarity and AI.',
+  tagline: 'Building practical products with code, grit, clarity and AI.',
   bio: 'Welcome to my portfolio! Hope you find something interesting to read, or maybe we can build something together!',
 }
 

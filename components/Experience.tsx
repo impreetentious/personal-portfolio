@@ -57,11 +57,44 @@ const experienceItems: ExperienceItem[] = [
   },
 ]
 
+// ─── Relative duration helper ──────────────────────────────────────────────────
+
+function getRelativeDuration(dates: string): string | null {
+  const now          = new Date()
+  const currentYear  = now.getFullYear()
+  const currentMonth = now.getMonth() // 0-indexed
+
+  const match = dates.match(/(\d{4})\s*[-–]\s*(\w+)/i)
+  if (!match) return null
+
+  const startYear = parseInt(match[1])
+  const endStr    = match[2].toLowerCase()
+  if (isNaN(startYear)) return null
+
+  if (endStr === 'present') {
+    const totalMonths = (currentYear - startYear) * 12 + currentMonth
+    const years  = Math.floor(totalMonths / 12)
+    const months = totalMonths % 12
+    if (years === 0 && months <= 1) return null
+    if (years === 0) return `(${months}m)`
+    if (months === 0) return `(${years}y)`
+    return `(${years}y ${months}m)`
+  } else {
+    const endYear  = parseInt(endStr)
+    if (isNaN(endYear)) return null
+    const yearsAgo = currentYear - endYear
+    if (yearsAgo <= 0) return null
+    return `(${yearsAgo}y ago)`
+  }
+}
+
+// ─── Component ─────────────────────────────────────────────────────────────────
+
 export function Experience() {
   const [activeCompany, setActiveCompany] = useState<string | null>(null)
 
   const timelineRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
+  const {scrollYProgress} = useScroll({
     target: timelineRef,
     offset: ['start 75%', 'end 35%'],
   })
@@ -86,19 +119,38 @@ export function Experience() {
       <div ref={timelineRef} className="relative mt-6 pl-8 sm:pl-12">
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
-          style={{ scaleY: timelineProgress }}
+          style={{scaleY: timelineProgress}}
           className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#4ea8f8] via-[#4ea8f8] to-[#f97316] shadow-[0_0_18px_rgba(78,168,248,0.55)] sm:left-2"
         />
 
         {visibleItems.map((item) => {
-          const isOpen = activeCompany === item.company
+          const isOpen      = activeCompany === item.company
+          const relDuration = getRelativeDuration(item.dates)
 
           return (
             <div
               key={`${item.company}-${item.role}`}
               className="relative overflow-visible border-t border-white/10 last:border-b"
             >
-              <span className="absolute -left-[2.12rem] top-8 h-2.5 w-2.5 rounded-full border border-accent bg-[#07070f] shadow-[0_0_16px_rgba(78,168,248,0.65)] sm:-left-[2.84rem]" />
+              {/* ── Timeline dot with pulse ring when open ── */}
+              <span className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] isolate">
+                {isOpen && (
+                  <motion.span
+                    aria-hidden="true"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent/60"
+                    initial={{ scale: 1, opacity: 0.7 }}
+                    animate={{ scale: 3.2, opacity: 0 }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: 'easeOut',
+                      repeatDelay: 0.4,
+                    }}
+                  />
+                )}
+                <span className="block h-2.5 w-2.5 rounded-full border border-accent bg-[#07070f] shadow-[0_0_16px_rgba(78,168,248,0.65)]" />
+              </span>
+
               <button
                 type="button"
                 onClick={() =>
@@ -115,8 +167,8 @@ export function Experience() {
                       {item.company}
                     </h3>
                     <motion.span
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      animate={{rotate: isOpen ? 180 : 0}}
+                      transition={{duration: 0.2, ease: 'easeOut'}}
                       className="text-accent"
                     >
                       <ChevronDown className="h-4 w-4" />
@@ -129,6 +181,11 @@ export function Experience() {
 
                 <p className="shrink-0 text-left text-sm font-medium text-foreground/78 md:min-w-40 md:text-right">
                   {item.dates}
+                  {relDuration && (
+                    <span className="ml-2 font-mono text-[11px] text-foreground/35">
+                      {relDuration}
+                    </span>
+                  )}
                 </p>
               </button>
 
@@ -136,10 +193,10 @@ export function Experience() {
                 {isOpen ? (
                   <motion.div
                     key="content"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: 'easeInOut' }}
+                    initial={{height: 0, opacity: 0}}
+                    animate={{height: 'auto', opacity: 1}}
+                    exit={{height: 0, opacity: 0}}
+                    transition={{duration: 0.28, ease: 'easeInOut'}}
                     className="overflow-hidden"
                   >
                     <div className="border-t border-accent/10 pb-8 pt-6">

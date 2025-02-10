@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
@@ -15,6 +15,8 @@ const TOKEN = {
   success    : "#4EC9B0",
   dim        : "rgba(255,255,255,0.20)",
 } as const;
+
+// ─── Panel Tab ────────────────────────────────────────────────────────────────
 
 function PanelTab({
   label,
@@ -40,7 +42,7 @@ function PanelTab({
   );
 }
 
-// ─── Internal: ConsoleLine ────────────────────────────────────────────────────
+// ─── Console Line ─────────────────────────────────────────────────────────────
 
 interface ConsoleLineProps {
   children   : ReactNode;
@@ -64,7 +66,6 @@ function ConsoleLine({
       animate={isVisible ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
       transition={{ type: "tween", ease: "easeOut", duration: 0.38, delay }}
     >
-      {/* Gutter — line number */}
       {lineNumber !== undefined && (
         <span
           className="select-none w-5 text-right shrink-0 text-[11px] font-mono leading-5"
@@ -73,8 +74,6 @@ function ConsoleLine({
           {lineNumber}
         </span>
       )}
-
-      {/* Gutter — timestamp */}
       {timestamp && (
         <span
           className="select-none text-[10.5px] font-mono shrink-0 leading-5 tabular-nums"
@@ -83,26 +82,20 @@ function ConsoleLine({
           {timestamp}
         </span>
       )}
-
-      {/* Content */}
       <div className="font-mono text-[12.5px] leading-5 flex-1">{children}</div>
     </motion.div>
   );
 }
 
-// ─── Brand Icon Types ─────────────────────────────────────────────────────────
+// ─── Brand Icons ──────────────────────────────────────────────────────────────
 
-type BrandIconProps = {
-  className?: string
-}
-
-// ─── Social Icons ────────────────────────────────────────────────────────────
+type BrandIconProps = { className?: string }
 
 function PhoneIcon({ className }: BrandIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
       <path
-        fill="#38BDF8" // Sky blue
+        fill="#f3c317ff"
         d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
       />
     </svg>
@@ -146,7 +139,7 @@ function GitHubIcon({ className }: BrandIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
       <path
-        fill="#F0F6FC"
+        fill="#ffffffff"
         d="M12 2.25c-5.38 0-9.75 4.37-9.75 9.75 0 4.31 2.8 7.96 6.68 9.25.49.09.67-.21.67-.47v-1.71c-2.72.59-3.29-1.16-3.29-1.16-.44-1.13-1.08-1.43-1.08-1.43-.89-.61.07-.6.07-.6.98.07 1.5 1.01 1.5 1.01.87 1.49 2.28 1.06 2.84.81.09-.63.34-1.06.62-1.31-2.17-.25-4.45-1.09-4.45-4.83 0-1.07.38-1.94 1.01-2.62-.1-.25-.44-1.24.1-2.59 0 0 .82-.26 2.68 1a9.25 9.25 0 0 1 4.88 0c1.86-1.26 2.68-1 2.68-1 .54 1.35.2 2.34.1 2.59.63.68 1.01 1.55 1.01 2.62 0 3.75-2.29 4.58-4.47 4.82.35.3.66.9.66 1.81v2.68c0 .26.18.57.67.47A9.76 9.76 0 0 0 21.75 12c0-5.38-4.37-9.75-9.75-9.75Z"
       />
     </svg>
@@ -156,18 +149,19 @@ function GitHubIcon({ className }: BrandIconProps) {
 // ─── Social Links Data ────────────────────────────────────────────────────────
 
 const SOCIAL_LINKS = [
-  { label: 'Phone',    href: 'tel:+919034431886',                          icon: PhoneIcon    },
-  { label: 'Email',    href: 'mailto:sidakpreetsinghk@gmail.com',          icon: MailIcon     },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/sidakpreetsinghk',   icon: LinkedInIcon },
-  { label: 'WhatsApp', href: 'https://wa.me/+919034431886',                icon: WhatsAppIcon },
-  { label: 'GitHub',   href: 'https://github.com/ItsMonarch04',            icon: GitHubIcon   },
+  { label: 'Phone',    href: 'tel:+919034431886',                          icon: PhoneIcon,    copyValue: '+91 90344 31886'            },
+  { label: 'Email',    href: 'mailto:sidakpreetsinghk@gmail.com',          icon: MailIcon,     copyValue: 'sidakpreetsinghk@gmail.com' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/sidakpreetsinghk',   icon: LinkedInIcon                                         },
+  { label: 'WhatsApp', href: 'https://wa.me/+919034431886',                icon: WhatsAppIcon                                         },
+  { label: 'GitHub',   href: 'https://github.com/ItsMonarch04',            icon: GitHubIcon                                           },
 ]
 
 // ─── Contact Section ──────────────────────────────────────────────────────────
 
 export function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView   = useInView(sectionRef, { once: true, amount: 0.15 });
+  const sectionRef               = useRef<HTMLElement>(null)
+  const isInView                 = useInView(sectionRef, { once: true, amount: 0.15 })
+  const [copied, setCopied]      = useState<string | null>(null)
 
   return (
     <section
@@ -176,20 +170,16 @@ export function Contact() {
       aria-label="Contact"
       className="relative mx-auto w-full max-w-6xl px-4 md:pl-28 lg:pl-32 xl:px-8 pt-14 pb-6 sm:pt-20 sm:pb-10"
     >
-      {/* Cursor blink keyframe — scoped to this section */}
       <style>{`@keyframes vscode-cursor-blink{0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0}}`}</style>
 
-      {/* ── Panel Title Bar — locked to exactly h-[44px] ───────────────── */}
+      {/* ── Panel Title Bar ── */}
       <div className="flex items-center justify-between px-4 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
-
         <div className="flex h-full items-end gap-0">
           <PanelTab label="OUTPUT"        active />
           <PanelTab label="TERMINAL"      className="hidden sm:flex" />
           <PanelTab label="PROBLEMS"      className="hidden sm:flex" />
           <PanelTab label="DEBUG CONSOLE" className="hidden sm:flex" />
         </div>
-
-        {/* Custom compact Contact Header */}
         <div className="ml-auto flex flex-col items-end justify-center pb-1">
           <code className="block font-mono font-medium text-[10px] sm:text-[12px] tracking-wide text-metaphor/70 select-none mb-3 sm:mb-4">
             npm run connect
@@ -200,18 +190,13 @@ export function Contact() {
         </div>
       </div>
 
-      {/* ── Channel Bar ─────────────────────────────────────────────────── */}
-      {/* UTF-8 · TypeScript group hidden on mobile.  */}
+      {/* ── Channel Bar ── */}
       <div
         className="flex items-center gap-2.5 px-5 sm:px-6 py-[7px] border-b border-white/[0.04] shrink-0"
         style={{ backgroundColor: "#07070F" }}
       >
-        <span className="text-[10px] font-mono" style={{ color: TOKEN.dim }}>
-          Channel:
-        </span>
-        <span className="text-[10px] font-mono text-white/35">
-          Contact API v1.0
-        </span>
+        <span className="text-[10px] font-mono" style={{ color: TOKEN.dim }}>Channel:</span>
+        <span className="text-[10px] font-mono text-white/35">Contact API v1.0</span>
         <div className="ml-auto hidden sm:flex items-center gap-3">
           <span className="text-[10px] font-mono text-white/[0.13]">UTF-8</span>
           <span className="text-white/[0.09] text-[10px]">·</span>
@@ -219,33 +204,29 @@ export function Contact() {
         </div>
       </div>
 
-      {/* ── Console Output Body ──────────────────────────────────────────── */}
-      {/* T1: px-6 → px-3 to reclaim mobile horizontal real estate           */}
+      {/* ── Console Output Body ── */}
       <div className="flex-1 px-3 sm:px-8 py-7 sm:py-8 space-y-3.5">
 
-        {/* — Preamble log lines — */}
-        <ConsoleLine lineNumber={1} timestamp="00:00:00" delay={0.00} isVisible={isInView}>
+        <ConsoleLine lineNumber={1} timestamp="04:07:01" delay={0.00} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
-            {`// Initializing contact module...`}
+            {`// Initializing contact module....`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={2} timestamp="08:00:00" delay={0.15} isVisible={isInView}>
+        <ConsoleLine lineNumber={2} timestamp="04:07:02" delay={0.15} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
-            {`// Loading endpoint configuration...`}
+            {`// Loading endpoint configuration....`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={3} timestamp="16:00:00" delay={0.30} isVisible={isInView}>
+        <ConsoleLine lineNumber={3} timestamp="04:07:03" delay={0.30} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
-            {`// All systems nominal. Ready to receive.`}
+            {`// All systems nominal. Ready to receive....`}
           </span>
         </ConsoleLine>
 
-        {/* spacer */}
         <div className="h-5" aria-hidden="true" />
 
-        {/* — contact.getSocialLinks() call — */}
         <ConsoleLine lineNumber={5} delay={0.40} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span style={{ color: TOKEN.identifier }}>contact</span>
@@ -254,36 +235,64 @@ export function Contact() {
           <span style={{ color: TOKEN.punct }}>{"()"}</span>
         </ConsoleLine>
 
-        {/* — Social icon buttons (no line-number gutter — visual output block) — */}
+        {/* ── Social icon buttons ── */}
         <ConsoleLine delay={0.60} isVisible={isInView}>
           <div className="flex py-2 w-full justify-between sm:w-auto sm:justify-start sm:gap-5">
-            {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                target={href.startsWith('http') ? '_blank' : undefined}
-                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="hover-glow inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10"
-              >
-                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
-              </a>
+            {SOCIAL_LINKS.map(({ label, href, icon: Icon, copyValue }) => (
+              <div key={label} className="relative">
+                <a
+                  href={href}
+                  aria-label={copyValue ? `${label} — click to copy` : label}
+                  target={!copyValue && href.startsWith('http') ? '_blank' : undefined}
+                  rel={!copyValue && href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  onClick={
+                    copyValue
+                      ? async (e) => {
+                          e.preventDefault()
+                          try {
+                            await navigator.clipboard.writeText(copyValue)
+                            setCopied(label)
+                            setTimeout(() => setCopied(null), 2500)
+                          } catch {
+                            window.location.href = href
+                          }
+                        }
+                      : undefined
+                  }
+                  className={`hover-glow inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10${copyValue ? ' cursor-copy' : ''}`}
+                >
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </a>
+
+                {/* ── Copied tooltip ── */}
+                <AnimatePresence>
+                  {copied === label && (
+                    <motion.span
+                      key="tip"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ type: 'tween', ease: 'easeOut', duration: 0.18 }}
+                      className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-accent/90 px-2 py-0.5 font-mono text-[9px] font-bold text-background"
+                    >
+                      Copied!
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </div>
         </ConsoleLine>
 
-        {/* spacer */}
         <div className="h-5" aria-hidden="true" />
 
-        {/* — Success response — */}
-        <ConsoleLine lineNumber={8} timestamp="00:00:00" delay={0.80} isVisible={isInView}>
+        <ConsoleLine lineNumber={8} timestamp="04:07:04" delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.success }}>[SUCCESS]&nbsp;</span>
           <span style={{ color: "rgba(255,255,255,0.35)" }}>
             - 5 endpoints securely loaded.
           </span>
         </ConsoleLine>
 
-        {/* — Live cursor — */}
         <ConsoleLine lineNumber={9} delay={0.90} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span
@@ -292,9 +301,38 @@ export function Contact() {
             aria-hidden="true"
           />
         </ConsoleLine>
+
+        {/* ── Copy feedback line ── */}
+        <AnimatePresence>
+          {copied !== null && (
+            <motion.div
+              key="copy-feedback"
+              className="flex items-start gap-3 min-h-[20px]"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}
+            >
+              <span
+                className="select-none w-5 text-right shrink-0 text-[11px] font-mono leading-5"
+                style={{ color: 'rgba(255,255,255,0.10)' }}
+              >
+                10
+              </span>
+              <div className="font-mono text-[12.5px] leading-5 flex-1">
+                <span style={{ color: TOKEN.success }}>[COPIED]&nbsp;</span>
+                <span style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  {'— '}
+                  {SOCIAL_LINKS.find((l) => l.label === copied)?.copyValue ?? ''}
+                  {' → clipboard'}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── VS Code Status Bar ───────────────────────────────────────────── */}
+      {/* ── VS Code Status Bar ── */}
       <div
         className="h-[22px] border-t border-white/[0.04] px-4 flex items-center gap-3 shrink-0"
         style={{ backgroundColor: "#09091A" }}
@@ -303,21 +341,15 @@ export function Contact() {
           className="text-[10px] font-mono flex items-center gap-1.5"
           style={{ color: TOKEN.success }}
         >
-          <span
-            className="inline-block w-1.5 h-1.5 rounded-full bg-current"
-            aria-hidden="true"
-          />
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />
           READY
         </span>
-
         <span className="text-white/[0.07] text-[10px]" aria-hidden="true">|</span>
-
         <span className="text-[10px] font-mono text-white/[0.22]">contact.ts</span>
-
         <span className="ml-auto hidden sm:block text-[10px] font-mono text-white/[0.18]">
           TypeScript JSX
         </span>
       </div>
     </section>
-  );
+  )
 }

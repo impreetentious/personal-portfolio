@@ -19,15 +19,14 @@ type Skill = {
   dot: string
 }
 
-
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
-  { key: 'Email',    value: 'sidakpreetsinghk@gmail.com',   href: 'mailto:sidakpreetsinghk@gmail.com' },
+  { key: 'Email',    value: 'sidakpreetsinghk@gmail.com', href: 'mailto:sidakpreetsinghk@gmail.com' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [
-  { key: 'Phone',    value: '+91 90344 31886',    href: 'tel:+919034431886' },
-  { key: 'LinkedIn', value: 'sidakpreetsingh',    href: 'https://linkedin.com/in/sidakpreetsinghk' },
+  { key: 'Phone',    value: '+91 90344 31886',  href: 'tel:+919034431886'                       },
+  { key: 'LinkedIn', value: 'sidakpreetsingh',  href: 'https://linkedin.com/in/sidakpreetsinghk' },
 ]
 
 const skills: Skill[] = [
@@ -39,13 +38,9 @@ const skills: Skill[] = [
   { label: 'Node.js',    dot: '#A3E635' },
 ]
 
-type PropertyRowProps = {
-  propKey: string
-  value: string
-  href?: string
-}
+const SHOW_WORKING_STATUS = false
 
-function PropertyRow({ propKey, value, href }: PropertyRowProps) {
+function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
   const valueNode = href ? (
     <a
       href={href}
@@ -134,6 +129,18 @@ function PSIcon() {
   )
 }
 
+function WorkingStatus() {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        aria-hidden="true"
+        className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"
+      />
+      <span className="font-mono text-xs text-white/85 leading-none">Open to work</span>
+    </div>
+  )
+}
+
 function GitBranchIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
@@ -145,7 +152,6 @@ function GitBranchIcon() {
     </svg>
   )
 }
-
 
 export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
@@ -165,8 +171,8 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   return (
     <div className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0">
 
+      {/* ── Title bar ── */}
       <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05] shrink-0">
-
         <div className="flex items-stretch flex-1 min-w-0">
           <div className="relative flex items-center gap-[7px] bg-[#13161c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
             <PSIcon />
@@ -186,7 +192,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
             +
           </button>
         </div>
-
         <div className="flex items-stretch h-9 shrink-0">
           <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
             <MinimizeIcon />
@@ -200,26 +205,22 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
       </div>
 
+      {/* ── Content ── */}
       <div className="surface-2 overflow-y-auto flex-1 max-md:border-l-0">
 
+        {/* Profile section */}
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
-
           <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
             {'/** @profile . latest */ - loading....'}
           </p>
-
-          <h1
-            className="font-semibold tracking-normal text-white text-3xl md:text-5xl">
+          <h1 className="font-semibold tracking-normal text-white text-3xl md:text-5xl">
             {name}
           </h1>
-
           <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/60 tracking-normal leading-snug">
             <span className="text-foreground/20 select-none mr-1.5">//</span>
             {tagline}
           </p>
-
           <div className="relative mt-4 sm:mt-6">
-
             <div aria-hidden="true" className="invisible pointer-events-none select-none">
               {bioLines.map((line, i) => (
                 <p
@@ -235,8 +236,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
                 </p>
               ))}
             </div>
-
-
             <div className="absolute inset-0">
               {displayedLines.map((line, i) => (
                 <p
@@ -257,12 +256,11 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
         </div>
 
+        {/* Properties section */}
         <div className="hidden sm:block px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
-
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
             {'// properties'}
           </p>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-14 gap-y-3">
             <div className="space-y-3">
               {leftColumnProps.map((entry) => (
@@ -277,8 +275,8 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
         </div>
 
+        {/* Skills section */}
         <div className="max-md:border-l-0">
-
           <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
             <div className="flex items-stretch h-full">
               <div className="flex items-center px-4 sm:px-5 bg-[#13161c] border-r border-white/[0.08] font-mono text-[10px] sm:text-xs text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
@@ -297,7 +295,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
               </button>
             </div>
           </div>
-
           <div className="px-4 sm:px-6 md:px-10 pt-6 pb-8 sm:py-5 bg-[#0e1014]">
             <p className="font-mono text-xs sm:text-sm leading-relaxed whitespace-nowrap overflow-x-auto">
               <span className="text-[#4bd0e7ff] select-none">PS </span>
@@ -308,7 +305,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
               <span className="text-white/40 mx-0.5">{'>'}</span>
               <span className="text-[#ce9178]"> show-skills --active</span>
             </p>
-            
             <div className="flex flex-wrap gap-2 mt-5 sm:mt-3">
               {skills.map((skill) => (
                 <SkillChip key={skill.label} {...skill} />
@@ -318,6 +314,7 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
       </div>
 
+      {/* ── VS Code-style status bar ── */}
       <div className="flex items-center justify-between min-h-[22px] py-[3px] sm:py-0 sm:h-[22px] bg-[#007acc] px-3 select-none flex-wrap sm:flex-nowrap gap-x-3 shrink-0">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-[5px]">
@@ -326,10 +323,16 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
           <span className="font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
         </div>
+
         <div className="hidden sm:flex items-center gap-3 sm:gap-4">
+          {SHOW_WORKING_STATUS && <WorkingStatus />}
           <span className="font-mono text-xs text-white/70 leading-none">UTF-8</span>
           <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
           <span className="font-mono text-xs text-white/70 leading-none">Ln 1, Col 1</span>
+        </div>
+
+        <div className="sm:hidden ml-auto shrink-0">
+          {SHOW_WORKING_STATUS && <WorkingStatus />}
         </div>
       </div>
     </div>
