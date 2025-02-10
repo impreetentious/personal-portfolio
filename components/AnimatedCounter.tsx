@@ -4,31 +4,18 @@ import {useEffect, useRef} from 'react'
 import {animate, motion, useInView, useMotionValue, useTransform} from 'framer-motion'
 
 type AnimatedCounterProps = {
-  /** The target number to count up to. Supports fractional values like 2.5. */
   to: number
-  /** Optional string prepended before the number (e.g. '$'). */
   prefix?: string
-  /** Optional string appended after the number (e.g. '%', 'x', '+'). */
   suffix?: string
-  /** Animation duration in seconds. Defaults to 1.5. */
   duration?: number
 }
 
-/**
- * AnimatedCounter — triggers exactly once when scrolled into view.
- *
- * Uses Framer Motion's imperative `animate` to drive a MotionValue from 0 → `to`,
- * with a strict easeOut tween curve (no spring physics).
- *
- * Decimal precision:
- *   - Whole-number states (e.g. 4.0) are rendered as integers ("4").
- *   - Fractional states (e.g. 2.5) are rendered with one decimal place ("2.5").
- */
 export function AnimatedCounter({
   to,
   prefix = '',
   suffix = '',
   duration = 1.5,
+  
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
 

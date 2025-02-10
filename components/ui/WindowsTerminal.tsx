@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-// ─────────────────────────────── types ────────────────────────────────────────
-
 type WindowsTerminalProps = {
   name: string
   tagline: string
@@ -21,16 +19,15 @@ type Skill = {
   dot: string
 }
 
-// ────────────────────────────── static data ───────────────────────────────────
 
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
-  { key: 'Email',    value: 'hello@sidakpreet.dev', href: 'mailto:hello@sidakpreet.dev' },
+  { key: 'Email',    value: 'sidakpreetsinghk@gmail.com',   href: 'mailto:sidakpreetsinghk@gmail.com' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [
   { key: 'Phone',    value: '+91 90344 31886',    href: 'tel:+919034431886' },
-  { key: 'LinkedIn', value: 'SidakpreetSingh', href: 'https://linkedin.com/in/sidakpreetsinghk' },
+  { key: 'LinkedIn', value: 'sidakpreetsingh',    href: 'https://linkedin.com/in/sidakpreetsinghk' },
 ]
 
 const skills: Skill[] = [
@@ -41,8 +38,6 @@ const skills: Skill[] = [
   { label: 'Python',     dot: '#DCDCAA' },
   { label: 'Node.js',    dot: '#A3E635' },
 ]
-
-// ───────────────────────────── sub-components ─────────────────────────────────
 
 type PropertyRowProps = {
   propKey: string
@@ -90,8 +85,6 @@ function SkillChip({ label, dot }: Skill) {
     </span>
   )
 }
-
-// ────────────────────────────────── icons ─────────────────────────────────────
 
 function MinimizeIcon() {
   return (
@@ -153,7 +146,6 @@ function GitBranchIcon() {
   )
 }
 
-// ─────────────────────────────── main component ───────────────────────────────
 
 export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
@@ -173,7 +165,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   return (
     <div className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0">
 
-      {/* ════════════════ TITLE BAR – pinned, never flex-compressed ════════════ */}
       <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05] shrink-0">
 
         <div className="flex items-stretch flex-1 min-w-0">
@@ -196,7 +187,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </button>
         </div>
 
-        {/* Window controls: w-9 on mobile, w-11 from sm up */}
         <div className="flex items-stretch h-9 shrink-0">
           <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
             <MinimizeIcon />
@@ -215,7 +205,7 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
 
           <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
-            {'/** @profile – Sidakpreet Singh · 2025 */'}
+            {'/** @profile . latest */ - loading....'}
           </p>
 
           <h1
@@ -267,7 +257,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
         </div>
 
-        {/* ════════════════════ PROPERTIES BLOCK ════════════════════════════ */}
         <div className="hidden sm:block px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
 
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
@@ -288,7 +277,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           </div>
         </div>
 
-        {/* ════════════════════════ SKILLS PANEL ════════════════════════════ */}
         <div className="max-md:border-l-0">
 
           <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
@@ -310,11 +298,9 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
             </div>
           </div>
 
-          {/* TASK 1-2: pt-6 pb-8 on mobile (was py-4), sm:py-5 desktop unchanged */}
           <div className="px-4 sm:px-6 md:px-10 pt-6 pb-8 sm:py-5 bg-[#0e1014]">
             <p className="font-mono text-xs sm:text-sm leading-relaxed whitespace-nowrap overflow-x-auto">
               <span className="text-[#4bd0e7ff] select-none">PS </span>
-              {/* TASK 1-1: Truncated path on mobile only */}
               <span className="text-[#4bd0e7ff]">
                 <span className="sm:hidden">C:\Users</span>
                 <span className="hidden sm:inline">C:\Users\SidakpreetSingh</span>
@@ -332,7 +318,6 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
         </div>
       </div>
 
-      {/* ═══════════ STATUS BAR – pinned, never flex-compressed ════════════ */}
       <div className="flex items-center justify-between min-h-[22px] py-[3px] sm:py-0 sm:h-[22px] bg-[#007acc] px-3 select-none flex-wrap sm:flex-nowrap gap-x-3 shrink-0">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-[5px]">

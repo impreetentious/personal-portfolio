@@ -24,13 +24,11 @@ export default async function HomePage() {
           <Skills />
         </ScrollReveal>
         <ScrollReveal>
-          {/* id wrapper: Metrics section carries no internal id — required by IntersectionObserver */}
           <div id="metrics">
             <Metrics />
           </div>
         </ScrollReveal>
         <ScrollReveal>
-          {/* id wrapper: Achievements section carries no internal id — required by IntersectionObserver */}
           <div id="achievements">
             <Achievements />
           </div>

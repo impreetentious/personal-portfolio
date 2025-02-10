@@ -1,19 +1,19 @@
-// components/Hero.tsx
 'use client'
 
 import {useEffect, useState} from 'react'
 import {motion} from 'framer-motion'
-import type {HeroData} from '@/lib/queries'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
+
+interface HeroData {
+  name: string;
+  tagline: string;
+  bio: string;
+}
 
 const FALLBACK_HERO: HeroData = {
   name: 'Sidakpreet Singh',
-  tagline: 'Building thoughtful products with code, systems, and clarity.',
-  bio: 'A dark, interactive portfolio foundation with room for your story, experience, and strongest work to unfold section by section.',
-  socialLinks: [
-    {platform: 'email', url: 'mailto:hello@example.com', label: 'Email'},
-    {platform: 'linkedin', url: 'https://www.linkedin.com', label: 'LinkedIn'},
-  ],
+  tagline: 'Building thoughtful products with code, grit, clarity and AI.',
+  bio: 'Welcome to my portfolio! Hope you find something interesting to read, or maybe we can build something together!',
 }
 
 type HeroProps = {
@@ -49,8 +49,6 @@ export function Hero({data}: HeroProps) {
       : Math.max(0, 1 - (scrollY - scrollThreshold) / 150)
 
   return (
-    // TASK 2: pt-4 pb-16 → pt-10 pb-40 on mobile (20% top / 80% bottom asymmetry).
-    // md: overrides left completely untouched.
     <section
       id="home"
       className="relative min-h-screen overflow-hidden px-6 pt-10 pb-40 sm:px-8 md:px-12 md:pt-8 md:pb-20"
@@ -83,7 +81,7 @@ export function Hero({data}: HeroProps) {
         <motion.div
           initial={{opacity: 0}}
           animate={{opacity: 1}}
-          transition={{delay: 1.4, type: 'tween', ease: 'easeOut', duration: 0.6}}
+          transition={{delay: 0.8, type: 'tween', ease: 'easeOut', duration: 0.6}}
           className="flex flex-col items-center gap-3 text-xs font-medium uppercase tracking-[0.35em] text-accent"
         >
           <motion.span

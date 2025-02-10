@@ -1,7 +1,7 @@
 # Version Control
 
-* **Base Format Version:** 2.4.0
-* **Portfolio Version: v2.4.0_2025-02-09_23:03:12 (IST)
+* **Base Format Version:** 2.4.1
+* **Portfolio Version: v2.4.1_2025-02-10_21:16:16 (IST)
 
 # Personal Portfolio
 
