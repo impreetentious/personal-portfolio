@@ -1,8 +1,3 @@
-# Version Control
-
-* **Base Format Version:** 2.5.3
-* **Portfolio Version: v2.5.3_2025-02-12_00:26:27 (IST)
-
 # Personal Portfolio
 
 This repository is the foundation for my personal portfolio: a highly interactive, dark-themed, terminal-inspired build designed for long-term stability. The architecture focuses on precise typography, modular UI components, and fluid layout physics.
@@ -72,9 +67,14 @@ Data is structured around these primary interfaces:
 * **Achievements:** `rank`, `event`, `organizer`, `date`, `notes`, optional `badge` 
 * **Education:** `institution`, `degree`, `years`
 
+# Version Control
+
+* **Base Format Version:** 2.6.0
+* **Portfolio Version: v2.6.0_2025-02-12_03:36:08 (IST)
+
 ## AI Agent Instructions
 
-Before making any new commits, update the Version Control string below with the current IST time of commit (`Asia/Kolkata`).
+Before making any new commits, update the Version Control string in this file with the current IST time of commit (`Asia/Kolkata`).
 
 This IST timestamp rule is permanent for all future workflows, commits, and AI agents working in this repository.
 
