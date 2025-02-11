@@ -166,7 +166,7 @@ const DOWNLOAD_LABEL: Record<DownloadState, string> = {
 }
 
 const DOWNLOAD_COLOR: Record<DownloadState, string> = {
-  idle:      'text-white/70',
+  idle:      'text-white',
   compiling: 'text-amber-300/90',
   ready:     'text-green-300/90',
 }
@@ -387,11 +387,22 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           {resumeUrl && (
             <>
               <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">·</span>
-              <button
+              <motion.button
                 onClick={handleDownload}
                 disabled={downloadState !== 'idle'}
                 aria-label="Download resume as PDF"
-                className="relative font-mono text-xs leading-none px-1 rounded-sm transition-colors duration-150 hover:bg-white/10 disabled:pointer-events-none"
+                initial={{ borderColor: 'rgba(255,255,255,0.14)' }}
+                animate={
+                  downloadState === 'idle'
+                    ? { borderColor: ['rgba(255,255,255,0.14)', 'rgba(255,255,255,0.42)', 'rgba(255,255,255,0.14)'] }
+                    : { borderColor: 'rgba(255,255,255,0.14)' }
+                }
+                transition={
+                  downloadState === 'idle'
+                    ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+                    : { duration: 0.2, ease: 'easeOut' }
+                }
+                className="relative font-mono text-xs leading-none px-2 py-0.5 border rounded-sm bg-[#07070F]/80 hover:bg-[#07070F] disabled:pointer-events-none"
               >
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -405,7 +416,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
                     {DOWNLOAD_LABEL[downloadState]}
                   </motion.span>
                 </AnimatePresence>
-              </button>
+              </motion.button>
             </>
           )}
         </div>

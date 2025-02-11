@@ -1,7 +1,7 @@
 'use client'
 
-import {useEffect, useState} from 'react'
-import {motion} from 'framer-motion'
+import {useEffect, useRef, useState} from 'react'
+import {motion, useMotionTemplate, useMotionValue, useTransform} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
 
 interface HeroData {
@@ -49,12 +49,42 @@ export function Hero({data, resumeUrl}: HeroProps) {
       ? 1
       : Math.max(0, 1 - (scrollY - scrollThreshold) / 150)
 
+  // ── Mouse parallax ────────────────────────────────────────────────────────
+  // rawX/rawY are normalised 0–1 across the section; default 0.5 keeps the
+  // gradient exactly at its original origin (18%, 24%) until the mouse moves.
+  const sectionRef = useRef<HTMLElement>(null)
+  const rawX       = useMotionValue(0.5)
+  const rawY       = useMotionValue(0.5)
+
+  // Map the full mouse travel to a ±6% nudge from the base origin
+  const gx = useTransform(rawX, [0, 1], [12, 24]) // 18% ± 6%
+  const gy = useTransform(rawY, [0, 1], [18, 30]) // 24% ± 6%
+
+  const gradientBg = useMotionTemplate`radial-gradient(circle at ${gx}% ${gy}%, rgba(78,168,248,0.16), transparent 26rem)`
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const onMouseMove = (e: MouseEvent) => {
+      const {left, top, width, height} = section.getBoundingClientRect()
+      rawX.set((e.clientX - left) / width)
+      rawY.set((e.clientY - top) / height)
+    }
+
+    section.addEventListener('mousemove', onMouseMove)
+    return () => section.removeEventListener('mousemove', onMouseMove)
+  }, [rawX, rawY])
+
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="relative min-h-screen overflow-hidden px-6 pt-10 pb-40 sm:px-8 md:px-12 md:pt-8 md:pb-20"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(78,168,248,0.16),transparent_26rem)]" />
+      {/* Parallax gradient — origin tracks mouse ±6% from base (18%, 24%) */}
+      <motion.div className="absolute inset-0" style={{background: gradientBg}} />
+
       <div className="relative mx-auto flex min-h-[calc(100vh-12rem)] max-w-6xl items-center">
         <motion.div
           initial={{opacity: 0, y: 24}}
