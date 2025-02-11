@@ -5,17 +5,19 @@
  * in the Sanity studio sidebar.
  */
 
-import {heroSchema} from './hero'
-import {experienceSchema} from './experience'
-import {projectsSchema} from './projects'
-import {metricsSchema} from './metrics'
-import {educationSchema} from './education'
-import {skillsSchema} from './skills'
+import {heroSchema}         from './hero'
+import {resumeSchema}       from './resume'
+import {experienceSchema}   from './experience'
+import {projectsSchema}     from './projects'
+import {metricsSchema}      from './metrics'
+import {educationSchema}    from './education'
+import {skillsSchema}       from './skills'
 import {achievementsSchema} from './achievements'
 
 export const schemaTypes = [
-  // Singleton
+  // Singletons
   heroSchema,
+  resumeSchema,
 
   // Ordered collections
   experienceSchema,

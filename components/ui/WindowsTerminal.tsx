@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type WindowsTerminalProps = {
   name: string
   tagline: string
   bio: string
+  resumeUrl?: string
 }
 
 type PropertyEntry = {
@@ -153,8 +155,27 @@ function GitBranchIcon() {
   )
 }
 
-export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
+// ─── Download state label map ──────────────────────────────────────────────────
+
+type DownloadState = 'idle' | 'compiling' | 'ready'
+
+const DOWNLOAD_LABEL: Record<DownloadState, string> = {
+  idle:      '↓ resume.pdf',
+  compiling: '[COMPILING...]',
+  ready:     '[READY]',
+}
+
+const DOWNLOAD_COLOR: Record<DownloadState, string> = {
+  idle:      'text-white/70',
+  compiling: 'text-amber-300/90',
+  ready:     'text-green-300/90',
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
+  const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
 
   useEffect(() => { setDisplayedChars(0) }, [bio])
 
@@ -167,6 +188,38 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
   const displayedBio   = bio.slice(0, displayedChars)
   const displayedLines = displayedBio.split('\n')
   const bioLines       = bio.split('\n')
+
+  // ── Resume download handler ──────────────────────────────────────────────────
+  const handleDownload = async () => {
+    if (!resumeUrl || downloadState !== 'idle') return
+    setDownloadState('compiling')
+
+    try {
+      // Fetch blob and enforce minimum 800ms compiling duration in parallel
+      const results = await Promise.all([
+        fetch(resumeUrl).then((r) => r.blob()),
+        new Promise<void>((resolve) => setTimeout(resolve, 800)),
+      ])
+      const blob      = results[0]
+      const objectUrl = URL.createObjectURL(blob)
+
+      setDownloadState('ready')
+
+      const link      = document.createElement('a')
+      link.href       = objectUrl
+      link.download   = 'Sidakpreet_Singh_Resume.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      setTimeout(() => {
+        URL.revokeObjectURL(objectUrl)
+        setDownloadState('idle')
+      }, 400)
+    } catch {
+      setDownloadState('idle')
+    }
+  }
 
   return (
     <div className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0">
@@ -329,6 +382,32 @@ export function WindowsTerminal({ name, tagline, bio }: WindowsTerminalProps) {
           <span className="font-mono text-xs text-white/70 leading-none">UTF-8</span>
           <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
           <span className="font-mono text-xs text-white/70 leading-none">Ln 1, Col 1</span>
+
+          {/* ── Resume download button — only rendered when resumeUrl is available ── */}
+          {resumeUrl && (
+            <>
+              <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">·</span>
+              <button
+                onClick={handleDownload}
+                disabled={downloadState !== 'idle'}
+                aria-label="Download resume as PDF"
+                className="relative font-mono text-xs leading-none px-1 rounded-sm transition-colors duration-150 hover:bg-white/10 disabled:pointer-events-none"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={downloadState}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ type: 'tween', ease: 'easeOut', duration: 0.12 }}
+                    className={DOWNLOAD_COLOR[downloadState]}
+                  >
+                    {DOWNLOAD_LABEL[downloadState]}
+                  </motion.span>
+                </AnimatePresence>
+              </button>
+            </>
+          )}
         </div>
 
         <div className="sm:hidden ml-auto shrink-0">

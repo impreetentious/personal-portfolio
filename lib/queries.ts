@@ -76,3 +76,5 @@ export const featuredProjectsQuery = `
     githubUrl
   }
 `
+
+export const resumeQuery = `*[_type == "resume"][0]{ "url": file.asset->url }`

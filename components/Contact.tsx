@@ -264,19 +264,20 @@ export function Contact() {
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
 
-                {/* ── Copied tooltip ── */}
                 <AnimatePresence>
                   {copied === label && (
-                    <motion.span
-                      key="tip"
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 4 }}
-                      transition={{ type: 'tween', ease: 'easeOut', duration: 0.18 }}
-                      className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-accent/90 px-2 py-0.5 font-mono text-[9px] font-bold text-background"
-                    >
-                      Copied!
-                    </motion.span>
+                    <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2">
+                      <motion.span
+                        key="tip"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ type: 'tween', ease: 'easeOut', duration: 0.18 }}
+                        className="whitespace-nowrap rounded bg-accent/90 px-2 py-0.5 font-mono text-[9px] font-bold text-background"
+                      >
+                      ✓ Copied
+                      </motion.span>
+                    </div>
                   )}
                 </AnimatePresence>
               </div>

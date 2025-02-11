@@ -5,9 +5,9 @@ import {motion} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
 
 interface HeroData {
-  name: string;
-  tagline: string;
-  bio: string;
+  name: string
+  tagline: string
+  bio: string
 }
 
 const FALLBACK_HERO: HeroData = {
@@ -18,9 +18,10 @@ const FALLBACK_HERO: HeroData = {
 
 type HeroProps = {
   data: HeroData | null
+  resumeUrl?: string
 }
 
-export function Hero({data}: HeroProps) {
+export function Hero({data, resumeUrl}: HeroProps) {
   const hero = data ?? FALLBACK_HERO
 
   const [scrollY, setScrollY] = useState(0)
@@ -65,6 +66,7 @@ export function Hero({data}: HeroProps) {
             name={hero.name}
             tagline={hero.tagline}
             bio={hero.bio}
+            resumeUrl={resumeUrl}
           />
         </motion.div>
       </div>

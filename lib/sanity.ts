@@ -8,10 +8,6 @@ if (!projectId) {
   throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID. Add it to .env.local.')
 }
 
-/**
- * CDN-backed in production for fast edge reads; bypassed in development
- * so content changes appear immediately without cache delays.
- */
 export const sanityClient = createClient({
   projectId,
   dataset,
@@ -19,10 +15,6 @@ export const sanityClient = createClient({
   useCdn: process.env.NODE_ENV === 'production',
 })
 
-/**
- * Server-only client — adds the read token so unpublished / draft documents
- * are included. Never pass it to Client Components.
- */
 export const sanityServerClient = createClient({
   projectId,
   dataset,
