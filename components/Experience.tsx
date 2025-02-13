@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { ChevronDown, MapPin } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
+import { ScrollReveal } from '@/components/ScrollReveal'
 
 type ExperienceItem = {
   company: string
@@ -90,111 +91,128 @@ export function Experience() {
           className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#4ea8f8] via-[#4ea8f8] to-[#f97316] shadow-[0_0_18px_rgba(78,168,248,0.55)] sm:left-2"
         />
 
-        {visibleItems.map((item) => {
+        {visibleItems.map((item, index) => {
           const isOpen = activeCompany === item.company
 
           return (
-            <div
-              key={`${item.company}-${item.role}`}
-              className="relative overflow-visible border-t border-white/10 last:border-b"
-            >
-              
-              <span
-                className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
-              >
-                {/* Ping ring — visible + animating only while accordion is open */}
-                {isOpen && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-full border border-accent/70 animate-ping"
-                  />
-                )}
+            <ScrollReveal key={`${item.company}-${item.role}`} delay={index * 0.2}>
+              <div className="relative overflow-visible border-t border-white/10 last:border-b">
+                
+                <span
+                  className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
+                >
+                  {/* Ping ring — visible + animating only while accordion is open */}
+                  {isOpen && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-full border border-accent/70 animate-ping"
+                    />
+                  )}
 
-                {/* Static filled dot — always visible, centred inside the 4×4 wrapper */}
-                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#07070f] shadow-[0_0_16px_rgba(78,168,248,0.65)]" />
-              </span>
+                  {/* Static filled dot — always visible, centred inside the 4×4 wrapper */}
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#07070f] shadow-[0_0_16px_rgba(78,168,248,0.65)]" />
+                </span>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setActiveCompany((current) =>
-                    current === item.company ? null : item.company
-                  )
-                }
-                className="hover-glow flex w-full flex-col gap-4 px-3 py-6 text-left hover:bg-accent/[0.035] md:flex-row md:items-start md:justify-between"
-                aria-expanded={isOpen}
-              >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-xl font-semibold text-white sm:text-2xl">
-                      {item.company}
-                    </h3>
-                    <motion.span
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2, ease: 'easeOut' }}
-                      className="text-accent"
+                <button
+                  type="button"
+                  onClick={() =>
+                    setActiveCompany((current) =>
+                      current === item.company ? null : item.company
+                    )
+                  }
+                  className="hover-glow flex w-full flex-col gap-4 px-3 py-6 text-left hover:bg-accent/[0.035] md:flex-row md:items-start md:justify-between"
+                  aria-expanded={isOpen}
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3">
+                      <motion.h3 
+                        initial={{ opacity: 0, y: 8 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.1 }}
+                        className="text-xl font-semibold text-white sm:text-2xl"
+                      >
+                        {item.company}
+                      </motion.h3>
+                      <motion.span
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
+                        className="text-accent"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </motion.span>
+                    </div>
+                    <motion.p 
+                      initial={{ opacity: 0, y: 8 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-30px" }}
+                      transition={{ duration: 0.45, ease: "easeOut", type: "tween", delay: 0.2 }}
+                      className="mt-2 text-sm font-medium uppercase tracking-[0.18em] text-success"
                     >
-                      <ChevronDown className="h-4 w-4" />
-                    </motion.span>
+                      {item.role}
+                    </motion.p>
                   </div>
-                  <p className="mt-2 text-sm font-medium uppercase tracking-[0.18em] text-success">
-                    {item.role}
-                  </p>
-                </div>
 
-                <p className="shrink-0 text-left text-sm font-medium text-foreground/78 md:min-w-40 md:text-right">
-                  {item.dates}
-                </p>
-              </button>
-
-              <AnimatePresence initial={false}>
-                {isOpen ? (
-                  <motion.div
-                    key="content"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: 'easeInOut' }}
-                    className="overflow-hidden"
+                  <motion.p 
+                    initial={{ opacity: 0, x: 10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
+                    className="shrink-0 text-left text-sm font-medium text-foreground/78 md:min-w-40 md:text-right"
                   >
-                    <div className="border-t border-accent/10 pb-8 pt-6">
-                      <div className="flex items-center gap-2 text-sm text-foreground/72">
-                        <MapPin className="h-4 w-4 text-accent" />
-                        <span>{item.location}</span>
-                      </div>
+                    {item.dates}
+                  </motion.p>
+                </button>
 
-                      <ul className="mt-5 space-y-3">
-                        {item.bulletPoints.map((point) => (
-                          <li
-                            key={point}
-                            className="flex gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
-                          >
-                            <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
+                <AnimatePresence initial={false}>
+                  {isOpen ? (
+                    <motion.div
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-t border-accent/10 pb-8 pt-6">
+                        <div className="flex items-center gap-2 text-sm text-foreground/72">
+                          <MapPin className="h-4 w-4 text-accent" />
+                          <span>{item.location}</span>
+                        </div>
 
-                      <div className="mt-6">
-                        <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
-                          Skills Used
-                        </p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {item.skillsUsed.map((skill) => (
-                            <span
-                              key={skill}
-                              className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
+                        <ul className="mt-5 space-y-3">
+                          {item.bulletPoints.map((point) => (
+                            <li
+                              key={point}
+                              className="flex gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
                             >
-                              {skill}
-                            </span>
+                              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
+                              <span>{point}</span>
+                            </li>
                           ))}
+                        </ul>
+
+                        <div className="mt-6">
+                          <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
+                            Skills Used
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {item.skillsUsed.map((skill) => (
+                              <span
+                                key={skill}
+                                className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            </ScrollReveal>
           )
         })}
       </div>

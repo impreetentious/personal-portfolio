@@ -19,11 +19,6 @@ const jetbrainsMono = JetBrains_Mono({
   display : 'swap',
 })
 
-export const metadata: Metadata = {
-  title      : 'Sidakpreet Singh | Portfolio',
-  description: "Sidakpreet Singh's interactive portfolio",
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{

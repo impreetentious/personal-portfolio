@@ -22,16 +22,16 @@ This repository is the foundation for my personal portfolio: a highly interactiv
 The component structure has been flattened and refined for direct access, utilizing a dedicated `ui/` directory for shared layout primitives.
 
 ```text
-
-personal-portfolio
-│
-├── app
+personal-portfolio/
+├── app/
 │   ├── globals.css
 │   ├── layout.tsx
+│   ├── not-found.tsx
 │   └── page.tsx
-│
-├── components
+├── components/
 │   ├── Achievements.tsx
+│   ├── AnimatedCounter.tsx
+│   ├── CommandPalette.tsx
 │   ├── Contact.tsx
 │   ├── Education.tsx
 │   ├── Experience.tsx
@@ -41,19 +41,20 @@ personal-portfolio
 │   ├── Navigation.tsx
 │   ├── ScrollReveal.tsx
 │   ├── Skills.tsx
-│   │
-│   └── ui
+│   ├── Writing.tsx
+│   └── ui/
 │       ├── SectionLabel.tsx
 │       └── WindowsTerminal.tsx
-│
-├── lib
+├── lib/
 │   ├── queries.ts
 │   ├── sanity.ts
+│   ├── config.ts
 │   └── version.ts
-│
-├── next.config.js
-├── package.json
-└── tsconfig.json
+├── sanity/schemas/
+│   ├── index.ts
+│   └── [hero, experience, skills, metrics, education, achievements, writing, resume].ts
+├── tailwind.config.ts
+└── next.config.js
 
 ```
 
@@ -69,8 +70,8 @@ Data is structured around these primary interfaces:
 
 # Version Control
 
-* **Base Format Version:** 2.6.1
-* **Portfolio Version: v2.6.1_2025-02-14_00:31:16 (IST)
+* **Base Format Version:** 2.6.2
+* **Portfolio Version: v2.6.2_2025-02-14_01:00:32 (IST)
 
 ## AI Agent Instructions
 

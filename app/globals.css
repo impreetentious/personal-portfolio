@@ -8,27 +8,8 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse at 50% 50%,
-      transparent 55%,
-      rgba(0, 0, 0, 0.40) 100%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 1px,
-      rgba(0, 0, 0, 0.028) 1px,
-      rgba(0, 0, 0, 0.028) 2px
-    );
+  background-color: #07070f;
+  overflow-x: hidden;
 }
 
 body {
@@ -36,6 +17,7 @@ body {
   min-height: 100vh;
   background: #07070f;
   color: #abb2bf;
+  overflow-x: hidden;
 }
 
 body::before {
@@ -52,7 +34,6 @@ body::before {
   pointer-events: none;
 }
 
-/* Subtle film-grain texture — 3.5% opacity, fixed so it doesn't scroll */
 body::after {
   content: '';
   position: fixed;

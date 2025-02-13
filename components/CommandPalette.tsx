@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   BarChart,
+  BookOpen,
   Briefcase,
   Download,
   GraduationCap,
@@ -13,6 +14,9 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
+
+// ── Import the master config ──
+import { siteConfig } from '@/lib/config'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -55,7 +59,7 @@ const NAV_ACTIONS: PaletteAction[] = [
     id          : 'awards',
     shortLabel  : 'Awards',
     icon        : Trophy,
-    description : 'Competition results & recognitions',
+    description : 'Results & recognitions',
     href        : '#achievements',
   },
   {
@@ -65,6 +69,20 @@ const NAV_ACTIONS: PaletteAction[] = [
     description : 'Academic background',
     href        : '#education',
   },
+  
+  // ── Feature Flag Toggle ──
+  ...(siteConfig.features.showWriting
+    ? [
+        {
+          id          : 'writing',
+          shortLabel  : 'Writing',
+          icon        : BookOpen,
+          description : 'Articles & Publications',
+          href        : '#writing',
+        },
+      ]
+    : []),
+    
   {
     id          : 'contact',
     shortLabel  : 'Contact',
@@ -81,7 +99,6 @@ const RESUME_ACTION: PaletteAction = {
   description : 'Compile & export resume.pdf',
   isDownload  : true,
 }
-
 
 function fuzzyMatch(query: string, target: string): boolean {
   if (!query) return true
@@ -234,8 +251,6 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
         : 'text-foreground/85'
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -248,36 +263,36 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ type: 'tween', ease: 'easeOut', duration: 0.2 }}
-            className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-[2px]"
+            className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm"
           />
 
-          {/* ── Palette modal — slides down from top ── */}
+          {/* ── Palette modal — locked to centre using x: "-50%" ── */}
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0,   scale: 1     }}
-            exit  ={{ opacity: 0, y: -14,  scale: 0.97  }}
+            initial={{ opacity: 0, y: -20, x: "-50%", scale: 0.97 }}
+            animate={{ opacity: 1, y: 0,   x: "-50%", scale: 1     }}
+            exit  ={{ opacity: 0, y: -14,  x: "-50%", scale: 0.97  }}
             transition={{ type: 'tween', ease: 'easeOut', duration: 0.22 }}
-            className="fixed top-[8vh] left-1/2 z-[90] w-full max-w-lg -translate-x-1/2 px-4 sm:px-0"
+            className="fixed top-[12vh] left-1/2 z-[90] w-full max-w-xl px-4 sm:px-0"
           >
-            <div className="overflow-hidden rounded-lg border border-white/[0.10] bg-[#0E0E1C] shadow-[0_32px_80px_rgba(0,0,0,0.72),0_0_0_1px_rgba(255,255,255,0.04)]">
+            <div className="overflow-hidden rounded-xl border border-white/[0.12] bg-[#11111A] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
 
               {/* ── Title bar ── */}
-              <div className="flex items-center justify-between border-b border-white/[0.06] bg-surface2 px-4 py-2">
-                <span className="select-none font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/30">
+              <div className="flex items-center justify-between border-b border-white/[0.06] bg-surface2/50 px-4 py-2.5">
+                <span className="select-none font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/40">
                   COMMAND PALETTE
                 </span>
                 <button
                   onClick={onClose}
                   aria-label="Close command palette"
-                  className="flex h-5 w-5 items-center justify-center rounded text-foreground/25 transition-colors duration-150 hover:bg-white/[0.07] hover:text-foreground/65"
+                  className="flex h-5 w-5 items-center justify-center rounded text-foreground/30 transition-colors duration-150 hover:bg-white/[0.07] hover:text-foreground/80"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </div>
 
               {/* ── Search row ── */}
-              <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3">
-                <span className="select-none font-mono text-sm text-accent/50 shrink-0">
+              <div className="flex items-center gap-3 border-b border-white/[0.06] bg-[#0E0E14] px-5 py-4">
+                <span className="select-none font-mono text-base font-bold text-accent shrink-0">
                   {'>'}
                 </span>
                 <input
@@ -288,8 +303,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                     setQuery(e.target.value)
                     setActiveIndex(0)
                   }}
-                  placeholder="Type to filter commands..."
-                  className="flex-1 bg-transparent font-mono text-sm text-foreground placeholder:text-foreground/22 focus:outline-none"
+                  placeholder="Type a command or search..."
+                  className="flex-1 bg-transparent font-sans text-[15px] font-medium text-foreground placeholder:text-foreground/40 focus:outline-none"
                   spellCheck={false}
                   autoComplete="off"
                   autoCorrect="off"
@@ -303,18 +318,18 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                       inputRef.current?.focus()
                     }}
                     aria-label="Clear search"
-                    className="shrink-0 text-foreground/22 transition-colors hover:text-foreground/55"
+                    className="shrink-0 text-foreground/30 transition-colors hover:text-foreground/70"
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
 
               {/* ── Actions list ── */}
-              <div className="max-h-[320px] overflow-y-auto py-1">
+              <div className="max-h-[440px] overflow-y-auto py-2">
                 {filtered.length === 0 ? (
-                  <div className="px-4 py-8 text-center font-mono text-xs text-foreground/25">
-                    No commands match &ldquo;{query}&rdquo;
+                  <div className="px-4 py-10 text-center font-sans text-sm text-foreground/40">
+                    No commands match &ldquo;<span className="text-foreground/80">{query}</span>&rdquo;
                   </div>
                 ) : (
                   filtered.map((action, i) => {
@@ -329,36 +344,36 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                         onMouseEnter={() => setActiveIndex(i)}
                         disabled={isRunning}
                         aria-selected={isActive}
-                        className={`group flex w-full items-center gap-3.5 px-4 py-2.5 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 ${
-                          isActive ? 'bg-accent/[0.09]' : 'hover:bg-white/[0.03]'
+                        className={`group flex w-full items-center gap-4 px-5 py-3 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 ${
+                          isActive ? 'bg-accent/[0.06]' : 'hover:bg-white/[0.02]'
                         }`}
                       >
                         {/* Icon badge */}
                         <span
-                          className={`flex h-7 w-7 shrink-0 items-center justify-center border transition-colors duration-100 ${
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors duration-100 ${
                             isActive
-                              ? 'border-accent/40 bg-accent/10 text-accent'
-                              : 'border-white/[0.08] text-foreground/35 group-hover:border-white/[0.14] group-hover:text-foreground/55'
+                              ? 'border-accent/30 bg-accent/10 text-accent shadow-[0_0_12px_rgba(79,199,239,0.15)]'
+                              : 'border-white/[0.06] bg-white/[0.02] text-foreground/40 group-hover:border-white/[0.12] group-hover:text-foreground/70'
                           }`}
                         >
-                          <Icon className="h-3.5 w-3.5" strokeWidth={1.8} />
+                          <Icon className="h-4 w-4" strokeWidth={1.8} />
                         </span>
 
                         {/* Text block */}
                         <div className="min-w-0 flex-1 text-left">
                           <p
-                            className={`font-mono text-[13px] leading-none transition-colors duration-100 ${resolveLabelClass(action, isActive)}`}
+                            className={`font-sans text-[15px] font-medium leading-none transition-colors duration-100 ${resolveLabelClass(action, isActive)}`}
                           >
                             {resolveLabel(action)}
                           </p>
-                          <p className="mt-1 font-mono text-[10px] leading-none text-foreground/28">
+                          <p className="mt-1.5 font-mono text-[10.5px] tracking-wide leading-none text-foreground/40">
                             {action.description}
                           </p>
                         </div>
 
-                        {/* Enter key hint — only on active row */}
+                        {/* Enter key hint — Terminal Orange pop on active row */}
                         {isActive && (
-                          <kbd className="shrink-0 select-none rounded border border-white/[0.10] bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] text-foreground/30">
+                          <kbd className="shrink-0 select-none rounded border border-success/30 bg-success/10 px-1.5 py-0.5 font-mono text-[10px] text-success shadow-[0_0_8px_rgba(208,117,47,0.2)]">
                             ↵
                           </kbd>
                         )}
@@ -369,8 +384,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
               </div>
 
               {/* ── Footer hint bar ── */}
-              <div className="flex items-center justify-between border-t border-white/[0.05] bg-[#09091A] px-4 py-1.5">
-                <div className="flex items-center gap-3 select-none">
+              <div className="flex items-center justify-between border-t border-white/[0.05] bg-[#09091A] px-5 py-2.5">
+                <div className="flex items-center gap-3.5 select-none">
                   {[
                     { key: '↑↓',  label: 'navigate' },
                     { key: '↵',   label: 'select'   },
@@ -378,16 +393,16 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                   ].map(({ key, label }) => (
                     <span
                       key={key}
-                      className="flex items-center gap-1 font-mono text-[9.5px] text-foreground/22"
+                      className="flex items-center gap-1.5 font-mono text-[10px] text-foreground/30"
                     >
-                      <kbd className="rounded border border-white/[0.09] bg-white/[0.03] px-1 py-0.5 text-[8.5px] text-foreground/28">
+                      <kbd className="rounded border border-white/[0.12] bg-white/[0.04] px-1.5 py-0.5 text-[9px] text-foreground/50">
                         {key}
                       </kbd>
                       <span>{label}</span>
                     </span>
                   ))}
                 </div>
-                <span className="select-none font-mono text-[9.5px] text-foreground/18">
+                <span className="select-none font-mono text-[10px] text-foreground/30">
                   {filtered.length}&nbsp;result{filtered.length !== 1 ? 's' : ''}
                 </span>
               </div>

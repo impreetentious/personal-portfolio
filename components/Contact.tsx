@@ -207,19 +207,19 @@ export function Contact() {
       {/* ── Console Output Body ── */}
       <div className="flex-1 px-3 sm:px-8 py-7 sm:py-8 space-y-3.5">
 
-        <ConsoleLine lineNumber={1} timestamp="04:07:01" delay={0.00} isVisible={isInView}>
+        <ConsoleLine lineNumber={1} timestamp="04:07:01" delay={0.1} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// Initializing contact module....`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={2} timestamp="04:07:02" delay={0.15} isVisible={isInView}>
+        <ConsoleLine lineNumber={2} timestamp="04:07:02" delay={0.2} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// Loading endpoint configuration....`}
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={3} timestamp="04:07:03" delay={0.30} isVisible={isInView}>
+        <ConsoleLine lineNumber={3} timestamp="04:07:03" delay={0.3} isVisible={isInView}>
           <span className="text-[11px] sm:text-[11.5px]" style={{ color: TOKEN.comment }}>
             {`// All systems nominal. Ready to receive....`}
           </span>
@@ -227,7 +227,7 @@ export function Contact() {
 
         <div className="h-5" aria-hidden="true" />
 
-        <ConsoleLine lineNumber={5} delay={0.40} isVisible={isInView}>
+        <ConsoleLine lineNumber={5} delay={0.4} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span style={{ color: TOKEN.identifier }}>contact</span>
           <span style={{ color: TOKEN.punct }}>.</span>
@@ -236,7 +236,7 @@ export function Contact() {
         </ConsoleLine>
 
         {/* ── Social icon buttons ── */}
-        <ConsoleLine delay={0.60} isVisible={isInView}>
+        <ConsoleLine delay={0.5} isVisible={isInView}>
           <div className="flex py-2 w-full justify-between sm:w-auto sm:justify-start sm:gap-5">
             {SOCIAL_LINKS.map(({ label, href, icon: Icon, copyValue }) => (
               <div key={label} className="relative">
@@ -287,14 +287,14 @@ export function Contact() {
 
         <div className="h-5" aria-hidden="true" />
 
-        <ConsoleLine lineNumber={8} timestamp="04:07:04" delay={0.80} isVisible={isInView}>
+        <ConsoleLine lineNumber={8} timestamp="04:07:04" delay={0.6} isVisible={isInView}>
           <span style={{ color: TOKEN.success }}>[SUCCESS]&nbsp;</span>
           <span style={{ color: "rgba(255,255,255,0.35)" }}>
             - 5 endpoints securely loaded.
           </span>
         </ConsoleLine>
 
-        <ConsoleLine lineNumber={9} delay={0.90} isVisible={isInView}>
+        <ConsoleLine lineNumber={9} delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
           <span
             className="inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"

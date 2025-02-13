@@ -5,22 +5,18 @@ import { ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
 interface WritingItem {
   id: number;
   title: string;
-  publication: string;
   url: string;
   year: string;
   description?: string;
 }
 
-// ─── Data ───────────────────────────────────────────────────────────────────────
 const writingItems: WritingItem[] = [
   {
     id: 1,
     title: "Navigating the AI Inflection Point",
-    publication: "Harvard Business Review",
     url: "https://hbr.org",
     year: "2024",
     description:
@@ -29,7 +25,6 @@ const writingItems: WritingItem[] = [
   {
     id: 2,
     title: "Why Roadmaps Lie",
-    publication: "Product Coalition",
     url: "https://productcoalition.com",
     year: "2024",
     description:
@@ -38,7 +33,6 @@ const writingItems: WritingItem[] = [
   {
     id: 3,
     title: "The Strategy-Tech Gap and How to Close It",
-    publication: "Fortune India",
     url: "https://www.fortuneindia.com",
     year: "2023",
     description:
@@ -47,7 +41,6 @@ const writingItems: WritingItem[] = [
   {
     id: 4,
     title: "India's SaaS Moment: Patterns from the First Wave",
-    publication: "Mint",
     url: "https://www.livemint.com",
     year: "2022",
     description:
@@ -55,16 +48,13 @@ const writingItems: WritingItem[] = [
   },
 ];
 
-// ─── Component ───────────────────────────────────────────────────────────────────
 export function Writing() {
   return (
-    <section className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
+    <section id="writing" className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
       <div className="max-w-6xl mx-auto">
-
-        {/* Header */}
         <div className="mb-2">
           <SectionLabel
-            devLabel="ls ./writing/"
+            devLabel="JSON.stringify(thoughts, null, 2)"
             label="Writing"
           >
             <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
@@ -73,127 +63,74 @@ export function Writing() {
           </SectionLabel>
         </div>
 
-        {/* Cards */}
-        <div className="mt-1">
+        <div className="mt-6 border-t border-white/10">
           {writingItems.map((item, index) => (
-            <ScrollReveal key={item.id} delay={index * 0.12}>
-              {/*
-                Cover-link pattern: invisible <a> fills the entire article.
-                All motion elements beneath animate normally since
-                IntersectionObserver is geometric, not z-index aware.
-              */}
-              <article className="relative border-t border-accent/10 py-10 md:py-14 group cursor-pointer">
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute inset-0 z-10"
-                  aria-label={`Read "${item.title}" on ${item.publication} (opens in new tab)`}
-                />
-
-                {/* Year ── absolute top-right */}
-                <motion.div
-                  initial={{ opacity: 0, x: 14 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-30px" }}
-                  transition={{
-                    duration: 0.4,
-                    ease: "easeOut",
-                    type: "tween",
-                    delay: 0.05,
-                  }}
-                  className="absolute top-10 right-0 md:top-14"
-                >
-                  <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                    {item.year}
-                  </span>
-                </motion.div>
-
-                {/* Publication eyebrow ── top-left */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true, margin: "-30px" }}
-                  transition={{
-                    duration: 0.35,
-                    ease: "easeOut",
-                    type: "tween",
-                    delay: 0.02,
-                  }}
-                  className="font-mono text-[10px] uppercase tracking-[0.26em] text-accent/55 flex items-center gap-2.5"
-                >
-                  <span
-                    className="inline-block w-3 h-px bg-accent/35 shrink-0"
-                    aria-hidden="true"
-                  />
-                  {item.publication}
-                </motion.p>
-
-                {/*
-                  Title ── Film Title Card unmask, same mechanic as Education.
-                  overflow-hidden clips the translate so text rises from below.
-                  Arrow indicator fades in after the title settles.
-                */}
-                <div className="mt-5 pr-20 md:pr-32">
-                  <div className="overflow-hidden py-1">
-                    <motion.h3
-                      initial={{ y: "108%", opacity: 0 }}
-                      whileInView={{ y: "0%", opacity: 1 }}
-                      viewport={{ once: true, margin: "-30px" }}
-                      transition={{
-                        duration: 0.7,
-                        ease: [0.22, 1, 0.36, 1],
-                        type: "tween",
-                        delay: 0.11,
-                      }}
-                      className="text-[clamp(1.55rem,3.6vw,2.9rem)] font-bold text-foreground leading-[1.1] tracking-tight group-hover:text-accent transition-colors duration-300"
+            <ScrollReveal key={item.id} delay={index * 0.15}>
+              <article className="group border-b border-white/10 pt-6 pb-5">
+                
+                <div className="flex flex-col md:grid md:grid-cols-[1fr_auto] md:gap-y-4 md:gap-x-8 md:items-baseline">
+                  
+                  {/* ── 1. Title & Arrow Hyperlink (Row 1, Left) ── */}
+                  <div className="md:col-start-1 md:row-start-1 min-w-0">
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="group/link flex w-fit items-start gap-2 focus:outline-none"
+                      aria-label={`Read "${item.title}" (opens in new tab)`}
                     >
-                      {item.title}
-                    </motion.h3>
+                      <motion.h3
+                        initial={{ opacity: 0, y: 8 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.1 }}
+                        className="font-mono text-[13px] md:text-sm uppercase tracking-[0.12em] text-white transition-colors duration-300 group-hover/link:text-purple-400"
+                      >
+                        {item.title}
+                      </motion.h3>
+
+                      <motion.span
+                        initial={{ opacity: 0, x: -4, y: 4 }}
+                        whileInView={{ opacity: 1, x: 0, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.3, ease: "easeOut", type: "tween", delay: 0.2 }}
+                        className="mt-[1px] shrink-0 text-white/20 transition-all duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:text-purple-400"
+                      >
+                        <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+                      </motion.span>
+                    </a>
                   </div>
 
-                  {/* Arrow — drifts in diagonally after the title lands */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -6, y: 6 }}
-                    whileInView={{ opacity: 1, x: 0, y: 0 }}
-                    viewport={{ once: true, margin: "-30px" }}
-                    transition={{
-                      duration: 0.3,
-                      ease: "easeOut",
-                      type: "tween",
-                      delay: 0.48,
-                    }}
-                    className="inline-flex mt-1 text-accent/35 group-hover:text-accent transition-colors duration-200"
-                    aria-hidden="true"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </motion.div>
-                </div>
-
-                {/* Description ── slides up after the title lands */}
-                {item.description && (
+                  {/* ── 2. Year (Row 1, Right) ── */}
                   <motion.p
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, x: 10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
+                    className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/78"
+                  >
+                    {item.year}
+                  </motion.p>
+
+                  {/* ── 3. Description (Row 2, Left) ── */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-30px" }}
-                    transition={{
-                      duration: 0.45,
-                      ease: "easeOut",
-                      type: "tween",
-                      delay: 0.27,
-                    }}
-                    className="font-mono text-[12px] leading-[1.85] text-foreground/40 mt-4 max-w-xl"
+                    transition={{ duration: 0.45, ease: "easeOut", type: "tween", delay: 0.2 }}
+                    className="mt-4 md:mt-0 md:col-start-1 md:row-start-2 max-w-4xl lg:max-w-[80%]"
                   >
-                    {item.description}
-                  </motion.p>
-                )}
+                    {item.description && (
+                      <p className="font-sans text-[13.5px] leading-relaxed text-foreground/70">
+                        {item.description}
+                      </p>
+                    )}
+                  </motion.div>
 
+                </div>
               </article>
             </ScrollReveal>
           ))}
-
-          {/* Closing rule */}
-          <div className="border-t border-accent/10" aria-hidden="true" />
         </div>
 
       </div>
