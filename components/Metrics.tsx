@@ -2,50 +2,65 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface Metric {
-  value: string;
+  to: number;
+  prefix?: string;
+  suffix?: string;
+  duration: number;
   label: string;
   sub: string;
 }
 
-// ─── Fallback Data ─────────────────────────────────────────────────────────────
+// ─── Data — exact mapping from spec ───────────────────────────────────────────
 const metrics: Metric[] = [
   {
-    value: "500K+",
+    to: 500,
+    suffix: "K+",
+    duration: 2.2,
     label: "Lines of Code Written",
     sub: "Across production systems",
   },
   {
-    value: "1M+",
+    to: 1,
+    suffix: "M+",
+    duration: 0.7,
     label: "Users Impacted",
     sub: "Monthly active reach",
   },
   {
-    value: "40+",
+    to: 40,
+    suffix: "+",
+    duration: 1.8,
     label: "Deployments Shipped",
     sub: "Zero critical regressions",
   },
   {
-    value: "98.9%",
+    to: 98.9,
+    suffix: "%",
+    duration: 2.0,
     label: "Uptime Maintained",
     sub: "Across all services",
   },
   {
-    value: "12",
+    to: 12,
+    duration: 1.6,
     label: "Open Source Projects",
     sub: "Public & actively maintained",
   },
   {
-    value: "5+",
+    to: 5,
+    suffix: "+",
+    duration: 1.4,
     label: "Countries Reached",
     sub: "Global user footprint",
   },
 ];
 
-// ─── Animation Variants ────────────────────────────────────────────────────────
+// ─── Animation variants — unchanged from original ─────────────────────────────
 const cardVariants = {
   hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: (i: number) => ({
@@ -72,7 +87,7 @@ export function Metrics() {
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* ── Header ── */}    
+        {/* ── Header ── */}
         <div className="mb-6">
           <SectionLabel
             label="Metrics"
@@ -106,9 +121,14 @@ export function Metrics() {
                 {String(i + 1).padStart(2, "0")}
               </span>
 
-              {/* Metric value */}
+              {/* ── Animated metric value ── */}
               <p className="font-mono text-5xl md:text-[3.5rem] font-black tracking-tight text-foreground leading-none mb-4">
-                {metric.value}
+                <AnimatedCounter
+                  to={metric.to}
+                  prefix={metric.prefix}
+                  suffix={metric.suffix}
+                  duration={metric.duration}
+                />
               </p>
 
               {/* Label + sub */}
@@ -126,6 +146,7 @@ export function Metrics() {
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 type WindowsTerminalProps = {
@@ -21,13 +21,17 @@ type Skill = {
   dot: string
 }
 
+const BASE_TYPE_DELAY = 22
+const MIN_TYPE_DELAY  = 4
+const MAX_VELOCITY    = 8
+
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
   { key: 'Email',    value: 'sidakpreetsinghk@gmail.com', href: 'mailto:sidakpreetsinghk@gmail.com' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [
-  { key: 'Phone',    value: '+91 90344 31886',  href: 'tel:+919034431886'                       },
+  { key: 'Phone',    value: '+91 90344 31886',  href: 'tel:+919034431886'                        },
   { key: 'LinkedIn', value: 'sidakpreetsingh',  href: 'https://linkedin.com/in/sidakpreetsinghk' },
 ]
 
@@ -41,6 +45,34 @@ const skills: Skill[] = [
 ]
 
 const SHOW_WORKING_STATUS = false
+
+type DownloadState = 'idle' | 'compiling' | 'ready'
+
+const DOWNLOAD_LABEL: Record<DownloadState, string> = {
+  idle:      '↓ resume.pdf',
+  compiling: '[COMPILING...]',
+  ready:     '[READY]',
+}
+
+const DOWNLOAD_COLOR: Record<DownloadState, string> = {
+  idle:      'text-white',
+  compiling: 'text-amber-300/90',
+  ready:     'text-green-300/90',
+}
+
+function getISTTime(): string {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    hour:     '2-digit',
+    minute:   '2-digit',
+    second:   '2-digit',
+    hour12:   false,
+  }).formatToParts(new Date())
+  const h = parts.find((p) => p.type === 'hour')?.value   ?? '00'
+  const m = parts.find((p) => p.type === 'minute')?.value ?? '00'
+  const s = parts.find((p) => p.type === 'second')?.value ?? '00'
+  return `${h}:${m}:${s} IST`
+}
 
 function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
   const valueNode = href ? (
@@ -155,47 +187,86 @@ function GitBranchIcon() {
   )
 }
 
-// ─── Download state label map ──────────────────────────────────────────────────
-
-type DownloadState = 'idle' | 'compiling' | 'ready'
-
-const DOWNLOAD_LABEL: Record<DownloadState, string> = {
-  idle:      '↓ resume.pdf',
-  compiling: '[COMPILING...]',
-  ready:     '[READY]',
-}
-
-const DOWNLOAD_COLOR: Record<DownloadState, string> = {
-  idle:      'text-white',
-  compiling: 'text-amber-300/90',
-  ready:     'text-green-300/90',
-}
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
   const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
+  const [istTime, setIstTime]               = useState('')
+  const [isIdle, setIsIdle]                 = useState(false)
+
+  const idleTimerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const typeDelayRef     = useRef(BASE_TYPE_DELAY)
+  const lastPointerRef   = useRef<{ x: number; y: number; t: number } | null>(null)
+  const velocityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => { setDisplayedChars(0) }, [bio])
 
   useEffect(() => {
     if (displayedChars >= bio.length) return
-    const id = setTimeout(() => setDisplayedChars((n) => n + 1), 22)
+    const id = setTimeout(() => setDisplayedChars((n) => n + 1), typeDelayRef.current)
     return () => clearTimeout(id)
   }, [bio, displayedChars])
 
-  const displayedBio   = bio.slice(0, displayedChars)
-  const displayedLines = displayedBio.split('\n')
-  const bioLines       = bio.split('\n')
+  useEffect(() => {
+    setIstTime(getISTTime())
+    const id = setInterval(() => setIstTime(getISTTime()), 1000)
+    return () => clearInterval(id)
+  }, [])
 
-  // ── Resume download handler ──────────────────────────────────────────────────
+  useEffect(() => {
+    const reset = () => {
+      setIsIdle(false)
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+      idleTimerRef.current = setTimeout(() => setIsIdle(true), 4000)
+    }
+
+    reset()
+    window.addEventListener('mousemove', reset, { passive: true })
+    window.addEventListener('scroll',    reset, { passive: true })
+
+    return () => {
+      window.removeEventListener('mousemove', reset)
+      window.removeEventListener('scroll',    reset)
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
+    }
+  }, [])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const now = performance.now()
+
+    if (lastPointerRef.current) {
+      const dx = e.clientX - lastPointerRef.current.x
+      const dy = e.clientY - lastPointerRef.current.y
+      const dt = now - lastPointerRef.current.t
+
+      if (dt > 0) {
+        const speed           = Math.sqrt(dx * dx + dy * dy) / dt
+        const normalizedSpeed = Math.min(speed / MAX_VELOCITY, 1)
+        typeDelayRef.current  = Math.round(
+          BASE_TYPE_DELAY - normalizedSpeed * (BASE_TYPE_DELAY - MIN_TYPE_DELAY),
+        )
+      }
+    }
+
+    lastPointerRef.current = { x: e.clientX, y: e.clientY, t: now }
+
+    if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
+    velocityTimerRef.current = setTimeout(() => {
+      typeDelayRef.current   = BASE_TYPE_DELAY
+      lastPointerRef.current = null
+    }, 280)
+  }
+
   const handleDownload = async () => {
     if (!resumeUrl || downloadState !== 'idle') return
     setDownloadState('compiling')
 
     try {
-      // Fetch blob and enforce minimum 800ms compiling duration in parallel
       const results = await Promise.all([
         fetch(resumeUrl).then((r) => r.blob()),
         new Promise<void>((resolve) => setTimeout(resolve, 800)),
@@ -205,9 +276,9 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
       setDownloadState('ready')
 
-      const link      = document.createElement('a')
-      link.href       = objectUrl
-      link.download   = 'Sidakpreet_Singh_Resume.pdf'
+      const link    = document.createElement('a')
+      link.href     = objectUrl
+      link.download = 'Sidakpreet_Singh_Resume.pdf'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -221,10 +292,21 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
     }
   }
 
-  return (
-    <div className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0">
+  const displayedBio   = bio.slice(0, displayedChars)
+  const displayedLines = displayedBio.split('\n')
+  const bioLines       = bio.split('\n')
 
-      {/* ── Title bar ── */}
+  return (
+    <motion.div
+      animate={isIdle ? { y: [0, -4, 0, 4, 0] } : { y: 0 }}
+      transition={
+        isIdle
+          ? { duration: 4, repeat: Infinity, ease: 'easeInOut', type: 'tween' }
+          : { duration: 0.5, ease: 'easeOut', type: 'tween' }
+      }
+      className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0"
+      onMouseMove={handleMouseMove}
+    >
       <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05] shrink-0">
         <div className="flex items-stretch flex-1 min-w-0">
           <div className="relative flex items-center gap-[7px] bg-[#13161c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
@@ -246,26 +328,77 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           </button>
         </div>
         <div className="flex items-stretch h-9 shrink-0">
-          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
+          <button
+            type="button"
+            onClick={() => setDisplayedChars(0)}
+            aria-label="Replay typewriter animation"
+            title="Replay"
+            className="flex items-center justify-center w-9 sm:w-10 h-full cursor-pointer select-none text-foreground/30 hover:text-accent hover:bg-white/[0.04] transition-colors duration-150 text-base leading-none"
+          >
+            ↺
+          </button>
+          <div className="w-px h-4 self-center bg-white/[0.08] mx-0.5" aria-hidden="true" />
+          <div
+            aria-hidden="true"
+            className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100"
+          >
             <MinimizeIcon />
           </div>
-          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100">
+          <div
+            aria-hidden="true"
+            className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-foreground/20 hover:text-foreground/45 hover:bg-white/[0.05] transition-colors duration-100"
+          >
             <MaximizeIcon />
           </div>
-          <div aria-hidden="true" className="flex items-center justify-center w-9 sm:w-11 cursor-default select-none text-foreground/20 hover:text-white hover:bg-[#c42b1c] transition-colors duration-100">
+          <div
+            aria-hidden="true"
+            className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-foreground/20 hover:text-white hover:bg-[#c42b1c] transition-colors duration-100"
+          >
             <CloseXIcon />
           </div>
         </div>
       </div>
 
-      {/* ── Content ── */}
       <div className="surface-2 overflow-y-auto flex-1 max-md:border-l-0">
-
-        {/* Profile section */}
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
-          <p className="font-mono text-[10px] sm:text-xs text-foreground/22 mb-4 sm:mb-5 tracking-tight select-none">
-            {'/** @profile . latest */ - loading....'}
-          </p>
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
+            <p className="font-mono text-[10px] sm:text-xs text-foreground/22 tracking-tight select-none">
+              {'/** @profile . latest */ - loading....'}
+            </p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8, type: 'tween', ease: 'easeOut', duration: 0.8 }}
+              className="hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
+            >
+              <span className="font-mono text-[10px] text-foreground/38">
+                // press
+              </span>
+              <motion.span
+                className="font-mono text-[11px] border border-accent/35 bg-accent/[0.08] px-2 py-[3px] text-accent leading-none"
+                animate={{
+                  opacity: [1, 0.68, 1],
+                  boxShadow: [
+                    '0 0 6px rgba(79,199,239,0.12)',
+                    '0 0 18px rgba(79,199,239,0.32)',
+                    '0 0 6px rgba(79,199,239,0.12)',
+                  ],
+                }}
+                transition={{
+                  delay   : 2.8,
+                  duration: 2.6,
+                  repeat  : Infinity,
+                  ease    : 'easeInOut',
+                  type    : 'tween',
+                }}
+              >
+                Ctrl+K
+              </motion.span>
+              <span className="font-mono text-[10px] text-foreground/38">
+                to navigate
+              </span>
+            </motion.div>
+          </div>
           <h1 className="font-semibold tracking-normal text-white text-3xl md:text-5xl">
             {name}
           </h1>
@@ -309,7 +442,6 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           </div>
         </div>
 
-        {/* Properties section */}
         <div className="hidden sm:block px-4 sm:px-6 md:px-10 py-5 sm:py-6 border-b border-white/[0.04] max-md:border-l-0">
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
             {'// properties'}
@@ -328,7 +460,6 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           </div>
         </div>
 
-        {/* Skills section */}
         <div className="max-md:border-l-0">
           <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
             <div className="flex items-stretch h-full">
@@ -367,23 +498,35 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
         </div>
       </div>
 
-      {/* ── VS Code-style status bar ── */}
-      <div className="flex items-center justify-between min-h-[22px] py-[3px] sm:py-0 sm:h-[22px] bg-[#007acc] px-3 select-none flex-wrap sm:flex-nowrap gap-x-3 shrink-0">
+      <div className="relative flex items-center min-h-[22px] py-[3px] sm:py-0 sm:h-[22px] bg-[#007acc] px-3 select-none shrink-0">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-[5px]">
+          <div className="hidden sm:flex items-center gap-[5px]">
             <GitBranchIcon />
             <span className="font-mono text-xs text-white/85 leading-none">main</span>
           </div>
-          <span className="font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
+          <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
+          {istTime && (
+            <span className="sm:hidden font-mono text-xs text-white/85 leading-none tabular-nums">
+              {istTime}
+            </span>
+          )}
         </div>
 
-        <div className="hidden sm:flex items-center gap-3 sm:gap-4">
+        {istTime && (
+          <div
+            className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center pointer-events-none"
+            aria-label={`Current IST: ${istTime}`}
+          >
+            <span className="font-mono text-xs text-white/90 leading-none tabular-nums">
+              {istTime}
+            </span>
+          </div>
+        )}
+
+        <div className="hidden sm:flex items-center gap-3 sm:gap-4 ml-auto">
           {SHOW_WORKING_STATUS && <WorkingStatus />}
           <span className="font-mono text-xs text-white/70 leading-none">UTF-8</span>
           <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
-          <span className="font-mono text-xs text-white/70 leading-none">Ln 1, Col 1</span>
-
-          {/* ── Resume download button — only rendered when resumeUrl is available ── */}
           {resumeUrl && (
             <>
               <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">·</span>
@@ -420,11 +563,11 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
             </>
           )}
         </div>
-
         <div className="sm:hidden ml-auto shrink-0">
           {SHOW_WORKING_STATUS && <WorkingStatus />}
         </div>
       </div>
-    </div>
+
+    </motion.div>
   )
 }

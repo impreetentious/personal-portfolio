@@ -1,56 +1,36 @@
-import {Achievements} from '@/components/Achievements'
-import {Contact} from '@/components/Contact'
-import {Education} from '@/components/Education'
-import {Experience} from '@/components/Experience'
-import {Footer} from '@/components/Footer'
-import {Hero} from '@/components/Hero'
-import {Metrics} from '@/components/Metrics'
-import {ScrollReveal} from '@/components/ScrollReveal'
-import {Skills} from '@/components/Skills'
-import {sanityFetch} from '@/lib/sanity'
-import {heroQuery, resumeQuery, type HeroData} from '@/lib/queries'
+import type { Metadata } from "next";
+import { Navigation } from "@/components/Navigation";
+import { Hero } from "@/components/Hero";
+import { Experience } from "@/components/Experience";
+import { Skills } from "@/components/Skills";
+import { Metrics } from "@/components/Metrics";
+import { Achievements } from "@/components/Achievements";
+import { Education } from "@/components/Education";
+import { Writing } from "@/components/Writing";
+import { Contact } from "@/components/Contact";
+import { Footer } from "@/components/Footer";
 
-export default async function HomePage() {
-  const heroData = await sanityFetch<HeroData | null>(heroQuery)
-  const resumeData = await sanityFetch<{url?: string} | null>(resumeQuery)
+export const metadata: Metadata = {
+  title: "Sidakpreet Singh — Strategy & Product",
+  description:
+    "Corporate strategy and product professional. Building at the intersection of technology and business.",
+};
 
+export default function Home() {
   return (
-    <div className="min-h-screen">
-      <Hero data={heroData} resumeUrl={resumeData?.url} />
-
-      <div className="space-y-24 px-6 pt-8 pb-0 sm:px-8 md:px-12 md:pt-16">
-        <ScrollReveal>
-          <Experience />
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <Skills />
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div id="metrics">
-            <Metrics />
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div id="achievements">
-            <Achievements />
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <Education />
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div id="contact">
-            <Contact />
-          </div>
-        </ScrollReveal>
-      </div>
-
+    <>
+      <Navigation />
+      <main id="main-content" className="relative bg-background">
+        <Hero data={null} />
+        <Experience />
+        <Skills />
+        <Metrics />
+        <Achievements />
+        <Education />
+        <Writing />
+        <Contact />
+      </main>
       <Footer />
-    </div>
-  )
+    </>
+  );
 }

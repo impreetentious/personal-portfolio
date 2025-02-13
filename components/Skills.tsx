@@ -1,176 +1,173 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type SkillItem = {
-  name: string
-  description?: string
+// ─── Types ─────────────────────────────────────────────────────────────────────
+interface SkillCategory {
+  label: string;
+  skills: string[];
 }
 
-type SkillsEntry = {
-  category: 'Tools' | 'Skills'
-  items: SkillItem[]
-}
-
-// ─── Fallback data ────────────────────────────────────────────────────────────
-
-const skillEntries: SkillsEntry[] = [
+// ─── Data ───────────────────────────────────────────────────────────────────────
+const leftColumn: SkillCategory[] = [
   {
-    category: 'Tools',
-    items: [
-      {
-        name: 'Next.js',
-        description:
-          'React framework for production — App Router, RSC, streaming SSR, and edge-ready deployments out of the box.',
-      },
-      {
-        name: 'Sanity.io',
-        description:
-          'Structured content platform with GROQ querying, typed schemas, and real-time collaborative editing.',
-      },
-      {
-        name: 'Tailwind CSS',
-        description:
-          'Utility-first CSS framework enabling rapid, consistent, and design-token-driven styling at scale.',
-      },
-      {
-        name: 'Framer Motion',
-        description:
-          'Production-ready animation library for React with gesture support, layout animations, and shared layouts.',
-      },
-      {
-        name: 'GitHub',
-        description:
-          'Version control and collaboration via pull requests, Actions CI/CD pipelines, and conventional branch workflows.',
-      },
-      {
-        name: 'VS Code',
-        description:
-          'Primary editor configured with TypeScript strict mode, ESLint, Prettier, and workspace-scoped settings.',
-      },
+    label: "Strategy & Growth",
+    skills: [
+      "Corporate Strategy",
+      "Market Entry",
+      "M&A Advisory",
+      "Go-to-Market",
+      "Business Cases",
+      "Competitive Analysis",
     ],
   },
   {
-    category: 'Skills',
-    items: [
-      {
-        name: 'Frontend Architecture',
-        description:
-          'Designing scalable component hierarchies, predictable data-flow patterns, and maintainable file structure conventions.',
-      },
-      {
-        name: 'Responsive Design',
-        description:
-          'Building fluid layouts with mobile-first breakpoints, fluid typography via clamp(), and adaptive spacing scales.',
-      },
-      {
-        name: 'Component Systems',
-        description:
-          'Authoring reusable, accessible, and composable design-system primitives with clearly typed, minimal-surface APIs.',
-      },
-      {
-        name: 'Content Modeling',
-        description:
-          'Structuring Sanity schemas to mirror UI needs while keeping the editorial authoring experience intuitive and safe.',
-      },
-      {
-        name: 'Performance Thinking',
-        description:
-          'Applying Core Web Vitals analysis, route-level code splitting, and image optimisation strategies to hit green scores.',
-      },
-      {
-        name: 'UI Polish',
-        description:
-          'Crafting micro-interactions, precise transition timing curves, and visual details that lift perceived quality.',
-      },
+    label: "Product Management",
+    skills: [
+      "Product Vision",
+      "Roadmapping",
+      "OKRs & Metrics",
+      "User Research",
+      "Stakeholder Alignment",
+      "PRDs & Specs",
     ],
   },
-]
+  {
+    label: "Finance",
+    skills: [
+      "Financial Modelling",
+      "DCF Valuation",
+      "P&L Management",
+      "Scenario Planning",
+      "Unit Economics",
+    ],
+  },
+];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const rightColumn: SkillCategory[] = [
+  {
+    label: "Engineering",
+    skills: [
+      "TypeScript",
+      "React / Next.js",
+      "Node.js",
+      "REST APIs",
+      "SQL",
+      "Git",
+    ],
+  },
+  {
+    label: "Design & UX",
+    skills: [
+      "Figma",
+      "Design Systems",
+      "Wireframing",
+      "Prototyping",
+      "Framer",
+    ],
+  },
+  {
+    label: "Data & Analytics",
+    skills: [
+      "Python",
+      "Power BI",
+      "A/B Testing",
+      "Cohort Analysis",
+      "Mixpanel",
+    ],
+  },
+];
 
+// ─── Chip animation variants ────────────────────────────────────────────────────
+// Uses `custom` (catIdx) to offset delayChildren per category row
+const chipContainerVariants = {
+  hidden: {},
+  visible: (catIdx: number) => ({
+    transition: {
+      staggerChildren: 0.045,
+      delayChildren: catIdx * 0.07,
+    },
+  }),
+};
+
+const chipVariants = {
+  hidden: { opacity: 0, scale: 0.85, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.3, ease: "easeOut", type: "tween" as const },
+  },
+};
+
+// ─── Internal column component ──────────────────────────────────────────────────
+function SkillColumn({ categories }: { categories: SkillCategory[] }) {
+  return (
+    <div className="flex flex-col gap-9">
+      {categories.map((cat, catIdx) => (
+        <div key={cat.label}>
+          {/* Category label */}
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent/60 mb-4 flex items-center gap-2.5">
+            <span
+              className="inline-block w-4 h-px bg-accent/35 shrink-0"
+              aria-hidden="true"
+            />
+            {cat.label}
+          </p>
+
+          {/* Chip grid — staggered via whileInView + variants */}
+          <motion.div
+            className="flex flex-wrap gap-2"
+            variants={chipContainerVariants}
+            custom={catIdx}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-20px" }}
+          >
+            {cat.skills.map((skill) => (
+              <motion.span
+                key={skill}
+                variants={chipVariants}
+                className="font-mono text-[11px] px-3 py-1.5 rounded-sm border border-accent/15 bg-accent/[0.05] text-foreground/65 hover:border-accent/40 hover:text-accent hover:bg-accent/10 transition-colors duration-200 cursor-default select-none"
+              >
+                {skill}
+              </motion.span>
+            ))}
+          </motion.div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────────
 export function Skills() {
-  const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
-    category: 'Tools' as const,
-    items: [] as SkillItem[],
-  }
-  const skills = skillEntries.find((entry) => entry.category === 'Skills') ?? {
-    category: 'Skills' as const,
-    items: [] as SkillItem[],
-  }
+  const columns = [leftColumn, rightColumn];
 
   return (
-    <section
-      id="skills"
-      className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
-    >
-      {/* ── Section header ── */}
-      <SectionLabel
-        label="Skills"
-        devLabel="import { skills } from './stack'"
-      />
+    <section className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
+      <div className="max-w-6xl mx-auto">
 
-      {/* ── Grid ── */}
-      <div className="mt-6 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
-        {[tools, skills].map((entry) => (
-          <div
-            key={entry.category}
-            className="min-w-0 border-l border-accent/20 pl-5"
-          >
-            <p className="text-sm font-medium uppercase tracking-[0.22em] text-success">
-              {entry.category}
-            </p>
+        {/* Header */}
+        <div className="mb-10">
+          <SectionLabel
+            devLabel="const skills = {...}"
+            label="Skills"
+          />
+        </div>
 
-            <div className="mt-5 flex flex-wrap gap-3">
-              {entry.items.map((item) => (
-                // ── Tooltip wrapper ──────────────────────────────────────────
-                <div key={item.name} className="group relative">
+        {/* Two-column grid — each column gets a ScrollReveal with index * 0.15 delay */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+          {columns.map((col, colIdx) => (
+            <ScrollReveal key={colIdx} delay={colIdx * 0.15}>
+              <SkillColumn categories={col} />
+            </ScrollReveal>
+          ))}
+        </div>
 
-                  {/* Tooltip card — only renders when description is present */}
-                  {item.description && (
-                    <div
-                      className={[
-                        // Positioning
-                        'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
-                        // Visibility
-                        'opacity-0 group-hover:opacity-100',
-                        // Interaction & stacking
-                        'pointer-events-none z-20',
-                        // Sizing
-                        'w-56',
-                        // Transition
-                        'transition-opacity duration-200 ease-out',
-                      ].join(' ')}
-                      role="tooltip"
-                    >
-                      {/* Card body */}
-                      <div className="rounded-lg border border-white/10 bg-zinc-900/95 px-3 py-2.5 text-xs leading-relaxed text-foreground/75 shadow-2xl backdrop-blur-sm">
-                        {item.description}
-                      </div>
-
-                      {/* Arrow — a transparent border trick pointing downward */}
-                      <div className="absolute left-1/2 top-full -translate-x-1/2 border-[5px] border-transparent border-t-white/10" />
-                    </div>
-                  )}
-
-                  {/* Skill tag */}
-                  <span
-                    className={[
-                      'hover-glow',
-                      'inline-block cursor-default select-none',
-                      'rounded-full border border-white/12 px-4 py-2 text-sm',
-                      'text-foreground transition-all duration-150',
-                      'hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-accent',
-                    ].join(' ')}
-                  >
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
       </div>
     </section>
-  )
+  );
 }

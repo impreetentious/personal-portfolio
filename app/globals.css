@@ -10,6 +10,27 @@ html {
   scroll-behavior: smooth;
 }
 
+html::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      transparent 55%,
+      rgba(0, 0, 0, 0.40) 100%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.028) 1px,
+      rgba(0, 0, 0, 0.028) 2px
+    );
+}
+
 body {
   position: relative;
   min-height: 100vh;

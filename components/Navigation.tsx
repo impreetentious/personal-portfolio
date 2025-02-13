@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Mail,
   Sparkles,
+  Terminal,
   Trophy,
 } from 'lucide-react'
 
@@ -30,7 +31,14 @@ const OBSERVED_SECTIONS = [
   'contact',
 ]
 
-export function Navigation() {
+// ── Props ─────────────────────────────────────────────────────────────────────
+
+interface NavigationProps {
+  onOpenPalette? : () => void
+  isPaletteOpen? : boolean
+}
+
+export function Navigation({ onOpenPalette, isPaletteOpen: _isPaletteOpen }: NavigationProps) {
   const {scrollY, scrollYProgress} = useScroll()
   const [heroExit, setHeroExit] = useState(720)
   const [activeSection, setActiveSection] = useState<string>('home')
@@ -91,12 +99,12 @@ export function Navigation() {
         }}
       />
 
-      {/* ── Desktop wordmark ── */}
+      {/* ── Desktop wordmark + Ctrl+K badge ── */}
       <motion.div
         initial={{y: -20, opacity: 0}}
         animate={!isOnHome ? {y: 0, opacity: 1} : {y: -20, opacity: 0}}
         transition={{type: 'tween', ease: 'easeOut', duration: 0.4}}
-        className="fixed top-7 left-9 z-50 hidden md:flex items-center"
+        className="fixed top-7 left-9 z-50 hidden md:flex items-center gap-3"
       >
         <a
           href="#home"
@@ -111,6 +119,15 @@ export function Navigation() {
             {' '}cd \
           </span>
         </a>
+
+        {/* Ctrl+K hint badge */}
+        <button
+          onClick={onOpenPalette}
+          aria-label="Open command palette"
+          className="select-none font-mono text-[10px] border border-white/[0.10] px-2 py-1 leading-none text-foreground/30 transition-colors duration-200 hover:border-accent/35 hover:text-accent/60"
+        >
+          Ctrl+K
+        </button>
       </motion.div>
 
       {/* ── Mobile bottom nav ── */}
@@ -148,6 +165,21 @@ export function Navigation() {
               </a>
             )
           })}
+
+          {/* ── Command palette trigger (7th item) ── */}
+          <button
+            type="button"
+            onClick={onOpenPalette}
+            aria-label="Open command palette (Ctrl+K)"
+            className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[10px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/70"
+          >
+            <span className="flex h-9 w-9 items-center justify-center border border-accent/20 bg-accent/[0.06] text-accent/55 transition-[color,background-color,border-color,box-shadow] duration-200 ease-out group-hover:border-accent/40 group-hover:bg-accent/[0.12] group-hover:text-accent group-hover:shadow-[0_0_12px_rgba(79,199,239,0.2)]">
+              <Terminal className="h-3.5 w-3.5" strokeWidth={2} />
+            </span>
+            <span className="block w-full truncate text-center text-accent/55 transition-colors duration-200 ease-out group-hover:text-accent">
+              Ctrl+K
+            </span>
+          </button>
         </div>
       </motion.nav>
 
