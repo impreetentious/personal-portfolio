@@ -16,34 +16,20 @@ import {
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
 
-const navigationItems = [
-  { label: 'Experience', href: '#experience',   icon: Briefcase },
-  { label: 'Skills',     href: '#skills',       icon: Sparkles },
-  { label: 'Metrics',    href: '#metrics',      icon: BarChart },
-  { label: 'Awards',     href: '#achievements', icon: Trophy },
-  { label: 'Education',  href: '#education',    icon: GraduationCap },
-  
-  // ── Feature Flag Toggle ──
-  ...(siteConfig.features.showWriting 
-    ? [{ label: 'Writing', href: '#writing', icon: BookOpen }] 
+const NAV_SECTIONS = [ 
+  { id: 'experience',   label: 'Experience', icon: Briefcase     },
+  { id: 'skills',       label: 'Skills',     icon: Sparkles      },
+  { id: 'metrics',      label: 'Metrics',    icon: BarChart      },
+  { id: 'achievements', label: 'Awards',     icon: Trophy        },
+  { id: 'education',    label: 'Education',  icon: GraduationCap },
+  ...(siteConfig.features.showWriting
+    ? [{ id: 'writing', label: 'Writing', icon: BookOpen }]
     : []),
-    
-  { label: 'Contact',    href: '#contact',      icon: Mail },
+  { id: 'contact',      label: 'Contact',    icon: Mail          },
 ]
 
-const OBSERVED_SECTIONS = [
-  'home',
-  'experience',
-  'skills',
-  'metrics',
-  'achievements',
-  'education',
-  
-  // ── Feature Flag Toggle ──
-  ...(siteConfig.features.showWriting ? ['writing'] : []),
-  
-  'contact',
-]
+const navigationItems = NAV_SECTIONS.map(s => ({ label: s.label, href: `#${s.id}`, icon: s.icon })) 
+const OBSERVED_SECTIONS = ['home', ...NAV_SECTIONS.map(s => s.id)]
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -58,6 +44,7 @@ export function Navigation({ onOpenPalette }: NavigationProps) {
   const [activeSection, setActiveSection] = useState<string>('home')
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
+  const directionRef = useRef<'up' | 'down' | null>(null)
 
   // ── Calculate Hero section height for entrance triggers ──
   useEffect(() => {
@@ -71,13 +58,13 @@ export function Navigation({ onOpenPalette }: NavigationProps) {
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const direction = latest > lastScrollY.current ? 'down' : 'up'
     const delta = Math.abs(latest - lastScrollY.current)
-    
     // Only trigger hide/show if we've scrolled past the top 80px and movement is intentional (>10px)
-    if (latest > 80) {
-      if (delta > 10) setMobileNavHidden(direction === 'down')
-    } else {
+    if (latest > 80 && delta > 10 && direction !== directionRef.current) { 
+      setMobileNavHidden(direction === 'down')
+    } else if (latest <= 80 && directionRef.current !== null) {
       setMobileNavHidden(false)
     }
+    directionRef.current = latest > 80 ? direction : null
     lastScrollY.current = latest
   })
 

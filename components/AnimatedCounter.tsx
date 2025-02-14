@@ -30,10 +30,11 @@ export function AnimatedCounter({
   useEffect(() => {
     if (!isInView) return
 
-    animate(motionValue, to, {
+    const controls = animate(motionValue, to, {
       duration,
       ease: 'easeOut',
     })
+    return () => controls.stop()
   }, [isInView, to, duration, motionValue])
 
   return (

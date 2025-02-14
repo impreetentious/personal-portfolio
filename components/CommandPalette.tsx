@@ -11,9 +11,9 @@ import {
   Sparkles,
   Trophy,
   X,
+  type LucideIcon,
 } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import type { LucideIcon } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
@@ -144,13 +144,14 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
   const inputRef   = useRef<HTMLInputElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
 
-  // Build action list — resume action only when URL is configured
-  const allActions: PaletteAction[] = resumeUrl
-    ? [...NAV_ACTIONS, RESUME_ACTION]
-    : NAV_ACTIONS
+  const allActions = useMemo<PaletteAction[]>(
+    () => (resumeUrl ? [...NAV_ACTIONS, RESUME_ACTION] : NAV_ACTIONS),
+    [resumeUrl],
+  )
 
-  const filtered = allActions.filter(
-    (a) => fuzzyMatch(query, a.shortLabel) || fuzzyMatch(query, a.description),
+  const filtered = useMemo(
+    () => allActions.filter((a) => fuzzyMatch(query, a.shortLabel) || fuzzyMatch(query, a.description)),
+    [allActions, query],
   )
 
   // ── Reset + focus on open ──────────────────────────────────────────────────

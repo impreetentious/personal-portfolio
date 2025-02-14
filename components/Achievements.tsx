@@ -180,7 +180,6 @@ export function Achievements() {
                       />
 
                       <div className="flex items-center justify-center gap-2.5">
-                        {/* ── Updated Icon Box: Now Goldish/Metallic Theme ── */}
                         <span 
                           className={`flex h-8 w-8 shrink-0 items-center justify-center border transition-all duration-300 ${
                             isOpen 
@@ -234,47 +233,49 @@ export function Achievements() {
 
                   <tr key={`${item.id}-exp`}>
                     <td colSpan={4} className="p-0">
-                      <AnimatePresence initial={false}>
-                        {isOpen && item.description && (
-                          <motion.div
-                            key="content"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{
-                              duration: 0.28,
-                              ease: "easeInOut",
-                              type: "tween",
-                            }}
-                            className="overflow-hidden relative"
-                          >
+                      <div> {/* FIX E: intermediate block wrapper so motion.div is not a direct child of td, fixing Safari/Firefox height collapse */}
+                        <AnimatePresence initial={false}>
+                          {isOpen && item.description && (
                             <motion.div
-                              initial={{ scaleY: 0 }}
-                              animate={{ scaleY: 1 }}
-                              exit={{ scaleY: 0 }}
-                              transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-                              className="absolute left-0 top-0 bottom-0 w-[2px] origin-top bg-gradient-to-b from-accent via-accent/50 to-transparent z-10"
-                            />
-
-                            <div
-                              className={[
-                                "px-5 py-5 bg-accent/[0.02] border-t border-accent/10",
-                                !isLast ? "border-b border-accent/[0.07]" : "",
-                              ]
-                                .filter(Boolean)
-                                .join(" ")}
+                              key="content"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{
+                                duration: 0.28,
+                                ease: "easeInOut",
+                                type: "tween",
+                              }}
+                              className="overflow-hidden relative"
                             >
-                              <p className="font-mono text-[12px] text-accent/60 mb-2.5 uppercase tracking-[0.18em] md:hidden">
-                                {item.organizer}
-                              </p>
+                              <motion.div
+                                initial={{ scaleY: 0 }}
+                                animate={{ scaleY: 1 }}
+                                exit={{ scaleY: 0 }}
+                                transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+                                className="absolute left-0 top-0 bottom-0 w-[2px] origin-top bg-gradient-to-b from-accent via-accent/50 to-transparent z-10"
+                              />
 
-                              <p className="font-mono text-[13px] leading-[1.85] text-foreground/60 max-w-3xl">
-                                {item.description}
-                              </p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                              <div
+                                className={[
+                                  "px-5 py-5 bg-accent/[0.02] border-t border-accent/10",
+                                  !isLast ? "border-b border-accent/[0.07]" : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                              >
+                                <p className="font-mono text-[12px] text-accent/60 mb-2.5 uppercase tracking-[0.18em] md:hidden">
+                                  {item.organizer}
+                                </p>
+
+                                <p className="font-mono text-[13px] leading-[1.85] text-foreground/60 max-w-3xl">
+                                  {item.description}
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </td>
                   </tr>,
                 ];

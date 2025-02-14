@@ -70,8 +70,8 @@ Data is structured around these primary interfaces:
 
 # Version Control
 
-* **Base Format Version:** 2.6.3
-* **Portfolio Version: v2.6.3_2025-02-14_21:57:37 (IST)
+* **Base Format Version:** 2.7.0
+* **Portfolio Version: v2.7.0_2025-02-14_22:04:03 (IST)
 
 ## AI Agent Instructions
 

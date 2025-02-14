@@ -60,18 +60,18 @@ const DOWNLOAD_COLOR: Record<DownloadState, string> = {
   ready:     'text-green-300/90',
 }
 
+const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', { // FIX H: module-level formatter allocated once instead of on every getISTTime call
+  timeZone: 'Asia/Kolkata',
+  hour:     '2-digit',
+  minute:   '2-digit',
+  hour12:   false,
+})
+
 function getISTTime(): string {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Kolkata',
-    hour:     '2-digit',
-    minute:   '2-digit',
-    second:   '2-digit',
-    hour12:   false,
-  }).formatToParts(new Date())
+  const parts = IST_FORMATTER.formatToParts(new Date()) // FIX H: reuse module-level formatter
   const h = parts.find((p) => p.type === 'hour')?.value   ?? '00'
   const m = parts.find((p) => p.type === 'minute')?.value ?? '00'
-  const s = parts.find((p) => p.type === 'second')?.value ?? '00'
-  return `${h}:${m}:${s} IST`
+  return `${h}:${m} IST` // FIX H: HH:MM only; seconds removed to match minute-level update cadence
 }
 
 function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
@@ -208,8 +208,16 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
   useEffect(() => {
     setIstTime(getISTTime())
-    const id = setInterval(() => setIstTime(getISTTime()), 1000)
-    return () => clearInterval(id)
+    let intervalId: ReturnType<typeof setInterval> | null = null // FIX H: hold interval id so cleanup can reach it
+    const msUntilNextMinute = 60000 - (Date.now() % 60000) // FIX H: calculate ms until the next minute boundary
+    const timeoutId = setTimeout(() => { // FIX H: initial timeout aligns updates to the minute boundary
+      setIstTime(getISTTime())
+      intervalId = setInterval(() => setIstTime(getISTTime()), 60000) // FIX H: update once per minute after alignment
+    }, msUntilNextMinute)
+    return () => { // FIX H: clean up both the alignment timeout and the subsequent interval
+      clearTimeout(timeoutId)
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [])
 
   useEffect(() => {
@@ -567,7 +575,6 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           {SHOW_WORKING_STATUS && <WorkingStatus />}
         </div>
       </div>
-
     </motion.div>
   )
 }

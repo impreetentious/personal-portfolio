@@ -132,8 +132,7 @@ export function Skills() {
   }
 
   // Detect desktop layout to manage opposing animation directions
-  const [isDesktop, setIsDesktop] = useState(true)
-
+  const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024) // 1024px matches Tailwind's 'lg' breakpoint
     handleResize()

@@ -1,7 +1,7 @@
 'use client'
 
-import {useEffect, useRef, useState} from 'react'
-import {motion, useMotionTemplate, useMotionValue, useTransform} from 'framer-motion'
+import {useEffect, useRef} from 'react' 
+import {motion, useMotionTemplate, useMotionValue, useScroll, useTransform} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
 
 interface HeroData {
@@ -24,37 +24,16 @@ type HeroProps = {
 export function Hero({data, resumeUrl}: HeroProps) {
   const hero = data ?? FALLBACK_HERO
 
-  const [scrollY, setScrollY] = useState(0)
-  const [viewportHeight, setViewportHeight] = useState(0)
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
-    const onResize = () => setViewportHeight(window.innerHeight)
-
-    setScrollY(window.scrollY)
-    setViewportHeight(window.innerHeight)
-
-    window.addEventListener('scroll', onScroll, {passive: true})
-    window.addEventListener('resize', onResize, {passive: true})
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
-    }
-  }, [])
-
-  const scrollThreshold = viewportHeight * 0.5
-  const scrollIndicatorOpacity =
-    viewportHeight === 0 || scrollY <= scrollThreshold
-      ? 1
-      : Math.max(0, 1 - (scrollY - scrollThreshold) / 150)
-
   // ── Mouse parallax ────────────────────────────────────────────────────────
-  // rawX/rawY are normalised 0–1 across the section; default 0.5 keeps the
-  // gradient exactly at its original origin (18%, 24%) until the mouse moves.
   const sectionRef = useRef<HTMLElement>(null)
   const rawX       = useMotionValue(0.5)
   const rawY       = useMotionValue(0.5)
+
+  const {scrollY} = useScroll()
+  const scrollIndicatorOpacity = useTransform(scrollY, (y) => { 
+    const threshold = window.innerHeight * 0.5 
+    return y <= threshold ? 1 : Math.max(0, 1 - (y - threshold) / 150)
+  })
 
   // Map the full mouse travel to a ±6% nudge from the base origin
   const gx = useTransform(rawX, [0, 1], [12, 24]) // 18% ± 6%
@@ -101,7 +80,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
         </motion.div>
       </div>
 
-      <div
+      <motion.div
         aria-hidden="true"
         className="absolute bottom-6 left-1/2 -translate-x-1/2"
         style={{
@@ -129,7 +108,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
             className="h-12 w-px origin-top bg-accent/70"
           />
         </motion.div>
-      </div>
+      </motion.div> {/* FIX F: changed from /div to /motion.div */}
     </section>
   )
 }
