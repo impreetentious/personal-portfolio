@@ -106,7 +106,7 @@ export function Writing() {
                     initial={{ opacity: 0, x: 10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-30px" }}
-                    transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
+                    transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.1 }}
                     className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/78"
                   >
                     {item.year}
