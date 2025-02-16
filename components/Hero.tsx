@@ -31,7 +31,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
 
   const {scrollY} = useScroll()
   const scrollIndicatorOpacity = useTransform(scrollY, (y) => { 
-    const threshold = window.innerHeight * 0.5 
+    const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.5 : 400 
     return y <= threshold ? 1 : Math.max(0, 1 - (y - threshold) / 150)
   })
 
