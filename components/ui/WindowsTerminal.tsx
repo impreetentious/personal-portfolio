@@ -60,7 +60,7 @@ const DOWNLOAD_COLOR: Record<DownloadState, string> = {
   ready:     'text-green-300/90',
 }
 
-const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', { // FIX H: module-level formatter allocated once instead of on every getISTTime call
+const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', { 
   timeZone: 'Asia/Kolkata',
   hour:     '2-digit',
   minute:   '2-digit',
@@ -68,10 +68,10 @@ const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', { // FIX H: module-level 
 })
 
 function getISTTime(): string {
-  const parts = IST_FORMATTER.formatToParts(new Date()) // FIX H: reuse module-level formatter
+  const parts = IST_FORMATTER.formatToParts(new Date())
   const h = parts.find((p) => p.type === 'hour')?.value   ?? '00'
   const m = parts.find((p) => p.type === 'minute')?.value ?? '00'
-  return `${h}:${m} IST` // FIX H: HH:MM only; seconds removed to match minute-level update cadence
+  return `${h}:${m} IST` 
 }
 
 function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
@@ -208,26 +208,32 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
   useEffect(() => {
     setIstTime(getISTTime())
-    let intervalId: ReturnType<typeof setInterval> | null = null // FIX H: hold interval id so cleanup can reach it
-    const msUntilNextMinute = 60000 - (Date.now() % 60000) // FIX H: calculate ms until the next minute boundary
-    const timeoutId = setTimeout(() => { // FIX H: initial timeout aligns updates to the minute boundary
+    let intervalId: ReturnType<typeof setInterval> | null = null
+    const msUntilNextMinute = 60000 - (Date.now() % 60000)
+    const timeoutId = setTimeout(() => {
       setIstTime(getISTTime())
-      intervalId = setInterval(() => setIstTime(getISTTime()), 60000) // FIX H: update once per minute after alignment
+      intervalId = setInterval(() => setIstTime(getISTTime()), 60000)
     }, msUntilNextMinute)
-    return () => { // FIX H: clean up both the alignment timeout and the subsequent interval
+    return () => {
       clearTimeout(timeoutId)
       if (intervalId) clearInterval(intervalId)
     }
   }, [])
 
   useEffect(() => {
+    let lastFired = 0
+
     const reset = () => {
+      const now = Date.now()
+      if (now - lastFired < 200) return // ~5 Hz effective rate
+      lastFired = now
       setIsIdle(false)
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
       idleTimerRef.current = setTimeout(() => setIsIdle(true), 4000)
     }
 
-    reset()
+    idleTimerRef.current = setTimeout(() => setIsIdle(true), 4000)
+
     window.addEventListener('mousemove', reset, { passive: true })
     window.addEventListener('scroll',    reset, { passive: true })
 
@@ -276,7 +282,10 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
     try {
       const results = await Promise.all([
-        fetch(resumeUrl).then((r) => r.blob()),
+        fetch(resumeUrl).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`)
+          return r.blob()
+        }),
         new Promise<void>((resolve) => setTimeout(resolve, 800)),
       ])
       const blob      = results[0]
@@ -295,7 +304,8 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
         URL.revokeObjectURL(objectUrl)
         setDownloadState('idle')
       }, 400)
-    } catch {
+    } catch (error) {
+      console.error('[handleDownload] Resume fetch failed:', error)
       setDownloadState('idle')
     }
   }

@@ -169,13 +169,15 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
     setActiveIndex((i) => Math.min(i, Math.max(0, filtered.length - 1)))
   }, [filtered.length])
 
-  // ── Resume download handler ────────────────────────────────────────────────
   const handleDownload = useCallback(async () => {
     if (!resumeUrl || downloadState !== 'idle') return
     setDownloadState('compiling')
     try {
       const [blob] = await Promise.all([
-        fetch(resumeUrl).then((r) => r.blob()),
+        fetch(resumeUrl).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`)
+          return r.blob()
+        }),
         new Promise<void>((resolve) => setTimeout(resolve, 800)),
       ])
       const objectUrl = URL.createObjectURL(blob)
@@ -193,7 +195,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
         setDownloadState('idle')
         onClose()
       }, 600)
-    } catch {
+    } catch (error) {
+      console.error('[handleDownload] Resume fetch failed:', error)
       setDownloadState('idle')
     }
   }, [resumeUrl, downloadState, onClose])

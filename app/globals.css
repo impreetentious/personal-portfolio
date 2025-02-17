@@ -76,10 +76,12 @@ body::after {
   }
 }
 
+/* FIX 3: explicit 0 %/100 % stops added for clarity; functionally identical to the
+   previous single-stop definition. WindowsTerminal and Contact both consume this
+   class — no per-component keyframe declarations needed. */
 @keyframes blink {
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 .animate-cursor-blink {

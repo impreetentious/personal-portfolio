@@ -170,7 +170,13 @@ export function Contact() {
       aria-label="Contact"
       className="relative mx-auto w-full max-w-6xl px-4 md:pl-28 lg:pl-32 xl:px-8 pt-14 pb-6 sm:pt-20 sm:pb-10"
     >
-      <style>{`@keyframes vscode-cursor-blink{0%,100%{opacity:1}49%{opacity:1}50%,99%{opacity:0}}`}</style>
+      {/*
+        FIX 3: Removed the inline <style> block that injected a duplicate
+        @keyframes vscode-cursor-blink definition on every mount. The cursor
+        span below now uses the canonical .animate-cursor-blink utility class
+        defined in globals.css (backed by @keyframes blink), which WindowsTerminal
+        already consumes. One keyframe declaration, shared, no DOM duplication.
+      */}
 
       {/* ── Panel Title Bar ── */}
       <div className="flex items-center justify-between px-4 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
@@ -296,9 +302,13 @@ export function Contact() {
 
         <ConsoleLine lineNumber={9} delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
+          {/*
+            FIX 3: Replaced inline `style={{ animation: "vscode-cursor-blink ..." }}`
+            with the shared .animate-cursor-blink utility class from globals.css.
+            Visual output is identical; the duplicate keyframe declaration is gone.
+          */}
           <span
-            className="inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"
-            style={{ animation: "vscode-cursor-blink 1.15s step-end infinite" }}
+            className="animate-cursor-blink inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"
             aria-hidden="true"
           />
         </ConsoleLine>
