@@ -225,7 +225,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
     const reset = () => {
       const now = Date.now()
-      if (now - lastFired < 200) return // ~5 Hz effective rate
+      if (now - lastFired < 200) return
       lastFired = now
       setIsIdle(false)
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
@@ -390,7 +390,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
               className="hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
             >
               <span className="font-mono text-[10px] text-foreground/38">
-                // press
+                {'// press '}
               </span>
               <motion.span
                 className="font-mono text-[11px] border border-accent/35 bg-accent/[0.08] px-2 py-[3px] text-accent leading-none"
@@ -421,7 +421,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
             {name}
           </h1>
           <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/60 tracking-normal leading-snug">
-            <span className="text-foreground/20 select-none mr-1.5">//</span>
+            <span className="text-foreground/20 select-none mr-1.5">{'//'}</span>
             {tagline}
           </p>
           <div className="relative mt-4 sm:mt-6">
@@ -482,7 +482,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
           <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
             <div className="flex items-stretch h-full">
               <div className="flex items-center px-4 sm:px-5 bg-[#13161c] border-r border-white/[0.08] font-mono text-[10px] sm:text-xs text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
-                // SKILLS
+                {'// SKILLS'}
               </div>
             </div>
             <div className="flex items-center h-full pr-0.5">

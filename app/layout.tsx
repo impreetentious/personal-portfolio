@@ -1,4 +1,3 @@
-import type { Metadata }         from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
@@ -19,6 +18,13 @@ const jetbrainsMono = JetBrains_Mono({
   display : 'swap',
 })
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+  return Promise.race([
+    promise,
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+  ])
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +32,10 @@ export default async function RootLayout({
 }>) {
   let resumeUrl: string | undefined
   try {
-    const resumeData = await sanityFetch<{ url?: string } | null>(resumeQuery)
+    const resumeData = await withTimeout(
+      sanityFetch<{ url?: string } | null>(resumeQuery),
+      3_000,
+    )
     resumeUrl = resumeData?.url
   } catch {
     // Sanity unavailable — palette renders fine without the download action

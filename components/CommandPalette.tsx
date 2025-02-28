@@ -217,25 +217,36 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
     [handleDownload, onClose],
   )
 
-  // ── Keyboard navigation (active only when palette is open) ────────────────
+
+  const filteredRef      = useRef(filtered)
+  const activeIndexRef   = useRef(activeIndex)
+  const executeActionRef = useRef(executeAction)
+  filteredRef.current      = filtered
+  activeIndexRef.current   = activeIndex
+  executeActionRef.current = executeAction
+
+
   useEffect(() => {
     if (!isOpen) return
     const handler = (e: KeyboardEvent) => {
+      const currentFiltered    = filteredRef.current
+      const currentActiveIndex = activeIndexRef.current
+
       if (e.key === 'ArrowDown') {
         e.preventDefault()
-        setActiveIndex((i) => Math.min(i + 1, filtered.length - 1))
+        setActiveIndex((i) => Math.min(i + 1, currentFiltered.length - 1))
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
         setActiveIndex((i) => Math.max(i - 1, 0))
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        const action = filtered[activeIndex]
-        if (action) executeAction(action)
+        const action = currentFiltered[currentActiveIndex]
+        if (action) executeActionRef.current(action)
       }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isOpen, filtered, activeIndex, executeAction])
+  }, [isOpen])
 
   // ── Click-outside close ───────────────────────────────────────────────────
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -347,7 +358,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                         onClick={() => !isRunning && executeAction(action)}
                         onMouseEnter={() => setActiveIndex(i)}
                         disabled={isRunning}
-                        aria-selected={isActive}
+                        data-selected={isActive}
                         className={`group flex w-full items-center gap-4 px-5 py-3 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 ${
                           isActive ? 'bg-accent/[0.06]' : 'hover:bg-white/[0.02]'
                         }`}

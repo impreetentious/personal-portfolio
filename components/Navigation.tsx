@@ -16,6 +16,7 @@ import {
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
 
+
 const NAV_SECTIONS = [ 
   { id: 'experience',   label: 'Experience', icon: Briefcase     },
   { id: 'skills',       label: 'Skills',     icon: Sparkles      },
@@ -38,7 +39,7 @@ interface NavigationProps {
   isPaletteOpen?: boolean
 }
 
-export function Navigation({ onOpenPalette }: NavigationProps) {
+export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationProps) {
   const { scrollY, scrollYProgress } = useScroll()
   const [heroExit, setHeroExit] = useState(720)
   const [activeSection, setActiveSection] = useState<string>('home')
@@ -93,8 +94,16 @@ export function Navigation({ onOpenPalette }: NavigationProps) {
 
   const isOnHome = activeSection === 'home'
 
+  // ── When the command palette is open, suppress the entire nav from the
+  //    accessibility tree and prevent it from intercepting keyboard events.
+  //    All children are position:fixed so the wrapper div has zero visual impact.
+  // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <>
+    <div
+      aria-hidden={isPaletteOpen || undefined}
+      inert={isPaletteOpen || undefined}
+    >
+
       {/* ── Scroll progress bar ── */}
       <motion.div
         aria-hidden="true"
@@ -229,6 +238,7 @@ export function Navigation({ onOpenPalette }: NavigationProps) {
           </div>
         </div>
       </motion.nav>
-    </>
+
+    </div>
   )
 }
