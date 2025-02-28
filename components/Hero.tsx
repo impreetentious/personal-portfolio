@@ -45,14 +45,26 @@ export function Hero({data, resumeUrl}: HeroProps) {
     const section = sectionRef.current
     if (!section) return
 
+    let rect = section.getBoundingClientRect()
+    const updateRect = () => { rect = section.getBoundingClientRect() }
+    window.addEventListener('resize', updateRect)
+
+    let rafId: number | null = null
     const onMouseMove = (e: MouseEvent) => {
-      const {left, top, width, height} = section.getBoundingClientRect()
-      rawX.set((e.clientX - left) / width)
-      rawY.set((e.clientY - top) / height)
+      if (rafId !== null) return
+      rafId = requestAnimationFrame(() => {
+        rawX.set((e.clientX - rect.left) / rect.width)
+        rawY.set((e.clientY - rect.top)  / rect.height)
+        rafId = null
+      })
     }
 
-    section.addEventListener('mousemove', onMouseMove)
-    return () => section.removeEventListener('mousemove', onMouseMove)
+    section.addEventListener('mousemove', onMouseMove, { passive: true })
+    return () => {
+      section.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('resize', updateRect)
+      if (rafId !== null) cancelAnimationFrame(rafId)
+    }
   }, [rawX, rawY])
 
   return (
@@ -80,12 +92,20 @@ export function Hero({data, resumeUrl}: HeroProps) {
         </motion.div>
       </div>
 
+      {/*
+        Fix 5: the inline `transition: 'opacity 0.2s ease-out'` was removed.
+        scrollIndicatorOpacity is a MotionValue written by Framer Motion on
+        every scroll frame — pairing that with a CSS transition caused the
+        browser to apply a 200ms ease-out tween to each per-frame write,
+        producing a ~200ms lag stutter between actual scroll position and the
+        indicator's rendered opacity. Framer Motion drives the value directly;
+        no CSS transition is needed or desired here.
+      */}
       <motion.div
         aria-hidden="true"
         className="absolute bottom-6 left-1/2 -translate-x-1/2"
         style={{
           opacity: scrollIndicatorOpacity,
-          transition: 'opacity 0.2s ease-out',
           pointerEvents: 'none',
         }}
       >
@@ -108,7 +128,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
             className="h-12 w-px origin-top bg-accent/70"
           />
         </motion.div>
-      </motion.div> {/* FIX F: changed from /div to /motion.div */}
+      </motion.div>
     </section>
   )
 }

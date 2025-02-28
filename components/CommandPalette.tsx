@@ -141,8 +141,11 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
   const [activeIndex,   setActiveIndex  ] = useState(0)
   const [downloadState, setDownloadState] = useState<DownloadState>('idle')
 
-  const inputRef   = useRef<HTMLInputElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
+  const inputRef            = useRef<HTMLInputElement>(null)
+  const overlayRef          = useRef<HTMLDivElement>(null)
+  const downloadTimeoutRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const modalRef            = useRef<HTMLDivElement>(null)
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
   const allActions = useMemo<PaletteAction[]>(
     () => (resumeUrl ? [...NAV_ACTIONS, RESUME_ACTION] : NAV_ACTIONS),
@@ -154,15 +157,60 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
     [allActions, query],
   )
 
-  // ── Reset + focus on open ──────────────────────────────────────────────────
+  // ── Fix 1: unmount cleanup — clear any floating download timer ─────────────
+  useEffect(() => {
+    return () => {
+      if (downloadTimeoutRef.current) clearTimeout(downloadTimeoutRef.current)
+    }
+  }, [])
+
   useEffect(() => {
     if (!isOpen) return
+    if (downloadTimeoutRef.current) {
+      clearTimeout(downloadTimeoutRef.current)
+      downloadTimeoutRef.current = null
+    }
     setQuery('')
     setActiveIndex(0)
     setDownloadState('idle')
     const timer = setTimeout(() => inputRef.current?.focus(), 60)
     return () => clearTimeout(timer)
   }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null
+    return () => {
+      previouslyFocusedRef.current?.focus?.()
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const modal = modalRef.current
+      if (!modal) return
+      const focusable = Array.from(
+        modal.querySelectorAll<HTMLElement>(
+          'button, [href], input, [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute('disabled'))
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last  = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener('keydown', handleTab)
+    return () => window.removeEventListener('keydown', handleTab)
+  }, [isOpen, filtered.length])
 
   // ── Clamp active index when filtered list shrinks ─────────────────────────
   useEffect(() => {
@@ -190,7 +238,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
       link.click()
       document.body.removeChild(link)
 
-      setTimeout(() => {
+      downloadTimeoutRef.current = setTimeout(() => {
         URL.revokeObjectURL(objectUrl)
         setDownloadState('idle')
         onClose()
@@ -289,7 +337,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
             transition={{ type: 'tween', ease: 'easeOut', duration: 0.22 }}
             className="fixed top-[12vh] left-1/2 z-[90] w-full max-w-xl px-4 sm:px-0"
           >
-            <div className="overflow-hidden rounded-xl border border-white/[0.12] bg-[#11111A] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
+            {/* Fix 2B: modalRef attached here for focus trap queries */}
+            <div ref={modalRef} className="overflow-hidden rounded-xl border border-white/[0.12] bg-[#11111A] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
 
               {/* ── Title bar ── */}
               <div className="flex items-center justify-between border-b border-white/[0.06] bg-surface2/50 px-4 py-2.5">

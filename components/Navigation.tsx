@@ -13,7 +13,6 @@ import {
   BookOpen,
 } from 'lucide-react'
 
-// ── Import the master config ──
 import { siteConfig } from '@/lib/config'
 
 
@@ -94,10 +93,6 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
 
   const isOnHome = activeSection === 'home'
 
-  // ── When the command palette is open, suppress the entire nav from the
-  //    accessibility tree and prevent it from intercepting keyboard events.
-  //    All children are position:fixed so the wrapper div has zero visual impact.
-  // ─────────────────────────────────────────────────────────────────────────────
   return (
     <div
       aria-hidden={isPaletteOpen || undefined}

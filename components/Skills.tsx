@@ -131,13 +131,25 @@ export function Skills() {
     items: [] as SkillItem[],
   }
 
-  // Detect desktop layout to manage opposing animation directions
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024) // 1024px matches Tailwind's 'lg' breakpoint
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    setIsDesktop(window.innerWidth >= 1024)
+
+    let debounceTimer: ReturnType<typeof setTimeout>
+
+    const handleResize = () => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {
+        setIsDesktop(window.innerWidth >= 1024)
+      }, 150)
+    }
+
+    window.addEventListener('resize', handleResize, { passive: true })
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(debounceTimer)
+    }
   }, [])
 
   return (
@@ -156,11 +168,11 @@ export function Skills() {
         {[tools, skills].map((entry, index) => {
           // If desktop, the second column comes from the right. If mobile, everything comes from the left.
           const direction = index === 0 ? "left" : isDesktop ? "right" : "left";
-          
+
           return (
             // Individual column trigger ensures correct scroll-timing on mobile
-            <motion.div 
-              key={entry.category} 
+            <motion.div
+              key={entry.category}
               custom={direction}
               variants={columnVariants}
               initial="hidden"
@@ -169,7 +181,7 @@ export function Skills() {
               className="min-w-0 border-l border-accent/20 pl-5"
             >
               {/* Animated Category Title */}
-              <motion.p 
+              <motion.p
                 variants={pillVariants}
                 className="font-mono text-sm font-medium uppercase tracking-[0.22em] text-success"
               >
@@ -179,8 +191,8 @@ export function Skills() {
               <div className="mt-5 flex flex-wrap gap-3">
                 {entry.items.map((item) => (
                   // ── Tooltip wrapper & Animated Pill ──
-                  <motion.div 
-                    key={item.name} 
+                  <motion.div
+                    key={item.name}
                     variants={pillVariants}
                     className="group relative"
                   >

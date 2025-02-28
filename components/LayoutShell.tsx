@@ -33,17 +33,21 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  useEffect(() => {
+    if (!isPaletteOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isPaletteOpen])
+
   return (
     <>
       <Navigation onOpenPalette={openPalette} isPaletteOpen={isPaletteOpen} />
-
-      {/*
-        When the palette opens, <main> scales to 0.98 and blurs to 4px.
-        transformOrigin '50% 30%' creates a natural "zoom back" feel rather
-        than collapsing toward the very top edge.
-        pointerEvents is cut immediately (not animated) since it's binary.
-      */}
       <motion.main
+        aria-hidden={isPaletteOpen || undefined}
+        inert={isPaletteOpen || undefined}
         initial={{ scale: 1, filter: 'blur(0px)' }}
         animate={
           isPaletteOpen

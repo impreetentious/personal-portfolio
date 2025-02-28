@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
@@ -159,9 +159,17 @@ const SOCIAL_LINKS = [
 // ─── Contact Section ──────────────────────────────────────────────────────────
 
 export function Contact() {
-  const sectionRef               = useRef<HTMLElement>(null)
-  const isInView                 = useInView(sectionRef, { once: true, amount: 0.15 })
-  const [copied, setCopied]      = useState<string | null>(null)
+  const sectionRef          = useRef<HTMLElement>(null)
+  const isInView            = useInView(sectionRef, { once: true, amount: 0.15 })
+  const [copied, setCopied] = useState<string | null>(null)
+
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+    }
+  }, [])
 
   return (
     <section
@@ -170,14 +178,6 @@ export function Contact() {
       aria-label="Contact"
       className="relative mx-auto w-full max-w-6xl px-4 md:pl-28 lg:pl-32 xl:px-8 pt-14 pb-6 sm:pt-20 sm:pb-10"
     >
-      {/*
-        FIX 3: Removed the inline <style> block that injected a duplicate
-        @keyframes vscode-cursor-blink definition on every mount. The cursor
-        span below now uses the canonical .animate-cursor-blink utility class
-        defined in globals.css (backed by @keyframes blink), which WindowsTerminal
-        already consumes. One keyframe declaration, shared, no DOM duplication.
-      */}
-
       {/* ── Panel Title Bar ── */}
       <div className="flex items-center justify-between px-4 sm:px-6 border-b border-white/[0.06] h-[44px] shrink-0">
         <div className="flex h-full items-end gap-0">
@@ -257,8 +257,12 @@ export function Contact() {
                           e.preventDefault()
                           try {
                             await navigator.clipboard.writeText(copyValue)
+                            if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
                             setCopied(label)
-                            setTimeout(() => setCopied(null), 2500)
+                            copyTimeoutRef.current = setTimeout(() => {
+                              setCopied(null)
+                              copyTimeoutRef.current = null
+                            }, 2500)
                           } catch {
                             window.location.href = href
                           }
@@ -302,11 +306,6 @@ export function Contact() {
 
         <ConsoleLine lineNumber={9} delay={0.80} isVisible={isInView}>
           <span style={{ color: TOKEN.dim }}>{">"}&nbsp;</span>
-          {/*
-            FIX 3: Replaced inline `style={{ animation: "vscode-cursor-blink ..." }}`
-            with the shared .animate-cursor-blink utility class from globals.css.
-            Visual output is identical; the duplicate keyframe declaration is gone.
-          */}
           <span
             className="animate-cursor-blink inline-block w-[7px] h-[13px] translate-y-[2px] bg-accent/75"
             aria-hidden="true"
