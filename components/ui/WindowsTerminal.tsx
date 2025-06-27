@@ -197,6 +197,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
   const typeDelayRef     = useRef(BASE_TYPE_DELAY)
   const lastPointerRef   = useRef<{ x: number; y: number; t: number } | null>(null)
   const velocityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const downloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => { setDisplayedChars(0) }, [bio])
 
@@ -250,6 +251,12 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (downloadTimerRef.current) clearTimeout(downloadTimerRef.current)
+    }
+  }, [])
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const now = performance.now()
 
@@ -300,9 +307,10 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
       link.click()
       document.body.removeChild(link)
 
-      setTimeout(() => {
+      downloadTimerRef.current = setTimeout(() => {
         URL.revokeObjectURL(objectUrl)
         setDownloadState('idle')
+        downloadTimerRef.current = null
       }, 400)
     } catch (error) {
       console.error('[handleDownload] Resume fetch failed:', error)

@@ -46,12 +46,21 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   const lastScrollY = useRef(0)
   const directionRef = useRef<'up' | 'down' | null>(null)
 
-  // ── Calculate Hero section height for entrance triggers ──
   useEffect(() => {
     const updateHeroExit = () => setHeroExit(window.innerHeight * 0.82)
     updateHeroExit()
-    window.addEventListener('resize', updateHeroExit)
-    return () => window.removeEventListener('resize', updateHeroExit)
+
+    let debounceId: ReturnType<typeof setTimeout> | null = null
+    const handleResize = () => {
+      if (debounceId) clearTimeout(debounceId)
+      debounceId = setTimeout(updateHeroExit, 150)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (debounceId) clearTimeout(debounceId)
+    }
   }, [])
 
   // ── Modern Mobile Hide-on-Scroll Logic ──

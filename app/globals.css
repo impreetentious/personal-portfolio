@@ -57,6 +57,17 @@ body::after {
   }
 }
 
+@layer components {
+  .surface {
+    background-color: theme('colors.surface');
+    border: 1px solid theme('colors.hairline');
+  }
+
+  .surface-2 {
+    background-color: theme('colors.surface2');
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -83,13 +94,4 @@ body::after {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
-}
-
-.surface {
-  background-color: theme('colors.surface');
-  border: 1px solid theme('colors.hairline');
-}
-
-.surface-2 {
-  background-color: theme('colors.surface2');
 }

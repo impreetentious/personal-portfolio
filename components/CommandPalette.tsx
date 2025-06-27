@@ -144,6 +144,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
   const inputRef            = useRef<HTMLInputElement>(null)
   const overlayRef          = useRef<HTMLDivElement>(null)
   const downloadTimeoutRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const downloadSessionRef  = useRef(0)
   const modalRef            = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
@@ -166,6 +167,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
 
   useEffect(() => {
     if (!isOpen) return
+    downloadSessionRef.current++
     if (downloadTimeoutRef.current) {
       clearTimeout(downloadTimeoutRef.current)
       downloadTimeoutRef.current = null
@@ -219,6 +221,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
 
   const handleDownload = useCallback(async () => {
     if (!resumeUrl || downloadState !== 'idle') return
+    const session = ++downloadSessionRef.current
     setDownloadState('compiling')
     try {
       const [blob] = await Promise.all([
@@ -228,6 +231,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
         }),
         new Promise<void>((resolve) => setTimeout(resolve, 800)),
       ])
+      // Guard: bail if this invocation has been superseded by a reopen cycle.
+      if (session !== downloadSessionRef.current) return
       const objectUrl = URL.createObjectURL(blob)
       setDownloadState('ready')
 
@@ -244,6 +249,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
         onClose()
       }, 600)
     } catch (error) {
+      // Guard: suppress error-path state mutations if superseded.
+      if (session !== downloadSessionRef.current) return
       console.error('[handleDownload] Resume fetch failed:', error)
       setDownloadState('idle')
     }
