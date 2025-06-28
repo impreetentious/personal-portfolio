@@ -88,7 +88,7 @@ export function Experience() {
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
           style={{ scaleY: timelineProgress }}
-          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#4ea8f8] via-[#4ea8f8] to-[#f97316] shadow-[0_0_18px_rgba(78,168,248,0.55)] sm:left-2"
+          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#00C8FF] via-[#00C8FF] to-[#f97316] shadow-[0_0_18px_rgba(0,200,255,0.45)] sm:left-2"
         />
 
         {visibleItems.map((item, index) => {
@@ -96,7 +96,15 @@ export function Experience() {
 
           return (
             <ScrollReveal key={`${item.company}-${item.role}`} delay={index * 0.2}>
-              <div className="relative overflow-visible border-t border-white/10 last:border-b">
+              <div className="relative overflow-visible border-t border-white/10 last:border-b group">
+                
+                {/* I6: Left-edge accent bar */}
+                <div
+                  aria-hidden="true"
+                  className={`absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-accent to-transparent transition-transform duration-200 origin-top ${
+                    isOpen ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'
+                  }`}
+                />
                 
                 <span
                   className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
@@ -110,7 +118,7 @@ export function Experience() {
                   )}
 
                   {/* Static filled dot — always visible, centred inside the 4×4 wrapper */}
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#07070f] shadow-[0_0_16px_rgba(78,168,248,0.65)]" />
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#050505] shadow-[0_0_16px_rgba(0,200,255,0.50)]" />
                 </span>
 
                 <button
@@ -120,7 +128,7 @@ export function Experience() {
                       current === item.company ? null : item.company
                     )
                   }
-                  className="hover-glow flex w-full flex-col gap-4 px-3 py-6 text-left hover:bg-accent/[0.035] md:flex-row md:items-start md:justify-between"
+                  className="hover-glow flex w-full flex-col gap-4 px-3 py-6 text-left hover:bg-accent/[0.08] md:flex-row md:items-start md:justify-between"
                   aria-expanded={isOpen}
                 >
                   <div className="min-w-0">

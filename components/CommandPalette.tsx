@@ -345,7 +345,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
             className="fixed top-[12vh] left-1/2 z-[90] w-full max-w-xl px-4 sm:px-0"
           >
             {/* Fix 2B: modalRef attached here for focus trap queries */}
-            <div ref={modalRef} className="overflow-hidden rounded-xl border border-white/[0.12] bg-[#11111A] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
+            <div ref={modalRef} className="overflow-hidden rounded-xl border border-white/[0.12] bg-[#0A0A0E] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
 
               {/* ── Title bar ── */}
               <div className="flex items-center justify-between border-b border-white/[0.06] bg-surface2/50 px-4 py-2.5">
@@ -362,7 +362,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
               </div>
 
               {/* ── Search row ── */}
-              <div className="flex items-center gap-3 border-b border-white/[0.06] bg-[#0E0E14] px-5 py-4">
+              <div className="flex items-center gap-3 border-b border-white/[0.06] bg-[#080810] px-5 py-4">
                 <span className="select-none font-mono text-base font-bold text-accent shrink-0">
                   {'>'}
                 </span>
@@ -423,7 +423,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                         <span
                           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors duration-100 ${
                             isActive
-                              ? 'border-accent/30 bg-accent/10 text-accent shadow-[0_0_12px_rgba(79,199,239,0.15)]'
+                              ? 'border-accent/30 bg-accent/10 text-accent shadow-[0_0_12px_rgba(0,200,255,0.22)]'
                               : 'border-white/[0.06] bg-white/[0.02] text-foreground/40 group-hover:border-white/[0.12] group-hover:text-foreground/70'
                           }`}
                         >
@@ -455,7 +455,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
               </div>
 
               {/* ── Footer hint bar ── */}
-              <div className="flex items-center justify-between border-t border-white/[0.05] bg-[#09091A] px-5 py-2.5">
+              <div className="flex items-center justify-between border-t border-white/[0.05] bg-[#060608] px-5 py-2.5">
                 <div className="flex items-center gap-3.5 select-none">
                   {[
                     { key: '↑↓',  label: 'navigate' },

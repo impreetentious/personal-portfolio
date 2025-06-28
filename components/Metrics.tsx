@@ -113,6 +113,27 @@ export function Metrics() {
               animate={inView ? "visible" : "hidden"}
               className="relative bg-background p-8 md:p-10 group hover:bg-accent/[0.035] transition-colors duration-300 overflow-hidden"
             >
+              {/* Top accent gradient line — appears on hover */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-px opacity-0 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none z-10"
+                style={{
+                  background: 'linear-gradient(90deg, transparent 0%, #00C8FF 30%, #00C8FF 70%, transparent 100%)',
+                }}
+              />
+              {/* Scan beam — slides down on hover */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 overflow-hidden pointer-events-none z-0"
+              >
+                <div
+                  className="scan-beam-inner absolute inset-x-0 -top-20 h-20"
+                  style={{
+                    background: 'linear-gradient(180deg, transparent 0%, rgba(0,200,255,0.05) 50%, transparent 100%)',
+                  }}
+                />
+              </div>
+
               {/* Decorative corner mark */}
               <span
                 aria-hidden="true"

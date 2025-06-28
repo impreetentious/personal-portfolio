@@ -199,7 +199,7 @@ export function Contact() {
       {/* ── Channel Bar ── */}
       <div
         className="flex items-center gap-2.5 px-5 sm:px-6 py-[7px] border-b border-white/[0.04] shrink-0"
-        style={{ backgroundColor: "#07070F" }}
+        style={{ backgroundColor: "#050505" }}
       >
         <span className="text-[10px] font-mono" style={{ color: TOKEN.dim }}>Channel:</span>
         <span className="text-[10px] font-mono text-white/35">Contact API v1.0</span>
@@ -345,7 +345,7 @@ export function Contact() {
       {/* ── VS Code Status Bar ── */}
       <div
         className="h-[22px] border-t border-white/[0.04] px-4 flex items-center gap-3 shrink-0"
-        style={{ backgroundColor: "#09091A" }}
+        style={{ backgroundColor: "#060608" }}
       >
         <span
           className="text-[10px] font-mono flex items-center gap-1.5"

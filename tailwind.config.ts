@@ -10,14 +10,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#07070F',
-        surface: '#21252B',
-        surface2: '#13161c',
+        background: '#050505',
+        surface: '#0F1015',
+        surface2: '#090A10',
         foreground: '#ABB2BF',
-        accent: '#4fc7efff',
+        accent: '#00C8FF',
         success: '#d0752fff',
-        metaphor: '#4ce719ff',
+        metaphor: '#d6d1daff',
         hairline: 'rgba(255,255,255,0.08)',
+        'muted-foreground': 'rgba(171,178,191,0.50)',
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],

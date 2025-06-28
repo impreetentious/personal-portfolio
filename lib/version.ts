@@ -1,2 +1,2 @@
-export const BASE_FORMAT_VERSION = '2.7.5'
+export const BASE_FORMAT_VERSION = '3.0.0'
 export const DISPLAY_VERSION = `v${BASE_FORMAT_VERSION}`

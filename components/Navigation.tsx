@@ -41,6 +41,7 @@ interface NavigationProps {
 export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationProps) {
   const { scrollY, scrollYProgress } = useScroll()
   const [heroExit, setHeroExit] = useState(720)
+  const heroExitRef = useRef(heroExit)
   const [activeSection, setActiveSection] = useState<string>('home')
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
@@ -63,17 +64,24 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
     }
   }, [])
 
-  // ── Modern Mobile Hide-on-Scroll Logic ──
+  // Sync heroExitRef so the motion value event handler never captures stale state
+  useEffect(() => { heroExitRef.current = heroExit }, [heroExit])
+
+  // ── Mobile Hide-on-Scroll Logic (gated to nav-visible zone) ──
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const direction = latest > lastScrollY.current ? 'down' : 'up'
-    const delta = Math.abs(latest - lastScrollY.current)
-    // Only trigger hide/show if we've scrolled past the top 80px and movement is intentional (>10px)
-    if (latest > 80 && delta > 10 && direction !== directionRef.current) { 
-      setMobileNavHidden(direction === 'down')
-    } else if (latest <= 80 && directionRef.current !== null) {
+    const delta     = Math.abs(latest - lastScrollY.current)
+    const threshold = heroExitRef.current
+
+    if (latest < threshold) {
+      // Still above the nav-visible zone — always reset hidden state
       setMobileNavHidden(false)
+      directionRef.current = null
+    } else if (delta > 10 && direction !== directionRef.current) {
+      setMobileNavHidden(direction === 'down')
+      directionRef.current = direction
     }
-    directionRef.current = latest > 80 ? direction : null
+
     lastScrollY.current = latest
   })
 
@@ -97,8 +105,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   }, [])
 
   // Mobile nav retains continuous scroll transform for fluid entry
-  const mobileNavOpacity     = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
-  const mobileNavVisibility  = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
+  const mobileNavOpacity    = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
+  const mobileNavVisibility = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
 
   const isOnHome = activeSection === 'home'
 
@@ -113,8 +121,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left pointer-events-none"
         style={{
-          scaleX: scrollYProgress,
-          background: 'linear-gradient(to right, #4fc7ef, #f97316)',
+          scaleX    : scrollYProgress,
+          background: 'linear-gradient(to right, #00C8FF, #f97316)',
         }}
       />
 
@@ -146,10 +154,11 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
         transition={{ type: 'tween', ease: 'easeOut', duration: 0.4 }}
         className="fixed bottom-7 left-9 z-50 hidden md:flex"
       >
+        {}
         <button
           onClick={onOpenPalette}
           aria-label="Open command palette (Ctrl+K)"
-          className="group flex items-center gap-2.5 border border-white/10 bg-[#07070F]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10"
+          className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10"
         >
           <Terminal className="h-4 w-4 text-foreground/50 transition-colors group-hover:text-accent" strokeWidth={2} />
           <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 transition-colors group-hover:text-accent">
@@ -164,9 +173,10 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       {/* ── Mobile bottom nav ── */}
       <motion.nav
         style={{ opacity: mobileNavOpacity, visibility: mobileNavVisibility }}
+        initial={{ y: '0%' }}
         animate={{ y: mobileNavHidden ? '100%' : '0%' }}
         transition={{ type: 'tween', ease: 'easeInOut', duration: 0.3 }}
-        className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-[#07070F]/80 backdrop-blur-md border-t border-white/10"
+        className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-[#050505]/80 backdrop-blur-md border-t border-white/10"
       >
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-evenly px-2 sm:px-4">
           {navigationItems.map(({ label, href, icon: Icon }) => {
@@ -175,20 +185,20 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
               <a
                 key={label}
                 href={href}
-                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/70"
+                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/60"
               >
                 <span
                   className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
                     isActive
-                      ? 'border-purple-500/30 bg-purple-500/10 text-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.2)]'
-                      : 'border-white/20 bg-background/35 text-white/75 group-hover:border-purple-500/30 group-hover:bg-purple-500/10 group-hover:text-purple-400 group-hover:shadow-[0_0_12px_rgba(168,85,247,0.2)]'
+                      ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(0,200,255,0.18),0_0_16px_rgba(0,200,255,0.45)]'
+                      : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(0,200,255,0.18),0_0_16px_rgba(0,200,255,0.45)]'
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
                 <span
                   className={`block w-full truncate text-center transition-colors duration-200 ease-out ${
-                    isActive ? 'text-purple-400' : 'text-white/75 group-hover:text-purple-400'
+                    isActive ? 'text-accent' : 'text-white/75 group-hover:text-accent'
                   }`}
                 >
                   {label}
@@ -218,20 +228,21 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
                 <a
                   key={label}
                   href={href}
-                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/70 bg-[#07070F]"
+                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/60 bg-background/80 backdrop-blur-sm"
                 >
+                  {/* I5: Desktop rail icon badge — dual-layer shadow, bumped bg/border */}
                   <span
                     className={`flex h-11 w-11 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
                       isActive
-                        ? 'border-purple-500/30 bg-purple-500/10 text-purple-400 shadow-[0_0_16px_rgba(168,85,247,0.25)]'
-                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-purple-500/30 group-hover:bg-purple-500/10 group-hover:text-purple-400 group-hover:shadow-[0_0_16px_rgba(168,85,247,0.25)]'
+                        ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(0,200,255,0.20),0_0_22px_rgba(0,200,255,0.50)]'
+                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(0,200,255,0.14),0_0_18px_rgba(0,200,255,0.38)]'
                     }`}
                   >
                     <Icon className="h-4 w-4" strokeWidth={2} />
                   </span>
                   <span
                     className={`block w-full truncate text-center transition-colors duration-200 ease-out ${
-                      isActive ? 'text-purple-400' : 'text-white/75 group-hover:text-purple-400'
+                      isActive ? 'text-accent' : 'text-white/75 group-hover:text-accent'
                     }`}
                   >
                     {label}

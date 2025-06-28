@@ -8,43 +8,32 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: #07070f;
+  background-color: #050505;
   overflow-x: hidden;
 }
 
 body {
   position: relative;
   min-height: 100vh;
-  background: #07070f;
+  background: #050505;
   color: #abb2bf;
   overflow-x: hidden;
 }
 
 body::before {
-  position: fixed;
-  z-index: -1;
-  top: -18rem;
-  right: -18rem;
-  width: 48rem;
-  height: 48rem;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(78, 168, 248, 0.09), transparent 68%);
-  filter: blur(72px);
-  content: '';
-  pointer-events: none;
-}
-
-body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 200px 200px;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px),
+    radial-gradient(ellipse 110% 45% at 50% -5%, rgba(0,200,255,0.05) 0%, transparent 65%),
+    radial-gradient(circle, rgba(255,255,255,0.030) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px;
 }
+
+
 
 @layer base {
   * {
@@ -52,7 +41,7 @@ body::after {
   }
 
   ::selection {
-    background: rgba(97, 175, 239, 0.3);
+    background: rgba(0, 200, 255, 0.20);
     color: #f8fafc;
   }
 }
@@ -83,15 +72,29 @@ body::after {
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 28px rgba(78, 168, 248, 0.15);
+    box-shadow: 0 0 28px rgba(0, 200, 255, 0.10);
   }
 
   .animate-cursor-blink {
     animation: blink 1s step-end infinite;
+  }
+
+  .group:hover .scan-beam-inner {
+    animation: scan-down 0.85s ease-in-out forwards;
   }
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
+}
+
+@keyframes scan-down {
+  0%   { transform: translateY(-100%); opacity: 1; }
+  100% { transform: translateY(200%);  opacity: 0.3; }
+}
+
+@keyframes boot-fade-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
 }

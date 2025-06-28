@@ -64,6 +64,7 @@ const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Kolkata',
   hour:     '2-digit',
   minute:   '2-digit',
+  second:   '2-digit',
   hour12:   false,
 })
 
@@ -71,7 +72,8 @@ function getISTTime(): string {
   const parts = IST_FORMATTER.formatToParts(new Date())
   const h = parts.find((p) => p.type === 'hour')?.value   ?? '00'
   const m = parts.find((p) => p.type === 'minute')?.value ?? '00'
-  return `${h}:${m} IST` 
+  const s = parts.find((p) => p.type === 'second')?.value ?? '00'
+  return `${h}:${m}:${s} IST`
 }
 
 function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
@@ -89,10 +91,18 @@ function PropertyRow({ propKey, value, href }: { propKey: string; value: string;
   )
 
   return (
-    <div className="flex items-baseline font-mono text-xs sm:text-sm">
-      <span className="text-[#4bd0e7ff] shrink-0 w-[4.75rem] sm:w-[6rem]">{propKey}</span>
+    <div className="flex items-center font-mono text-xs sm:text-sm">
+      <span className="text-accent shrink-0">{propKey}</span>
+      <span
+        aria-hidden="true"
+        className="flex-1 mx-2 min-w-[8px] self-center"
+        style={{
+          height: '1px',
+          background: 'repeating-linear-gradient(90deg, #2c2c2c 0, #2c2c2c 3px, transparent 3px, transparent 9px)',
+        }}
+      />
       <span className="text-foreground/24 shrink-0">:</span>
-      <span className="ml-2 text-[#ce9178] min-w-0 break-all sm:break-normal">
+      <span className="ml-2 text-[#ce9178] min-w-0 break-all sm:break-normal shrink-0">
         <span className="text-foreground/18">&quot;</span>
         {valueNode}
         <span className="text-foreground/18">&quot;</span>
@@ -209,16 +219,8 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
 
   useEffect(() => {
     setIstTime(getISTTime())
-    let intervalId: ReturnType<typeof setInterval> | null = null
-    const msUntilNextMinute = 60000 - (Date.now() % 60000)
-    const timeoutId = setTimeout(() => {
-      setIstTime(getISTTime())
-      intervalId = setInterval(() => setIstTime(getISTTime()), 60000)
-    }, msUntilNextMinute)
-    return () => {
-      clearTimeout(timeoutId)
-      if (intervalId) clearInterval(intervalId)
-    }
+    const intervalId = setInterval(() => setIstTime(getISTTime()), 1000)
+    return () => clearInterval(intervalId)
   }, [])
 
   useEffect(() => {
@@ -333,9 +335,9 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
       className="surface rounded-xl overflow-hidden shadow-panel w-full max-h-[80vh] flex flex-col max-md:border-l-0"
       onMouseMove={handleMouseMove}
     >
-      <div className="flex items-stretch h-9 bg-[#0c0d14] border-b border-white/[0.05] shrink-0">
+      <div className="flex items-stretch h-9 bg-[#080808] border-b border-white/[0.05] shrink-0">
         <div className="flex items-stretch flex-1 min-w-0">
-          <div className="relative flex items-center gap-[7px] bg-[#13161c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
+          <div className="relative flex items-center gap-[7px] bg-[#0c0c0c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
             <PSIcon />
             <span className="font-mono tracking-tight truncate text-foreground/55">
               <span className="text-[10px] sm:hidden">PS</span>
@@ -405,9 +407,9 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
                 animate={{
                   opacity: [1, 0.68, 1],
                   boxShadow: [
-                    '0 0 6px rgba(79,199,239,0.12)',
-                    '0 0 18px rgba(79,199,239,0.32)',
-                    '0 0 6px rgba(79,199,239,0.12)',
+                    '0 0 6px rgba(0,200,255,0.12)',
+                    '0 0 18px rgba(0,200,255,0.30)',
+                    '0 0 6px rgba(0,200,255,0.12)',
                   ],
                 }}
                 transition={{
@@ -487,9 +489,9 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
         </div>
 
         <div className="max-md:border-l-0">
-          <div className="flex items-center justify-between bg-[#0c0d14] border-t border-white/[0.07] h-9">
+          <div className="flex items-center justify-between bg-[#080808] border-t border-white/[0.07] h-9">
             <div className="flex items-stretch h-full">
-              <div className="flex items-center px-4 sm:px-5 bg-[#13161c] border-r border-white/[0.08] font-mono text-[10px] sm:text-xs text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
+              <div className="flex items-center px-4 sm:px-5 bg-[#0c0c0c] border-r border-white/[0.08] font-mono text-[10px] sm:text-xs text-foreground/80 font-semibold tracking-wide select-none whitespace-nowrap">
                 {'// SKILLS'}
               </div>
             </div>
@@ -505,10 +507,10 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
               </button>
             </div>
           </div>
-          <div className="px-4 sm:px-6 md:px-10 pt-6 pb-8 sm:py-5 bg-[#0e1014]">
+          <div className="px-4 sm:px-6 md:px-10 pt-6 pb-8 sm:py-5 bg-[#080808]">
             <p className="font-mono text-xs sm:text-sm leading-relaxed whitespace-nowrap overflow-x-auto">
-              <span className="text-[#4bd0e7ff] select-none">PS </span>
-              <span className="text-[#4bd0e7ff]">
+              <span className="text-accent select-none">PS </span>
+              <span className="text-accent">
                 <span className="sm:hidden">C:\Users</span>
                 <span className="hidden sm:inline">C:\Users\SidakpreetSingh</span>
               </span>
@@ -571,7 +573,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
                     ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
                     : { duration: 0.2, ease: 'easeOut' }
                 }
-                className="relative font-mono text-xs leading-none px-2 py-0.5 border rounded-sm bg-[#07070F]/80 hover:bg-[#07070F] disabled:pointer-events-none"
+                className="relative font-mono text-xs leading-none px-2 py-0.5 border rounded-sm bg-[#050505]/80 hover:bg-[#050505] disabled:pointer-events-none"
               >
                 <AnimatePresence mode="wait">
                   <motion.span
