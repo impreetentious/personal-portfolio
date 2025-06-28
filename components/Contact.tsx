@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 const TOKEN = {
   identifier : "#9CDCFE",
   string     : "#CE9178",
-  fn         : "#DCDCAA",
+  fn         : "#dcdcaaff",
   punct      : "#6B7280",
   comment    : "#8f928eff",
   success    : "#4EC9B0",

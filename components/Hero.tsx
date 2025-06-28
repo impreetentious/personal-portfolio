@@ -3,6 +3,7 @@
 import {useEffect, useRef} from 'react' 
 import {motion, useMotionTemplate, useMotionValue, useScroll, useTransform} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
+import {useBootComplete} from '@/components/BootContext'
 
 interface HeroData {
   name: string
@@ -12,7 +13,7 @@ interface HeroData {
 
 const FALLBACK_HERO: HeroData = {
   name: 'Sidakpreet Singh',
-  tagline: 'Building practical products with code, grit, clarity and AI.',
+  tagline: 'Strategy · Tech · Systems · Gaming',
   bio: 'Welcome to my portfolio! Hope you find something interesting to read, or maybe we can build something together!',
 }
 
@@ -23,6 +24,7 @@ type HeroProps = {
 
 export function Hero({data, resumeUrl}: HeroProps) {
   const hero = data ?? FALLBACK_HERO
+  const bootComplete = useBootComplete()
 
   // ── Mouse parallax ────────────────────────────────────────────────────────
   const sectionRef = useRef<HTMLElement>(null)
@@ -88,6 +90,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
             tagline={hero.tagline}
             bio={hero.bio}
             resumeUrl={resumeUrl}
+            startTyping={bootComplete}
           />
         </motion.div>
       </div>

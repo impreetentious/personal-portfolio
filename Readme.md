@@ -70,8 +70,8 @@ Data is structured around these primary interfaces:
 
 # Version Control
 
-* **Base Format Version:** 3.0.0
-* **Portfolio Version: v3.0.0_2025-06-28_13:05:17 (IST)
+* **Base Format Version:** 3.0.1
+* **Portfolio Version: v3.0.1_2025-06-28_13:44:11 (IST)
 
 ## AI Agent Instructions
 
@@ -82,6 +82,6 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 Follow this format for version control:
 
 * **Base Format Version:** [Provided by User] (stays the same unless a new one is provided)
-* **Version:** `SPS_[Base_Format_Version]_YYYY-MM-DD_HH:MM:SS` (IST)
+* **Version:** `v[Base_Format_Version]_YYYY-MM-DD_HH:MM:SS` (IST)
 
 ---

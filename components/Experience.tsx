@@ -88,7 +88,7 @@ export function Experience() {
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
           style={{ scaleY: timelineProgress }}
-          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#00C8FF] via-[#00C8FF] to-[#f97316] shadow-[0_0_18px_rgba(0,200,255,0.45)] sm:left-2"
+          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#00C8FF] via-[#00C8FF] to-[#f97316] shadow-[0_0_10px_rgba(0,200,255,0.20)] sm:left-2"
         />
 
         {visibleItems.map((item, index) => {
@@ -97,15 +97,17 @@ export function Experience() {
           return (
             <ScrollReveal key={`${item.company}-${item.role}`} delay={index * 0.2}>
               <div className="relative overflow-visible border-t border-white/10 last:border-b group">
-                
-                {/* I6: Left-edge accent bar */}
+
+                {/* Top-edge glow — strong centre, tapers to nothing before reaching either edge */}
                 <div
                   aria-hidden="true"
-                  className={`absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-accent to-transparent transition-transform duration-200 origin-top ${
-                    isOpen ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 1%, rgba(0,200,255,1) 50%, transparent 99%)',
+                  }}
+                  className={`pointer-events-none absolute left-0 right-0 top-0 h-px transition-opacity duration-200 ${
+                    isOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                   }`}
                 />
-                
                 <span
                   className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
                 >
@@ -118,7 +120,7 @@ export function Experience() {
                   )}
 
                   {/* Static filled dot — always visible, centred inside the 4×4 wrapper */}
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#050505] shadow-[0_0_16px_rgba(0,200,255,0.50)]" />
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#050505] shadow-[0_0_8px_rgba(0,200,255,0.25)]" />
                 </span>
 
                 <button
@@ -128,7 +130,7 @@ export function Experience() {
                       current === item.company ? null : item.company
                     )
                   }
-                  className="hover-glow flex w-full flex-col gap-4 px-3 py-6 text-left hover:bg-accent/[0.08] md:flex-row md:items-start md:justify-between"
+                  className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
                   aria-expanded={isOpen}
                 >
                   <div className="min-w-0">

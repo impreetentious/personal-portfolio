@@ -8,6 +8,14 @@ type WindowsTerminalProps = {
   tagline: string
   bio: string
   resumeUrl?: string
+  /**
+   * Gates the typewriter effect. Pass `false` while a boot sequence (or any
+   * other intro overlay) is still playing, then flip to `true` once it
+   * completes — e.g. via that component's `onComplete` callback rather than
+   * a hardcoded timeout. Defaults to `true` so existing usages without a
+   * boot sequence keep working unchanged.
+   */
+  startTyping?: boolean
 }
 
 type PropertyEntry = {
@@ -197,7 +205,7 @@ function GitBranchIcon() {
   )
 }
 
-export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTerminalProps) {
+export function WindowsTerminal({ name, tagline, bio, resumeUrl, startTyping = true }: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
   const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
   const [istTime, setIstTime]               = useState('')
@@ -212,10 +220,11 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl }: WindowsTermin
   useEffect(() => { setDisplayedChars(0) }, [bio])
 
   useEffect(() => {
+    if (!startTyping) return
     if (displayedChars >= bio.length) return
     const id = setTimeout(() => setDisplayedChars((n) => n + 1), typeDelayRef.current)
     return () => clearTimeout(id)
-  }, [bio, displayedChars])
+  }, [bio, displayedChars, startTyping])
 
   useEffect(() => {
     setIstTime(getISTTime())

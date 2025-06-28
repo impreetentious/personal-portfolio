@@ -6,27 +6,12 @@ import type { ReactNode } from 'react'
 import { Navigation }     from '@/components/Navigation'
 import { CommandPalette } from '@/components/CommandPalette'
 import { BootSequence }   from '@/components/BootSequence'
+import { BootProvider }   from '@/components/BootContext'
 
 interface LayoutShellProps {
   children   : ReactNode
   resumeUrl? : string
 }
-
-// ── Boot phase state machine ──────────────────────────────────────────────────
-//
-//   'pending'  SSR default. Page hidden behind a static dark cover while we
-//              check sessionStorage on the client. No animation yet.
-//
-//   'show'     First visit in this session. BootSequence plays in full.
-//
-//   'done'     Boot just finished. Cover removed, page fully visible.
-//
-// This three-state model eliminates two classes of visual glitch:
-//   1. The "return-visit flash" — old useState(true) baked the overlay into SSR
-//      HTML; the useEffect then immediately removed it, causing a dark flash on
-//      every page reload after the first visit.
-//   2. The "blank-page flash" — initialising to false and then setting to true
-//      in useEffect briefly exposed the real page before the boot overlay appeared.
 //
 type BootPhase = 'pending' | 'show' | 'done'
 
@@ -34,10 +19,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)
   const [bootPhase,     setBootPhase]     = useState<BootPhase>('pending')
 
-  // ── Resolve boot phase on client (runs once after hydration) ─────────────
   useEffect(() => {
-    // Always show boot on every page load — sessionStorage gate removed
-    // (it persisted for the full tab lifetime, skipping the animation on reload)
     setBootPhase('show')
   }, [])
 
@@ -125,7 +107,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           pointerEvents   : isPaletteOpen ? 'none' : 'auto',
         }}
       >
-        {children}
+        <BootProvider value={bootPhase === 'done'}>
+          {children}
+        </BootProvider>
       </motion.main>
 
       <CommandPalette

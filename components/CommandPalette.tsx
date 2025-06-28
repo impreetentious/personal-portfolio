@@ -349,7 +349,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
 
               {/* ── Title bar ── */}
               <div className="flex items-center justify-between border-b border-white/[0.06] bg-surface2/50 px-4 py-2.5">
-                <span className="select-none font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/40">
+                <span className="select-none font-mono text-[11px] uppercase tracking-[0.22em] text-foreground/70">
                   COMMAND PALETTE
                 </span>
                 <button

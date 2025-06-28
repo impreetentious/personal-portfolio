@@ -130,7 +130,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={!isOnHome ? { y: 0, opacity: 1 } : { y: -20, opacity: 0 }}
-        transition={{ type: 'tween', ease: 'easeOut', duration: 0.4 }}
+        transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed top-7 left-9 z-50 hidden md:flex items-center gap-3"
       >
         <a
@@ -151,7 +151,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={!isOnHome ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-        transition={{ type: 'tween', ease: 'easeOut', duration: 0.4 }}
+        transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed bottom-7 left-9 z-50 hidden md:flex"
       >
         {}
@@ -185,7 +185,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
               <a
                 key={label}
                 href={href}
-                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/60"
+                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
               >
                 <span
                   className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
@@ -213,23 +213,28 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       <motion.nav
         initial={{ opacity: 0, x: -32, visibility: 'hidden' }}
         animate={!isOnHome ? { opacity: 1, x: 0, visibility: 'visible' } : { opacity: 0, x: -32, visibility: 'hidden' }}
-        transition={{ type: 'tween', ease: 'easeOut', duration: 0.4 }}
+        transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="pointer-events-none fixed left-0 top-0 h-full w-32 z-40 hidden md:flex md:flex-col md:items-center bg-transparent"
       >
         <div className="pointer-events-auto flex flex-1 flex-col items-center justify-center py-6">
           <div className="relative flex flex-col items-center gap-6">
-            <div
-              aria-hidden="true"
-              className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-white/10 -z-10"
-            />
             {navigationItems.map(({ label, href, icon: Icon }) => {
               const isActive = activeSection === href.slice(1)
               return (
                 <a
                   key={label}
                   href={href}
-                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/60 bg-background/80 backdrop-blur-sm"
+                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                 >
+                  {/* Left hook — slides out from left on hover/active, fades in sync with other states */}
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute left-0 top-[30px] h-px w-5 bg-accent origin-left transition-[opacity,transform] duration-200 ease-out ${
+                      isActive
+                        ? 'opacity-70 scale-x-100'
+                        : 'opacity-0 scale-x-50 group-hover:opacity-35 group-hover:scale-x-100'
+                    }`}
+                  />
                   {/* I5: Desktop rail icon badge — dual-layer shadow, bumped bg/border */}
                   <span
                     className={`flex h-11 w-11 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${

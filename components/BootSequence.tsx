@@ -17,10 +17,10 @@ const BOOT_LINES = [
 ] as const
 
 // ── Timing constants (do not deviate) ─────────────────────────────────────────
-const firstDelay   = 150    // ms before first line appears
-const lineInterval = 300   // ms between each line
-const taglinePad   = 500    // ms after last line before tagline appears
-const fadePad      = 900   // ms after last line before fade-out starts
+const firstDelay   = 100    // ms before first line appears
+const lineInterval = 200   // ms between each line
+const taglinePad   = 400    // ms after last line before tagline appears
+const fadePad      = 800   // ms after last line before fade-out starts
 
 type Variant = 'ok' | 'comp' | 'ready'
 

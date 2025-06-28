@@ -16,7 +16,7 @@ const config: Config = {
         foreground: '#ABB2BF',
         accent: '#00C8FF',
         success: '#d0752fff',
-        metaphor: '#d6d1daff',
+        metaphor: '#eded80ff',
         hairline: 'rgba(255,255,255,0.08)',
         'muted-foreground': 'rgba(171,178,191,0.50)',
       },
