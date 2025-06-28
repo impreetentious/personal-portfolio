@@ -7,21 +7,30 @@ import { Navigation }     from '@/components/Navigation'
 import { CommandPalette } from '@/components/CommandPalette'
 import { BootSequence }   from '@/components/BootSequence'
 import { BootProvider }   from '@/components/BootContext'
+import { usePathname }    from 'next/navigation'
 
 interface LayoutShellProps {
   children   : ReactNode
   resumeUrl? : string
 }
-//
+
 type BootPhase = 'pending' | 'show' | 'done'
 
 export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)
   const [bootPhase,     setBootPhase]     = useState<BootPhase>('pending')
+  
+  const pathname = usePathname()
+  const isStudio = pathname?.startsWith('/studio')
 
   useEffect(() => {
+    // Escape hatch for the Sanity Studio
+    if (isStudio) {
+      setBootPhase('done')
+      return
+    }
     setBootPhase('show')
-  }, [])
+  }, [isStudio])
 
   const handleBootComplete = useCallback(() => {
     setBootPhase('done')
@@ -32,6 +41,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const closePalette = useCallback(() => setIsPaletteOpen(false), [])
 
   useEffect(() => {
+    // Disable command palette shortcuts while in Studio
+    if (isStudio) return 
+    
     const handler = (e: KeyboardEvent) => {
       // Ctrl+K only — !metaKey explicitly excludes any Cmd binding
       if (e.ctrlKey && !e.metaKey && e.key === 'k') {
@@ -45,7 +57,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [isStudio])
 
   useEffect(() => {
     if (!isPaletteOpen) return
@@ -56,47 +68,50 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     }
   }, [isPaletteOpen])
 
-  // ── A3: Body scroll lock during boot phases ───────────────────────────────
+  // ── Body scroll lock during boot phases ───────────────────────────────
   useEffect(() => {
+    if (isStudio) return
     if (bootPhase === 'pending' || bootPhase === 'show') {
       document.body.style.overflow = 'hidden'
       return () => { document.body.style.overflow = '' }
     }
-  }, [bootPhase])
+  }, [bootPhase, isStudio])
 
   // ── Derived flags ─────────────────────────────────────────────────────────
-  // bootBlocking: true while the page should be inert (pending or playing)
-  const bootBlocking = bootPhase !== 'done'
+  const bootBlocking = !isStudio && bootPhase !== 'done'
 
   return (
     <>
       {/* Static cover — shown only during the pending check to block the page */}
-      {bootPhase === 'pending' && (
+      {bootPhase === 'pending' && !isStudio && (
         <div
           aria-hidden="true"
           style={{
-            position    : 'fixed',
-            inset       : 0,
-            zIndex      : 200,
-            background  : '#050505',
+            position     : 'fixed',
+            inset        : 0,
+            zIndex       : 200,
+            background   : '#050505',
             pointerEvents: 'none',
           }}
         />
       )}
 
       {/* Full animated boot sequence — first visit only */}
-      {bootPhase === 'show' && (
+      {bootPhase === 'show' && !isStudio && (
         <BootSequence onComplete={handleBootComplete} />
       )}
 
-      <Navigation onOpenPalette={openPalette} isPaletteOpen={isPaletteOpen} />
+      {/* Exclude Navigation from Studio */}
+      {!isStudio && (
+        <Navigation onOpenPalette={openPalette} isPaletteOpen={isPaletteOpen} />
+      )}
 
       <motion.main
         aria-hidden={(isPaletteOpen || bootBlocking) || undefined}
         inert={(isPaletteOpen || bootBlocking) || undefined}
         initial={{ scale: 1, filter: 'blur(0px)' }}
         animate={
-          isPaletteOpen
+          isPaletteOpen && !isStudio
             ? { scale: 0.98, filter: 'blur(4px)' }
             : { scale: 1,    filter: 'blur(0px)' }
         }
@@ -107,16 +122,19 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           pointerEvents   : isPaletteOpen ? 'none' : 'auto',
         }}
       >
-        <BootProvider value={bootPhase === 'done'}>
+        <BootProvider value={bootPhase === 'done' || !!isStudio}>
           {children}
         </BootProvider>
       </motion.main>
 
-      <CommandPalette
-        isOpen    = {isPaletteOpen}
-        onClose   = {closePalette}
-        resumeUrl = {resumeUrl}
-      />
+      {/* Exclude Command Palette from Studio */}
+      {!isStudio && (
+        <CommandPalette
+          isOpen    = {isPaletteOpen}
+          onClose   = {closePalette}
+          resumeUrl = {resumeUrl}
+        />
+      )}
     </>
   )
 }

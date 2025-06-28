@@ -1,2 +1,0 @@
-export const BASE_FORMAT_VERSION = '3.0.1'
-export const DISPLAY_VERSION = `v${BASE_FORMAT_VERSION}`

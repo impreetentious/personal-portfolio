@@ -8,13 +8,6 @@ type WindowsTerminalProps = {
   tagline: string
   bio: string
   resumeUrl?: string
-  /**
-   * Gates the typewriter effect. Pass `false` while a boot sequence (or any
-   * other intro overlay) is still playing, then flip to `true` once it
-   * completes — e.g. via that component's `onComplete` callback rather than
-   * a hardcoded timeout. Defaults to `true` so existing usages without a
-   * boot sequence keep working unchanged.
-   */
   startTyping?: boolean
 }
 
@@ -35,12 +28,12 @@ const MAX_VELOCITY    = 8
 
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
-  { key: 'Email',    value: 'sidakpreetsinghk@gmail.com', href: 'mailto:sidakpreetsinghk@gmail.com' },
+  { key: 'Email',    value: 'hello@sidakpreetsingh.com', href: 'mailto:hello@sidakpreetsingh.com' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [
   { key: 'Phone',    value: '+91 90344 31886',  href: 'tel:+919034431886'                        },
-  { key: 'LinkedIn', value: 'sidakpreetsingh',  href: 'https://linkedin.com/in/sidakpreetsinghk' },
+  { key: 'LinkedIn', value: 'Sidakpreet Singh',  href: 'https://linkedin.com/in/sidakpreetsinghk' },
 ]
 
 const skills: Skill[] = [

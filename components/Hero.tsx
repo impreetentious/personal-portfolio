@@ -47,14 +47,11 @@ export function Hero({data, resumeUrl}: HeroProps) {
     const section = sectionRef.current
     if (!section) return
 
-    let rect = section.getBoundingClientRect()
-    const updateRect = () => { rect = section.getBoundingClientRect() }
-    window.addEventListener('resize', updateRect)
-
     let rafId: number | null = null
     const onMouseMove = (e: MouseEvent) => {
       if (rafId !== null) return
       rafId = requestAnimationFrame(() => {
+        const rect = section.getBoundingClientRect()
         rawX.set((e.clientX - rect.left) / rect.width)
         rawY.set((e.clientY - rect.top)  / rect.height)
         rafId = null
@@ -64,7 +61,6 @@ export function Hero({data, resumeUrl}: HeroProps) {
     section.addEventListener('mousemove', onMouseMove, { passive: true })
     return () => {
       section.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('resize', updateRect)
       if (rafId !== null) cancelAnimationFrame(rafId)
     }
   }, [rawX, rawY])
@@ -95,15 +91,6 @@ export function Hero({data, resumeUrl}: HeroProps) {
         </motion.div>
       </div>
 
-      {/*
-        Fix 5: the inline `transition: 'opacity 0.2s ease-out'` was removed.
-        scrollIndicatorOpacity is a MotionValue written by Framer Motion on
-        every scroll frame — pairing that with a CSS transition caused the
-        browser to apply a 200ms ease-out tween to each per-frame write,
-        producing a ~200ms lag stutter between actual scroll position and the
-        indicator's rendered opacity. Framer Motion drives the value directly;
-        no CSS transition is needed or desired here.
-      */}
       <motion.div
         aria-hidden="true"
         className="absolute bottom-6 left-1/2 -translate-x-1/2"

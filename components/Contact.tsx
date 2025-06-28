@@ -149,8 +149,8 @@ function GitHubIcon({ className }: BrandIconProps) {
 // ─── Social Links Data ────────────────────────────────────────────────────────
 
 const SOCIAL_LINKS = [
-  { label: 'Phone',    href: 'tel:+919034431886',                          icon: PhoneIcon,    copyValue: '+91 90344 31886'            },
-  { label: 'Email',    href: 'mailto:sidakpreetsinghk@gmail.com',          icon: MailIcon,     copyValue: 'sidakpreetsinghk@gmail.com' },
+  { label: 'Phone',    href: 'tel:+919034431886',                          icon: PhoneIcon,    copyValue: '+91 90344 31886'           },
+  { label: 'Email',    href: 'mailto:hello@sidakpreetsingh.com',           icon: MailIcon,     copyValue: 'hello@sidakpreetsingh.com' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/sidakpreetsinghk',   icon: LinkedInIcon                                         },
   { label: 'WhatsApp', href: 'https://wa.me/+919034431886',                icon: WhatsAppIcon                                         },
   { label: 'GitHub',   href: 'https://github.com/ItsMonarch04',            icon: GitHubIcon                                           },

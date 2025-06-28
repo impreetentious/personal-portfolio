@@ -31,6 +31,8 @@ personal-portfolio/
 ├── components/
 │   ├── Achievements.tsx
 │   ├── AnimatedCounter.tsx
+│   ├── BootContext.tsx
+│   ├── BootSequence.tsx
 │   ├── CommandPalette.tsx
 │   ├── Contact.tsx
 │   ├── Education.tsx
@@ -49,7 +51,6 @@ personal-portfolio/
 │   ├── queries.ts
 │   ├── sanity.ts
 │   ├── config.ts
-│   └── version.ts
 ├── sanity/schemas/
 │   ├── index.ts
 │   └── [hero, experience, skills, metrics, education, achievements, writing, resume].ts
@@ -70,8 +71,8 @@ Data is structured around these primary interfaces:
 
 # Version Control
 
-* **Base Format Version:** 3.0.1
-* **Portfolio Version: v3.0.1_2025-06-28_13:44:11 (IST)
+* **Base Format Version:** 3.0.2
+* **Portfolio Version: v3.0.2_2025-06-28_21:19:07 (IST)
 
 ## AI Agent Instructions
 

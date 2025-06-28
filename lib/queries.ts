@@ -33,9 +33,6 @@ export type ExperienceItem = {
   skillsUsed: string[]
 }
 
-/**
- * isHidden != true also catches documents where the field is null/unset.
- */
 export const experienceQuery = `
   *[_type == "experience" && isHidden != true] | order(order asc) {
     company,

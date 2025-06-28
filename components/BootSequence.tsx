@@ -7,7 +7,7 @@ interface BootSequenceProps {
 }
 
 const BOOT_LINES = [
-  { ts: '[100ms]',  msg: 'BIOS v2.6.5 — POST check',                variant: 'ok'    },
+  { ts: '[100ms]',  msg: 'BIOS v1.4.7 — POST check',                variant: 'ok'    },
   { ts: '[200ms]',  msg: 'Mounting filesystem',                      variant: 'ok'    },
   { ts: '[300ms]',  msg: 'Loading modules: next@14 · framer-motion', variant: 'ok'    },
   { ts: '[400ms]',  msg: 'DNS resolved → sidakpreetsingh.com',       variant: 'ok'    },
