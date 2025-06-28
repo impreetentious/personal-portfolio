@@ -13,6 +13,7 @@ import {metricsSchema}      from './metrics'
 import {educationSchema}    from './education'
 import {skillsSchema}       from './skills'
 import {achievementsSchema} from './achievements'
+import {writingSchema}      from './writing'
 
 export const schemaTypes = [
   // Singletons
@@ -28,4 +29,5 @@ export const schemaTypes = [
   educationSchema,
   skillsSchema,
   achievementsSchema,
+  writingSchema,
 ]

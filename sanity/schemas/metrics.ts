@@ -59,6 +59,23 @@ export const metricsSchema = defineType({
         'Short descriptor rendered below the counter — e.g. "Projects Shipped", "Client Satisfaction".',
       validation: (Rule) => Rule.required(),
     }),
+
+    defineField({
+      name: 'sub',
+      title: 'Supporting Text',
+      type: 'string',
+      description:
+        'Short secondary line rendered beneath the main label.',
+      validation: (Rule) => Rule.max(120),
+    }),
+
+    defineField({
+      name: 'isHidden',
+      title: 'Hide this metric',
+      type: 'boolean',
+      description: 'Toggle on to suppress this metric without deleting the record.',
+      initialValue: false,
+    }),
   ],
 
   orderings: [

@@ -65,14 +65,44 @@ Data is structured around these primary interfaces:
 
 * **Experience:** `company`, `role`, `location`, `dates`, `bulletPoints`, `skillsUsed`, `isHidden`
 * **Skills:** Grouped by `category` ('Tools' | 'Skills') containing `name` and optional `description` (for tooltips)
-* **Metrics:** `value`, `label`, `sub`
-* **Achievements:** `rank`, `event`, `organizer`, `date`, `notes`, optional `badge` 
-* **Education:** `institution`, `degree`, `years`
+* **Metrics:** `value`, optional `prefix`, optional `suffix`, `label`, optional `sub`
+* **Achievements:** `event`, `organizer`, `date`, `notes`, optional `description`
+* **Education:** `institution`, `degree`, `years`, optional `gpa`
+
+## Sanity CMS Setup
+
+The portfolio now supports Sanity-backed content for:
+
+* `hero`
+* `resume`
+* `experience`
+* `skills`
+* `metrics`
+* `achievements`
+* `education`
+* `writing`
+
+Local setup:
+
+1. Create a `.env.local` file from `.env.example`.
+2. Add your Sanity project ID to `NEXT_PUBLIC_SANITY_PROJECT_ID`.
+3. Keep `NEXT_PUBLIC_SANITY_DATASET=production` unless you want a different dataset.
+4. Add `SANITY_API_READ_TOKEN` only if you need authenticated reads for unpublished or protected content.
+5. Start the app and open `/studio` to manage portfolio content.
+
+Important schema note:
+
+* `achievements`, `education`, and `metrics` were expanded to match the live UI.
+* If you already created documents with the old shapes, update those records in Studio before relying on live content for those sections.
+
+CLI support:
+
+* `sanity.cli.ts` is included so future Sanity CLI commands can resolve the same project and dataset as the embedded Studio.
 
 # Version Control
 
-* **Base Format Version:** 3.0.3
-* **Portfolio Version: v3.0.3_2025-06-28_22:51:00 (IST)
+* **Base Format Version:** 3.1.0
+* **Portfolio Version: v3.1.0_2025-06-29_00:20:12 (IST)
 
 ## AI Agent Instructions
 

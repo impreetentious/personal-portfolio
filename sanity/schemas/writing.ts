@@ -1,8 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
-export const educationSchema = defineType({
-  name: 'education',
-  title: 'Education',
+export const writingSchema = defineType({
+  name: 'writing',
+  title: 'Writing',
   type: 'document',
   fields: [
     defineField({
@@ -13,34 +13,40 @@ export const educationSchema = defineType({
       validation: (Rule) => Rule.required().integer().positive(),
     }),
     defineField({
-      name: 'institution',
-      title: 'Institution',
+      name: 'title',
+      title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().max(140),
     }),
     defineField({
-      name: 'degree',
-      title: 'Degree',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
+      name: 'url',
+      title: 'Article URL',
+      type: 'url',
+      validation: (Rule) =>
+        Rule.required().uri({
+          allowRelative: false,
+          scheme: ['http', 'https'],
+        }),
     }),
     defineField({
-      name: 'years',
-      title: 'Years',
+      name: 'year',
+      title: 'Year',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      description: 'Short display value such as "2024".',
+      validation: (Rule) => Rule.required().max(20),
     }),
     defineField({
-      name: 'gpa',
-      title: 'GPA / Score',
-      type: 'string',
-      description: 'Optional score line rendered beneath the degree.',
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 4,
+      validation: (Rule) => Rule.max(320),
     }),
     defineField({
       name: 'isHidden',
       title: 'Hide this entry',
       type: 'boolean',
-      description: 'Toggle on to suppress this education record without deleting it.',
+      description: 'Toggle on to suppress this article without deleting it.',
       initialValue: false,
     }),
   ],
@@ -53,8 +59,8 @@ export const educationSchema = defineType({
   ],
   preview: {
     select: {
-      title: 'institution',
-      subtitle: 'degree',
+      title: 'title',
+      subtitle: 'year',
       order: 'order',
       hidden: 'isHidden',
     },

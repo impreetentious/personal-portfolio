@@ -1,14 +1,39 @@
 import {defineField, defineType} from 'sanity'
 
 /**
- * Experience — one document per role.
- * Query with `order(order asc)` in GROQ to control display sequence.
- * Set `isHidden: true` to suppress an entry without deleting it.
+ * Experience supports two authoring modes:
+ * 1. Simple single-role entry using the legacy top-level fields.
+ * 2. Company entry with multiple nested roles using the `roles` array.
  */
 export const experienceSchema = defineType({
   name: 'experience',
   title: 'Experience',
   type: 'document',
+  validation: (Rule) =>
+    Rule.custom((value) => {
+      if (!value || typeof value !== 'object') return true
+
+      const doc = value as {
+        role?: string
+        dates?: string
+        bulletPoints?: string[]
+        roles?: Array<unknown>
+      }
+
+      const hasLegacySingleRole =
+        Boolean(doc.role?.trim()) &&
+        Boolean(doc.dates?.trim()) &&
+        Array.isArray(doc.bulletPoints) &&
+        doc.bulletPoints.length > 0
+
+      const hasMultiRoleArray =
+        Array.isArray(doc.roles) &&
+        doc.roles.length > 0
+
+      if (hasLegacySingleRole || hasMultiRoleArray) return true
+
+      return 'Add either one top-level role with dates and bullet points, or at least one entry in the Roles array.'
+    }),
   fields: [
     defineField({
       name: 'order',
@@ -29,7 +54,7 @@ export const experienceSchema = defineType({
       name: 'role',
       title: 'Job Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      description: 'Use this for a single-role company entry. Leave blank if you are using the Roles array below.',
     }),
 
     defineField({
@@ -44,16 +69,14 @@ export const experienceSchema = defineType({
       title: 'Duration',
       type: 'string',
       description: 'Display string shown on the card — e.g. "2022 – 2024" or "Jan 2023 – Present".',
-      validation: (Rule) => Rule.required(),
     }),
 
     defineField({
       name: 'bulletPoints',
       title: 'Bullet Points',
       type: 'array',
-      description: 'Impact highlights shown when the accordion card is expanded.',
+      description: 'Impact highlights shown when the accordion card is expanded for a single-role entry.',
       of: [{type: 'string'}],
-      validation: (Rule) => Rule.required().min(1),
     }),
 
     defineField({
@@ -65,6 +88,70 @@ export const experienceSchema = defineType({
       options: {
         layout: 'tags',
       },
+    }),
+
+    defineField({
+      name: 'displayDates',
+      title: 'Company Summary Dates',
+      type: 'string',
+      description: 'Optional summary shown on the collapsed row for a multi-role company, for example "2021 - Present".',
+    }),
+
+    defineField({
+      name: 'roles',
+      title: 'Roles',
+      type: 'array',
+      description: 'Use this when one company contains multiple roles over time.',
+      of: [
+        {
+          type: 'object',
+          name: 'experienceRole',
+          title: 'Role',
+          fields: [
+            defineField({
+              name: 'order',
+              title: 'Role Order',
+              type: 'number',
+              description: 'Lower numbers appear first within the company.',
+              validation: (Rule) => Rule.required().integer().positive(),
+            }),
+            defineField({
+              name: 'role',
+              title: 'Job Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'dates',
+              title: 'Duration',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'bulletPoints',
+              title: 'Bullet Points',
+              type: 'array',
+              of: [{type: 'string'}],
+              validation: (Rule) => Rule.required().min(1),
+            }),
+            defineField({
+              name: 'skillsUsed',
+              title: 'Skills Used',
+              type: 'array',
+              of: [{type: 'string'}],
+              options: {
+                layout: 'tags',
+              },
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'role',
+              subtitle: 'dates',
+            },
+          },
+        },
+      ],
     }),
 
     defineField({
@@ -88,13 +175,20 @@ export const experienceSchema = defineType({
     select: {
       title: 'company',
       subtitle: 'role',
+      roles: 'roles',
       hidden: 'isHidden',
       order: 'order',
     },
-    prepare({title, subtitle, hidden, order}) {
+    prepare({title, subtitle, roles, hidden, order}) {
+      const roleCount = Array.isArray(roles) ? roles.length : 0
+      const modeLabel =
+        roleCount > 0
+          ? `${roleCount} role${roleCount === 1 ? '' : 's'}`
+          : (subtitle ?? '')
+
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,
-        subtitle: `${subtitle ?? ''}${hidden ? '  ·  hidden' : ''}`,
+        subtitle: `${modeLabel}${hidden ? '  ·  hidden' : ''}`,
       }
     },
   },
