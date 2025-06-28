@@ -2,6 +2,9 @@ import type {Config} from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',

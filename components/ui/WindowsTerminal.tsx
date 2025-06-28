@@ -28,7 +28,7 @@ const MAX_VELOCITY    = 8
 
 const leftColumnProps: PropertyEntry[] = [
   { key: 'Location', value: 'Delhi NCR, India' },
-  { key: 'Email',    value: 'hello@sidakpreetsingh.com', href: 'mailto:hello@sidakpreetsingh.com' },
+  { key: 'Email',    value: 'work@sidakpreetsingh.com', href: 'mailto:work@sidakpreetsingh.com' },
 ]
 
 const rightColumnProps: PropertyEntry[] = [

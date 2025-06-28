@@ -54,7 +54,6 @@ const achievements: Achievement[] = [
 ];
 
 const tbodyVariants = {
-  hidden: {},
   visible: {
     transition: { staggerChildren: 0.15 },
   },
@@ -103,7 +102,7 @@ export function Achievements() {
           ref={wrapperRef}
           className="w-full overflow-x-auto rounded-sm border border-accent/10 pb-0.5"
         >
-          <table className="w-full min-w-[600px] text-sm border-collapse relative">
+          <table className="w-full min-w-[600px] text-sm border-collapse">
             <thead>
               <tr className="border-b border-accent/10 bg-accent/[0.03]">
                 <th
@@ -150,23 +149,25 @@ export function Achievements() {
                   <motion.tr
                     key={item.id}
                     variants={rowVariants}
+                    onClick={() => isExpandable && toggle(item.id)}
                     className={[
                       rowBorderClass,
-                      "group transition-colors duration-200 relative", // relative positioning is critical for the button overlay
-                      isExpandable ? "hover:bg-accent/[0.04]" : "",
+                      "group transition-colors duration-200",
+                      isExpandable ? "cursor-pointer hover:bg-accent/[0.04] has-[:focus-visible]:bg-accent/[0.06] has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-inset has-[:focus-visible]:ring-accent" : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}
                   >
                     <td className="py-5 px-5 relative">
-                      {/* Invisible semantic button over the entire row for screen readers / keyboard nav */}
                       {isExpandable && (
                         <button
-                          onClick={() => toggle(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggle(item.id);
+                          }}
                           aria-expanded={isOpen}
-                          aria-label={`Expand details for ${item.event}`}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent z-10"
-                          style={{ backgroundColor: 'transparent' }}
+                          aria-label={`${isOpen ? 'Collapse' : 'Expand'} details for ${item.event}`}
+                          className="sr-only"
                         />
                       )}
                       
@@ -189,8 +190,8 @@ export function Achievements() {
                       </div>
                     </td>
 
-                    <td className="py-5 px-5 relative">
-                      <div className="flex items-center gap-2 relative z-0">
+                    <td className="py-5 px-5">
+                      <div className="flex items-center gap-2">
                         <span className="font-medium text-foreground text-[15px] leading-snug group-hover:text-accent transition-colors duration-200">
                           {item.event}
                         </span>
@@ -211,13 +212,13 @@ export function Achievements() {
                     </td>
 
                     <td className="py-5 px-5 hidden md:table-cell">
-                      <span className="font-mono text-[13px] text-muted-foreground relative z-0">
+                      <span className="font-mono text-[13px] text-muted-foreground">
                         {item.organizer}
                       </span>
                     </td>
 
                     <td className="py-5 px-5 text-right">
-                      <div className="flex flex-col items-end gap-0.5 relative z-0">
+                      <div className="flex flex-col items-end gap-0.5">
                         <span className="font-mono text-xs text-foreground/70 tabular-nums">
                           {item.date}
                         </span>
@@ -230,6 +231,7 @@ export function Achievements() {
 
                   <tr key={`${item.id}-exp`}>
                     <td colSpan={4} className="p-0">
+                      {/* FIX E: intermediate block wrapper so motion.div is not a direct child of td, fixing Safari/Firefox height collapse */}
                       <div>
                         <AnimatePresence initial={false}>
                           {isOpen && item.description && (
