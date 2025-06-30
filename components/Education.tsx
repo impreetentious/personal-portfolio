@@ -3,21 +3,13 @@
 import { motion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import type { EducationItem } from "@/lib/queries";
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
 const SHOW_GPA = true; // Toggle this to false to hide GPAs globally
 
-// ─── Types & Data ─────────────────────────────────────────────────────────────
-
-type EducationItem = {
-  institution: string
-  degree: string
-  years: string
-  gpa?: string
-}
-
-const educationItems: EducationItem[] = [
+const FALLBACK_EDUCATION_ITEMS: EducationItem[] = [
   {
     institution: 'Chandigarh University',
     degree: 'Bachelor of Engineering in Computer Science',
@@ -34,7 +26,13 @@ const educationItems: EducationItem[] = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Education() {
+type EducationProps = {
+  data?: EducationItem[]
+}
+
+export function Education({data}: EducationProps) {
+  const educationItems = data?.length ? data : FALLBACK_EDUCATION_ITEMS
+
   return (
     <section
       id="education"

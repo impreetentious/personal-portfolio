@@ -4,57 +4,42 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
-interface Metric {
-  to: number;
-  prefix?: string;
-  suffix?: string;
-  duration: number;
-  label: string;
-  sub: string;
-}
+import type { MetricItem } from "@/lib/queries";
 
 // ─── Data — exact mapping from spec ───────────────────────────────────────────
-const metrics: Metric[] = [
+const FALLBACK_METRICS: MetricItem[] = [
   {
-    to: 500,
+    value: 500,
     suffix: "K+",
-    duration: 2.2,
     label: "Lines of Code Written",
     sub: "Across production systems",
   },
   {
-    to: 1,
+    value: 1,
     suffix: "M+",
-    duration: 0.7,
     label: "Users Impacted",
     sub: "Monthly active reach",
   },
   {
-    to: 40,
+    value: 40,
     suffix: "+",
-    duration: 1.8,
     label: "Deployments Shipped",
     sub: "Zero critical regressions",
   },
   {
-    to: 98.9,
+    value: 98.9,
     suffix: "%",
-    duration: 2.0,
     label: "Uptime Maintained",
     sub: "Across all services",
   },
   {
-    to: 12,
-    duration: 1.6,
+    value: 12,
     label: "Open Source Projects",
     sub: "Public & actively maintained",
   },
   {
-    to: 5,
+    value: 5,
     suffix: "+",
-    duration: 1.4,
     label: "Countries Reached",
     sub: "Global user footprint",
   },
@@ -76,9 +61,22 @@ const cardVariants = {
 };
 
 // ─── Component ─────────────────────────────────────────────────────────────────
-export function Metrics() {
+function getMetricDuration(value: number) {
+  if (value >= 500) return 2.2
+  if (value >= 100) return 2
+  if (value >= 40) return 1.8
+  if (value >= 10) return 1.6
+  return 1.2
+}
+
+type MetricsProps = {
+  data?: MetricItem[]
+}
+
+export function Metrics({data}: MetricsProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, margin: "-80px" });
+  const metrics = data?.length ? data : FALLBACK_METRICS
 
   return (
     <section
@@ -145,10 +143,10 @@ export function Metrics() {
               {/* ── Animated metric value ── */}
               <p className="font-mono text-5xl md:text-[3.5rem] font-black tracking-tight text-foreground leading-none mb-4">
                 <AnimatedCounter
-                  to={metric.to}
+                  to={metric.value}
                   prefix={metric.prefix}
                   suffix={metric.suffix}
-                  duration={metric.duration}
+                  duration={getMetricDuration(metric.value)}
                 />
               </p>
 
@@ -158,7 +156,7 @@ export function Metrics() {
                   {metric.label}
                 </p>
                 <p className="font-mono text-[11px] text-muted-foreground">
-                  {metric.sub}
+                  {metric.sub ?? ""}
                 </p>
               </div>
 

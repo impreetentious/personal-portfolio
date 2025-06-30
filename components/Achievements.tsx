@@ -4,17 +4,9 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ChevronDown, Award } from "lucide-react";
 import { useRef, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import type { AchievementItem } from "@/lib/queries";
 
-interface Achievement {
-  id: string;
-  event: string;
-  organizer: string;
-  date: string;
-  notes: string;
-  description?: string;
-}
-
-const achievements: Achievement[] = [
+const FALLBACK_ACHIEVEMENTS: AchievementItem[] = [
   {
     id: "hackathon-2024",
     event: "National Hackathon Championship",
@@ -75,10 +67,15 @@ const rowVariants = {
   },
 };
 
-export function Achievements() {
+type AchievementsProps = {
+  data?: AchievementItem[]
+}
+
+export function Achievements({data}: AchievementsProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapperRef, { once: true, margin: "-60px" });
   const [activeId, setActiveId] = useState<string | null>(null);
+  const achievements = data?.length ? data : FALLBACK_ACHIEVEMENTS
 
   function toggle(id: string) {
     setActiveId((current) => (current === id ? null : id));

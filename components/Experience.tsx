@@ -5,19 +5,11 @@ import { ChevronDown, MapPin } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
+import type { ExperienceItem, ExperienceRoleItem } from '@/lib/queries'
 
-type ExperienceItem = {
-  company: string
-  role: string
-  location: string
-  dates: string
-  bulletPoints: string[]
-  skillsUsed: string[]
-  isHidden: boolean
-}
-
-const experienceItems: ExperienceItem[] = [
+const FALLBACK_EXPERIENCE_ITEMS: ExperienceItem[] = [
   {
+    id: 'fallback-open-systems-lab',
     company: 'Open Systems Lab',
     role: 'Software Engineer',
     location: 'Remote',
@@ -28,9 +20,9 @@ const experienceItems: ExperienceItem[] = [
       'Improved maintainability by organizing reusable components and shared UI patterns.',
     ],
     skillsUsed: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    isHidden: false,
   },
   {
+    id: 'fallback-northstar-digital',
     company: 'Northstar Digital',
     role: 'Frontend Developer',
     location: 'Chandigarh, India',
@@ -41,9 +33,9 @@ const experienceItems: ExperienceItem[] = [
       'Maintained design consistency across landing pages, product surfaces, and content modules.',
     ],
     skillsUsed: ['React', 'JavaScript', 'CSS', 'REST APIs'],
-    isHidden: false,
   },
   {
+    id: 'fallback-freelance',
     company: 'Freelance',
     role: 'Web Developer',
     location: 'Remote',
@@ -54,12 +46,32 @@ const experienceItems: ExperienceItem[] = [
       'Created flexible content structures so clients could update text without technical support.',
     ],
     skillsUsed: ['Sanity.io', 'Node.js', 'Deployment', 'UI Architecture'],
-    isHidden: false,
   },
 ]
 
-export function Experience() {
-  const [activeCompany, setActiveCompany] = useState<string | null>(null)
+type ExperienceProps = {
+  data?: ExperienceItem[]
+}
+
+function normalizeRoles(item: ExperienceItem): ExperienceRoleItem[] {
+  if (item.roles?.length) return item.roles
+
+  if (item.role && item.dates && item.bulletPoints?.length) {
+    return [
+      {
+        role: item.role,
+        dates: item.dates,
+        bulletPoints: item.bulletPoints,
+        skillsUsed: item.skillsUsed ?? [],
+      },
+    ]
+  }
+
+  return []
+}
+
+export function Experience({data}: ExperienceProps) {
+  const [activeIds, setActiveIds] = useState<string[]>([])
 
   const timelineRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -72,7 +84,7 @@ export function Experience() {
     mass: 0.35,
   })
 
-  const visibleItems = experienceItems.filter((item) => !item.isHidden)
+  const visibleItems = data?.length ? data : FALLBACK_EXPERIENCE_ITEMS
 
   return (
     <section
@@ -92,10 +104,20 @@ export function Experience() {
         />
 
         {visibleItems.map((item, index) => {
-          const isOpen = activeCompany === item.company
+          const isOpen = activeIds.includes(item.id)
+          const roleEntries = normalizeRoles(item)
+          const primaryRole = roleEntries[0]?.role ?? item.role ?? ''
+          const extraRoleCount = Math.max(roleEntries.length - 1, 0)
+          const collapsedRoleLabel = extraRoleCount
+            ? `${primaryRole} + ${extraRoleCount} more role${extraRoleCount > 1 ? 's' : ''}`
+            : primaryRole
+          const collapsedDates =
+            item.displayDates ??
+            item.dates ??
+            (roleEntries.length === 1 ? roleEntries[0]?.dates : `${roleEntries.length} roles`)
 
           return (
-            <ScrollReveal key={`${item.company}-${item.role}`} delay={index * 0.2}>
+            <ScrollReveal key={item.id} delay={index * 0.2}>
               <div className="relative overflow-visible border-t border-white/10 last:border-b group">
 
                 {/* Top-edge glow — strong centre, tapers to nothing before reaching either edge */}
@@ -126,8 +148,10 @@ export function Experience() {
                 <button
                   type="button"
                   onClick={() =>
-                    setActiveCompany((current) =>
-                      current === item.company ? null : item.company
+                    setActiveIds((current) =>
+                      current.includes(item.id)
+                        ? current.filter((id) => id !== item.id)
+                        : [...current, item.id]
                     )
                   }
                   className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
@@ -157,9 +181,11 @@ export function Experience() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-30px" }}
                       transition={{ duration: 0.45, ease: "easeOut", type: "tween", delay: 0.2 }}
-                      className="mt-2 text-sm font-medium uppercase tracking-[0.18em] text-success"
+                      className={`mt-2 pr-6 font-medium leading-relaxed text-success transition-opacity duration-200 sm:pr-0 ${
+                        isOpen ? 'opacity-0 md:opacity-0 h-0 overflow-hidden mt-0' : 'text-[0.95rem] sm:text-sm opacity-100'
+                      }`}
                     >
-                      {item.role}
+                      {collapsedRoleLabel}
                     </motion.p>
                   </div>
 
@@ -168,9 +194,9 @@ export function Experience() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-30px" }}
                     transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
-                    className="shrink-0 text-left text-sm font-medium text-foreground/78 md:min-w-40 md:text-right"
+                    className="shrink-0 text-left text-sm font-medium leading-relaxed text-foreground/78 md:min-w-40 md:text-right"
                   >
-                    {item.dates}
+                    {collapsedDates}
                   </motion.p>
                 </button>
 
@@ -185,37 +211,61 @@ export function Experience() {
                       className="overflow-hidden"
                     >
                       <div className="border-t border-accent/10 pb-8 pt-6">
-                        <div className="flex items-center gap-2 text-sm text-foreground/72">
-                          <MapPin className="h-4 w-4 text-accent" />
-                          <span>{item.location}</span>
-                        </div>
-
-                        <ul className="mt-5 space-y-3">
-                          {item.bulletPoints.map((point) => (
-                            <li
-                              key={point}
-                              className="flex gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
-                            >
-                              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        <div className="mt-6">
-                          <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
-                            Skills Used
-                          </p>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {item.skillsUsed.map((skill) => (
-                              <span
-                                key={skill}
-                                className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
-                              >
-                                {skill}
-                              </span>
-                            ))}
+                        {item.location && (
+                          <div className="flex items-center gap-2 text-sm text-foreground/72">
+                            <MapPin className="h-4 w-4 text-accent" />
+                            <span>{item.location}</span>
                           </div>
+                        )}
+
+                        <div className="mt-5 space-y-8">
+                          {roleEntries.map((roleEntry, roleIndex) => (
+                            <div
+                              key={`${item.id}-${roleEntry.role}-${roleEntry.dates}`}
+                              className={roleIndex > 0 ? 'border-t border-white/10 pt-6' : ''}
+                            >
+                              {roleEntries.length > 1 && (
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                                  <p className="pr-6 text-base font-semibold leading-relaxed text-success sm:pr-0 sm:text-[1.02rem]">
+                                    {roleEntry.role}
+                                  </p>
+                                  <p className="text-sm font-medium leading-relaxed text-foreground/72">
+                                    {roleEntry.dates}
+                                  </p>
+                                </div>
+                              )}
+
+                              <ul className={roleEntries.length > 1 ? 'mt-5 space-y-3' : 'space-y-3'}>
+                                {roleEntry.bulletPoints.map((point) => (
+                                  <li
+                                    key={point}
+                                    className="flex gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
+                                  >
+                                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
+                                    <span>{point}</span>
+                                  </li>
+                                ))}
+                              </ul>
+
+                              {roleEntry.skillsUsed.length > 0 && (
+                                <div className="mt-6">
+                                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
+                                    Skills Used
+                                  </p>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    {roleEntry.skillsUsed.map((skill) => (
+                                      <span
+                                        key={skill}
+                                        className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
+                                      >
+                                        {skill}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </motion.div>

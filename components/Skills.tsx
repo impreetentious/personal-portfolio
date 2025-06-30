@@ -3,22 +3,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type SkillItem = {
-  name: string
-  description?: string
-}
-
-type SkillsEntry = {
-  category: 'Tools' | 'Skills'
-  items: SkillItem[]
-}
+import type { SkillItem, SkillsEntry } from "@/lib/queries";
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
 
-const skillEntries: SkillsEntry[] = [
+const FALLBACK_SKILL_ENTRIES: SkillsEntry[] = [
   {
     category: 'Tools',
     items: [
@@ -121,7 +110,13 @@ const pillVariants = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Skills() {
+type SkillsProps = {
+  data?: SkillsEntry[]
+}
+
+export function Skills({data}: SkillsProps) {
+  const skillEntries = data?.length ? data : FALLBACK_SKILL_ENTRIES
+
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,
     items: [] as SkillItem[],

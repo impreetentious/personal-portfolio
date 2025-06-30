@@ -4,18 +4,11 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import type { WritingItem } from "@/lib/queries";
 
-interface WritingItem {
-  id: number;
-  title: string;
-  url: string;
-  year: string;
-  description?: string;
-}
-
-const writingItems: WritingItem[] = [
+const FALLBACK_WRITING_ITEMS: WritingItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "Navigating the AI Inflection Point",
     url: "https://hbr.org",
     year: "2024",
@@ -23,7 +16,7 @@ const writingItems: WritingItem[] = [
       "How enterprise leaders can separate signal from noise and build AI strategy that outlasts the hype cycle.",
   },
   {
-    id: 2,
+    id: "2",
     title: "Why Roadmaps Lie",
     url: "https://productcoalition.com",
     year: "2024",
@@ -31,7 +24,7 @@ const writingItems: WritingItem[] = [
       "A practitioner's framework for prioritisation that survives first contact with the market — and the CEO.",
   },
   {
-    id: 3,
+    id: "3",
     title: "The Strategy-Tech Gap and How to Close It",
     url: "https://www.fortuneindia.com",
     year: "2023",
@@ -39,7 +32,7 @@ const writingItems: WritingItem[] = [
       "Why the best strategy work now requires technical fluency, and a practical path to building it without becoming an engineer.",
   },
   {
-    id: 4,
+    id: "4",
     title: "India's SaaS Moment: Patterns from the First Wave",
     url: "https://www.livemint.com",
     year: "2022",
@@ -48,7 +41,13 @@ const writingItems: WritingItem[] = [
   },
 ];
 
-export function Writing() {
+type WritingProps = {
+  data?: WritingItem[]
+}
+
+export function Writing({data}: WritingProps) {
+  const writingItems = data?.length ? data : FALLBACK_WRITING_ITEMS
+
   return (
     <section id="writing" className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
       <div className="max-w-6xl mx-auto">

@@ -10,7 +10,25 @@ import { Contact }      from "@/components/Contact";
 import { Footer }       from "@/components/Footer";
 
 import { siteConfig }   from "@/lib/config";
-import { getResumeUrl } from "@/lib/sanity";
+import {
+  achievementsQuery,
+  educationQuery,
+  experienceQuery,
+  heroQuery,
+  metricsQuery,
+  skillsQuery,
+  writingQuery,
+  type AchievementItem,
+  type EducationItem,
+  type ExperienceItem,
+  type HeroData,
+  type MetricItem,
+  type SkillsEntry,
+  type WritingItem,
+} from "@/lib/queries";
+import { getResumeUrl, sanityFetch } from "@/lib/sanity";
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title      : 'Sidakpreet Singh | Portfolio',
@@ -18,22 +36,38 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  // Fetch the resume URL cleanly using the shared helper
-  const resumeUrl = await getResumeUrl();
+  const [
+    resumeUrl,
+    heroData,
+    experienceItems,
+    skillsEntries,
+    metricItems,
+    achievementItems,
+    educationItems,
+    writingItems,
+  ] = await Promise.all([
+    getResumeUrl(),
+    sanityFetch<HeroData>(heroQuery),
+    sanityFetch<ExperienceItem[]>(experienceQuery),
+    sanityFetch<SkillsEntry[]>(skillsQuery),
+    sanityFetch<MetricItem[]>(metricsQuery),
+    sanityFetch<AchievementItem[]>(achievementsQuery),
+    sanityFetch<EducationItem[]>(educationQuery),
+    sanityFetch<WritingItem[]>(writingQuery),
+  ])
 
   return (
     <div id="main-content" className="relative flex flex-col">
-      {/* Pass the resumeUrl down to Hero -> WindowsTerminal */}
-      <Hero data={null} resumeUrl={resumeUrl} />
-      
-      <Experience />
-      <Skills />
-      <Metrics />
-      <Achievements />
-      <Education />
+      <Hero data={heroData} resumeUrl={resumeUrl} />
+
+      <Experience data={experienceItems ?? undefined} />
+      <Skills data={skillsEntries ?? undefined} />
+      <Metrics data={metricItems ?? undefined} />
+      <Achievements data={achievementItems ?? undefined} />
+      <Education data={educationItems ?? undefined} />
       
       {/* ── Feature Flag Toggle ── */}
-      {siteConfig.features.showWriting && <Writing />}
+      {siteConfig.features.showWriting && <Writing data={writingItems ?? undefined} />}
       
       <Contact />
       <Footer />
