@@ -125,7 +125,7 @@ export const experienceSchema = defineType({
               name: 'dates',
               title: 'Duration',
               type: 'string',
-              validation: (Rule) => Rule.required(),
+              description: 'Optional sub-duration for this role. Leave blank if the company-level summary dates are enough.',
             }),
             defineField({
               name: 'bulletPoints',

@@ -111,6 +111,7 @@ export function Experience({data}: ExperienceProps) {
           const collapsedRoleLabel = extraRoleCount
             ? `${primaryRole} + ${extraRoleCount} more role${extraRoleCount > 1 ? 's' : ''}`
             : primaryRole
+          const shouldHideCollapsedRoleWhenOpen = isOpen && roleEntries.length > 1
           const collapsedDates =
             item.displayDates ??
             item.dates ??
@@ -126,9 +127,7 @@ export function Experience({data}: ExperienceProps) {
                   style={{
                     background: 'linear-gradient(90deg, transparent 1%, rgba(0,200,255,1) 50%, transparent 99%)',
                   }}
-                  className={`pointer-events-none absolute left-0 right-0 top-0 h-px transition-opacity duration-200 ${
-                    isOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                  }`}
+                  className="pointer-events-none absolute left-0 right-0 top-0 h-px opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                 />
                 <span
                   className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
@@ -154,20 +153,14 @@ export function Experience({data}: ExperienceProps) {
                         : [...current, item.id]
                     )
                   }
-                  className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
+                    className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
                   aria-expanded={isOpen}
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-3">
-                      <motion.h3 
-                        initial={{ opacity: 0, y: 8 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.1 }}
-                        className="text-xl font-semibold text-white sm:text-2xl"
-                      >
+                      <h3 className="text-xl font-semibold text-white sm:text-2xl">
                         {item.company}
-                      </motion.h3>
+                      </h3>
                       <motion.span
                         animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -176,28 +169,20 @@ export function Experience({data}: ExperienceProps) {
                         <ChevronDown className="h-4 w-4" />
                       </motion.span>
                     </div>
-                    <motion.p 
-                      initial={{ opacity: 0, y: 8 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-30px" }}
-                      transition={{ duration: 0.45, ease: "easeOut", type: "tween", delay: 0.2 }}
+                    <p
                       className={`mt-2 pr-6 font-medium leading-relaxed text-success transition-opacity duration-200 sm:pr-0 ${
-                        isOpen ? 'opacity-0 md:opacity-0 h-0 overflow-hidden mt-0' : 'text-[0.95rem] sm:text-sm opacity-100'
+                        shouldHideCollapsedRoleWhenOpen
+                          ? 'opacity-0 h-0 overflow-hidden mt-0'
+                          : 'text-[0.95rem] sm:text-sm opacity-100'
                       }`}
                     >
                       {collapsedRoleLabel}
-                    </motion.p>
+                    </p>
                   </div>
 
-                  <motion.p 
-                    initial={{ opacity: 0, x: 10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-30px" }}
-                    transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
-                    className="shrink-0 text-left text-sm font-medium leading-relaxed text-foreground/78 md:min-w-40 md:text-right"
-                  >
+                  <p className="shrink-0 text-left text-sm font-medium leading-relaxed text-foreground/78 md:min-w-40 md:text-right">
                     {collapsedDates}
-                  </motion.p>
+                  </p>
                 </button>
 
                 <AnimatePresence initial={false}>
@@ -224,36 +209,43 @@ export function Experience({data}: ExperienceProps) {
                               key={`${item.id}-${roleEntry.role}-${roleEntry.dates}`}
                               className={roleIndex > 0 ? 'border-t border-white/10 pt-6' : ''}
                             >
+                              {(() => {
+                                const roleSkills = roleEntry.skillsUsed ?? []
+
+                                return (
+                                  <>
                               {roleEntries.length > 1 && (
                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
                                   <p className="pr-6 text-base font-semibold leading-relaxed text-success sm:pr-0 sm:text-[1.02rem]">
                                     {roleEntry.role}
                                   </p>
-                                  <p className="text-sm font-medium leading-relaxed text-foreground/72">
-                                    {roleEntry.dates}
-                                  </p>
+                                  {roleEntry.dates && (
+                                    <p className="text-sm font-medium leading-relaxed text-foreground/72">
+                                      {roleEntry.dates}
+                                    </p>
+                                  )}
                                 </div>
                               )}
 
                               <ul className={roleEntries.length > 1 ? 'mt-5 space-y-3' : 'space-y-3'}>
                                 {roleEntry.bulletPoints.map((point) => (
                                   <li
-                                    key={point}
-                                    className="flex gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
+                                    key={`${roleEntry.role}-${point}`}
+                                    className="flex items-start gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
                                   >
                                     <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-                                    <span>{point}</span>
+                                    <span className="min-w-0 flex-1 md:text-justify">{point}</span>
                                   </li>
                                 ))}
                               </ul>
 
-                              {roleEntry.skillsUsed.length > 0 && (
+                              {roleSkills.length > 0 && (
                                 <div className="mt-6">
                                   <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
                                     Skills Used
                                   </p>
                                   <div className="mt-3 flex flex-wrap gap-2">
-                                    {roleEntry.skillsUsed.map((skill) => (
+                                    {roleSkills.map((skill) => (
                                       <span
                                         key={skill}
                                         className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
@@ -264,6 +256,9 @@ export function Experience({data}: ExperienceProps) {
                                   </div>
                                 </div>
                               )}
+                                  </>
+                                )
+                              })()}
                             </div>
                           ))}
                         </div>

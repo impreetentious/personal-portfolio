@@ -55,7 +55,7 @@ export const heroQuery = `
 export type ExperienceRoleItem = {
   order?: number
   role: string
-  dates: string
+  dates?: string
   bulletPoints: string[]
   skillsUsed: string[]
 }
