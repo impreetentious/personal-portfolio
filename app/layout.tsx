@@ -4,6 +4,8 @@ import './globals.css'
 import { LayoutShell } from '@/components/LayoutShell'
 import { getResumeUrl } from '@/lib/sanity'
 
+export const dynamic = 'force-dynamic'
+
 const inter = Inter({
   subsets : ['latin'],
   display : 'swap',

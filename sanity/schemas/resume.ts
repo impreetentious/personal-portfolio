@@ -16,6 +16,13 @@ export const resumeSchema = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'showDownloadButton',
+      title: 'Show Resume Download Button',
+      type: 'boolean',
+      description: 'Toggle off to hide the resume download button from the portfolio without deleting the PDF.',
+      initialValue: true,
+    }),
+    defineField({
       name: 'file',
       title: 'Resume PDF',
       type: 'file',
