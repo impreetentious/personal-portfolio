@@ -69,7 +69,7 @@ export default async function Home() {
       {/* ── Feature Flag Toggle ── */}
       {siteConfig.features.showWriting && <Writing data={writingItems ?? undefined} />}
       
-      <Contact />
+      <Contact socialLinks={heroData?.socialLinks} />
       <Footer />
     </div>
   );

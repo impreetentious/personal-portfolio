@@ -4,17 +4,27 @@ import {useEffect, useRef} from 'react'
 import {motion, useMotionTemplate, useMotionValue, useScroll, useTransform} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
 import {useBootComplete} from '@/components/BootContext'
-
-interface HeroData {
-  name: string
-  tagline: string
-  bio: string
-}
+import type {HeroData} from '@/lib/queries'
 
 const FALLBACK_HERO: HeroData = {
   name: 'Sidakpreet Singh',
   tagline: 'Strategy · Tech · Systems · Gaming',
   bio: 'Welcome to my portfolio! Hope you find something interesting to read, or maybe we can build something together!',
+  socialLinks: [],
+  profileFields: [
+    {key: 'Location', value: 'Delhi NCR, India', column: 'left'},
+    {key: 'Email', value: 'work@sidakpreetsingh.com', url: 'mailto:work@sidakpreetsingh.com', column: 'left'},
+    {key: 'Phone', value: '+91 90344 31886', url: 'tel:+919034431886', column: 'right'},
+    {key: 'LinkedIn', value: 'Sidakpreet Singh', url: 'https://linkedin.com/in/sidakpreetsinghk', column: 'right'},
+  ],
+  terminalSkills: [
+    {label: 'React', dot: '#61AFEF'},
+    {label: 'Next.js', dot: '#4EC9B0'},
+    {label: 'TypeScript', dot: '#4FC1FF'},
+    {label: 'Tailwind', dot: '#38BDF8'},
+    {label: 'Python', dot: '#DCDCAA'},
+    {label: 'Node.js', dot: '#A3E635'},
+  ],
 }
 
 type HeroProps = {
@@ -86,6 +96,8 @@ export function Hero({data, resumeUrl}: HeroProps) {
             tagline={hero.tagline}
             bio={hero.bio}
             resumeUrl={resumeUrl}
+            profileFields={hero.profileFields}
+            terminalSkills={hero.terminalSkills}
             startTyping={bootComplete}
           />
         </motion.div>

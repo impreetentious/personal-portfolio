@@ -1,7 +1,21 @@
 export type SocialLink = {
-  platform: 'email' | 'linkedin' | 'whatsapp' | 'github' | 'twitter'
+  platform: 'email' | 'phone' | 'linkedin' | 'whatsapp' | 'github' | 'twitter'
   url: string
+  order?: number
   label?: string
+  copyValue?: string
+}
+
+export type HeroProfileField = {
+  key: string
+  value: string
+  url?: string
+  column: 'left' | 'right'
+}
+
+export type HeroTerminalSkill = {
+  label: string
+  dot: string
 }
 
 export type HeroData = {
@@ -9,6 +23,8 @@ export type HeroData = {
   tagline: string
   bio: string
   socialLinks: SocialLink[]
+  profileFields?: HeroProfileField[]
+  terminalSkills?: HeroTerminalSkill[]
 }
 
 export const heroQuery = `
@@ -19,7 +35,19 @@ export const heroQuery = `
     socialLinks[] {
       platform,
       url,
-      label
+      order,
+      label,
+      copyValue
+    },
+    profileFields[] {
+      key,
+      value,
+      url,
+      column
+    },
+    terminalSkills[] {
+      label,
+      dot
     }
   }
 `

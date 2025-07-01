@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import type { SocialLink } from "@/lib/queries";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
 
@@ -146,19 +147,43 @@ function GitHubIcon({ className }: BrandIconProps) {
   )
 }
 
+function TwitterIcon({ className }: BrandIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#ffffffff"
+        d="M18.9 2.25h2.86l-6.25 7.15 7.35 9.72h-5.76l-4.51-5.9-5.16 5.9H4.57l6.68-7.64-7.05-9.23h5.9l4.07 5.39 4.73-5.39Z"
+      />
+    </svg>
+  )
+}
+
 // ─── Social Links Data ────────────────────────────────────────────────────────
 
-const SOCIAL_LINKS = [
-  { label: 'Phone',    href: 'tel:+919034431886',                          icon: PhoneIcon,    copyValue: '+91 90344 31886'           },
-  { label: 'Email',    href: 'mailto:work@sidakpreetsingh.com',            icon: MailIcon,     copyValue: 'work@sidakpreetsingh.com'  },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/sidakpreetsinghk',   icon: LinkedInIcon                                         },
-  { label: 'WhatsApp', href: 'https://wa.me/+919034431886',                icon: WhatsAppIcon                                         },
-  { label: 'GitHub',   href: 'https://github.com/ItsMonarch04',            icon: GitHubIcon                                           },
+const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
+  { platform: 'phone', url: 'tel:+919034431886', order: 0, label: 'Phone', copyValue: '+91 90344 31886' },
+  { platform: 'email', url: 'mailto:work@sidakpreetsingh.com', order: 1, label: 'Email', copyValue: 'work@sidakpreetsingh.com' },
+  { platform: 'linkedin', url: 'https://linkedin.com/in/sidakpreetsinghk', order: 2, label: 'LinkedIn' },
+  { platform: 'whatsapp', url: 'https://wa.me/+919034431886', order: 3, label: 'WhatsApp' },
+  { platform: 'github', url: 'https://github.com/ItsMonarch04', order: 4, label: 'GitHub' },
 ]
+
+const PLATFORM_ICONS = {
+  phone: PhoneIcon,
+  email: MailIcon,
+  linkedin: LinkedInIcon,
+  whatsapp: WhatsAppIcon,
+  github: GitHubIcon,
+  twitter: TwitterIcon,
+} as const
+
+type ContactProps = {
+  socialLinks?: SocialLink[]
+}
 
 // ─── Contact Section ──────────────────────────────────────────────────────────
 
-export function Contact() {
+export function Contact({ socialLinks }: ContactProps) {
   const sectionRef          = useRef<HTMLElement>(null)
   const isInView            = useInView(sectionRef, { once: true, amount: 0.15 })
   const [copied, setCopied] = useState<string | null>(null)
@@ -170,6 +195,15 @@ export function Contact() {
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
     }
   }, [])
+
+  const resolvedSocialLinks = (socialLinks?.length ? socialLinks : FALLBACK_SOCIAL_LINKS)
+    .filter((link) => Boolean(link?.url))
+    .map((link, index) => ({ ...link, _fallbackIndex: index }))
+    .sort((a, b) => {
+      const aOrder = a.order ?? Number.MAX_SAFE_INTEGER
+      const bOrder = b.order ?? Number.MAX_SAFE_INTEGER
+      return aOrder === bOrder ? a._fallbackIndex - b._fallbackIndex : aOrder - bOrder
+    })
 
   return (
     <section
@@ -243,14 +277,18 @@ export function Contact() {
 
         {/* ── Social icon buttons ── */}
         <ConsoleLine delay={0.5} isVisible={isInView}>
-          <div className="flex py-2 w-full justify-between sm:w-auto sm:justify-start sm:gap-5">
-            {SOCIAL_LINKS.map(({ label, href, icon: Icon, copyValue }) => (
-              <div key={label} className="relative">
+          <div className="flex w-full gap-3 py-2 sm:w-auto sm:justify-start sm:gap-5">
+            {resolvedSocialLinks.map(({ platform, label, url, copyValue }) => {
+              const Icon = PLATFORM_ICONS[platform]
+              const resolvedLabel = label ?? platform
+
+              return (
+              <div key={`${platform}-${url}`} className="relative flex flex-1 justify-center sm:flex-none">
                 <a
-                  href={href}
-                  aria-label={copyValue ? `${label} — click to copy` : label}
-                  target={!copyValue && href.startsWith('http') ? '_blank' : undefined}
-                  rel={!copyValue && href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  href={url}
+                  aria-label={copyValue ? `${resolvedLabel} — click to copy` : resolvedLabel}
+                  target={!copyValue && url.startsWith('http') ? '_blank' : undefined}
+                  rel={!copyValue && url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   onClick={
                     copyValue
                       ? async (e) => {
@@ -258,13 +296,13 @@ export function Contact() {
                           try {
                             await navigator.clipboard.writeText(copyValue)
                             if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
-                            setCopied(label)
+                            setCopied(resolvedLabel)
                             copyTimeoutRef.current = setTimeout(() => {
                               setCopied(null)
                               copyTimeoutRef.current = null
                             }, 2500)
                           } catch {
-                            window.location.href = href
+                            window.location.href = url
                           }
                         }
                       : undefined
@@ -275,7 +313,7 @@ export function Contact() {
                 </a>
 
                 <AnimatePresence>
-                  {copied === label && (
+                  {copied === resolvedLabel && (
                     <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2">
                       <motion.span
                         key="tip"
@@ -291,7 +329,7 @@ export function Contact() {
                   )}
                 </AnimatePresence>
               </div>
-            ))}
+            )})}
           </div>
         </ConsoleLine>
 
@@ -333,7 +371,7 @@ export function Contact() {
                 <span style={{ color: TOKEN.success }}>[COPIED]&nbsp;</span>
                 <span style={{ color: 'rgba(255,255,255,0.35)' }}>
                   {'— '}
-                  {SOCIAL_LINKS.find((l) => l.label === copied)?.copyValue ?? ''}
+                  {resolvedSocialLinks.find((link) => (link.label ?? link.platform) === copied)?.copyValue ?? ''}
                   {' → clipboard'}
                 </span>
               </div>

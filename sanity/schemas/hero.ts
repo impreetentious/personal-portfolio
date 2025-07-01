@@ -40,7 +40,7 @@ export const heroSchema = defineType({
       name: 'socialLinks',
       title: 'Social Links',
       type: 'array',
-      description: 'Ordered list of links rendered as CTA buttons in the Hero section.',
+      description: 'Ordered list of links reused across the site, including the Contact section.',
       of: [
         {
           type: 'object',
@@ -53,6 +53,7 @@ export const heroSchema = defineType({
               options: {
                 list: [
                   {title: 'Email', value: 'email'},
+                  {title: 'Phone', value: 'phone'},
                   {title: 'LinkedIn', value: 'linkedin'},
                   {title: 'WhatsApp', value: 'whatsapp'},
                   {title: 'GitHub', value: 'github'},
@@ -71,7 +72,14 @@ export const heroSchema = defineType({
                 Rule.required().uri({
                   allowRelative: false,
                   scheme: ['http', 'https', 'mailto', 'tel'],
-                }),
+              }),
+            }),
+            defineField({
+              name: 'order',
+              title: 'Order',
+              type: 'number',
+              description: 'Controls display order. Lower numbers appear first.',
+              validation: (Rule) => Rule.integer().min(0),
             }),
             defineField({
               name: 'label',
@@ -79,11 +87,109 @@ export const heroSchema = defineType({
               type: 'string',
               description: 'Button label shown in the UI. Falls back to the platform name if left blank.',
             }),
+            defineField({
+              name: 'copyValue',
+              title: 'Copy Value',
+              type: 'string',
+              description: 'Optional plain-text value copied on click for items like phone or email.',
+            }),
           ],
           preview: {
             select: {
               title: 'platform',
               subtitle: 'url',
+            },
+          },
+        },
+      ],
+    }),
+
+    defineField({
+      name: 'profileFields',
+      title: 'Terminal Profile Fields',
+      type: 'array',
+      description: 'Rows shown in the hero terminal properties block, such as Location, Email, Phone, and LinkedIn.',
+      of: [
+        {
+          type: 'object',
+          name: 'profileField',
+          fields: [
+            defineField({
+              name: 'key',
+              title: 'Label',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'value',
+              title: 'Value',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'url',
+              title: 'Link URL',
+              type: 'url',
+              description: 'Optional clickable URL such as mailto:, tel:, or https://...',
+              validation: (Rule) =>
+                Rule.uri({
+                  allowRelative: false,
+                  scheme: ['http', 'https', 'mailto', 'tel'],
+                }),
+            }),
+            defineField({
+              name: 'column',
+              title: 'Column',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Left', value: 'left'},
+                  {title: 'Right', value: 'right'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'left',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'key',
+              subtitle: 'value',
+            },
+          },
+        },
+      ],
+    }),
+
+    defineField({
+      name: 'terminalSkills',
+      title: 'Terminal Skills',
+      type: 'array',
+      description: 'Skill chips shown in the hero terminal skills strip.',
+      of: [
+        {
+          type: 'object',
+          name: 'terminalSkill',
+          fields: [
+            defineField({
+              name: 'label',
+              title: 'Label',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'dot',
+              title: 'Dot Color',
+              type: 'string',
+              description: 'Hex color for the small glowing dot, for example #61AFEF.',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'label',
+              subtitle: 'dot',
             },
           },
         },

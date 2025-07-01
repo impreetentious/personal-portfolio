@@ -2,41 +2,30 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import type { HeroProfileField, HeroTerminalSkill } from '@/lib/queries'
 
 type WindowsTerminalProps = {
   name: string
   tagline: string
   bio: string
   resumeUrl?: string
+  profileFields?: HeroProfileField[]
+  terminalSkills?: HeroTerminalSkill[]
   startTyping?: boolean
-}
-
-type PropertyEntry = {
-  key: string
-  value: string
-  href?: string
-}
-
-type Skill = {
-  label: string
-  dot: string
 }
 
 const BASE_TYPE_DELAY = 22
 const MIN_TYPE_DELAY  = 4
 const MAX_VELOCITY    = 8
 
-const leftColumnProps: PropertyEntry[] = [
-  { key: 'Location', value: 'Delhi NCR, India' },
-  { key: 'Email',    value: 'work@sidakpreetsingh.com', href: 'mailto:work@sidakpreetsingh.com' },
+const FALLBACK_PROFILE_FIELDS: HeroProfileField[] = [
+  { key: 'Location', value: 'Delhi NCR, India', column: 'left' },
+  { key: 'Email',    value: 'work@sidakpreetsingh.com', url: 'mailto:work@sidakpreetsingh.com', column: 'left' },
+  { key: 'Phone',    value: '+91 90344 31886', url: 'tel:+919034431886', column: 'right' },
+  { key: 'LinkedIn', value: 'Sidakpreet Singh', url: 'https://linkedin.com/in/sidakpreetsinghk', column: 'right' },
 ]
 
-const rightColumnProps: PropertyEntry[] = [
-  { key: 'Phone',    value: '+91 90344 31886',  href: 'tel:+919034431886'                        },
-  { key: 'LinkedIn', value: 'Sidakpreet Singh',  href: 'https://linkedin.com/in/sidakpreetsinghk' },
-]
-
-const skills: Skill[] = [
+const FALLBACK_TERMINAL_SKILLS: HeroTerminalSkill[] = [
   { label: 'React',      dot: '#61AFEF' },
   { label: 'Next.js',    dot: '#4EC9B0' },
   { label: 'TypeScript', dot: '#4FC1FF' },
@@ -113,7 +102,7 @@ function PropertyRow({ propKey, value, href }: { propKey: string; value: string;
   )
 }
 
-function SkillChip({ label, dot }: Skill) {
+function SkillChip({ label, dot }: HeroTerminalSkill) {
   return (
     <span className="font-mono text-xs bg-white/[0.03] border border-white/10 px-2.5 py-1 rounded-md text-foreground/90 flex items-center gap-1.5 whitespace-nowrap select-none">
       <span
@@ -198,7 +187,15 @@ function GitBranchIcon() {
   )
 }
 
-export function WindowsTerminal({ name, tagline, bio, resumeUrl, startTyping = true }: WindowsTerminalProps) {
+export function WindowsTerminal({
+  name,
+  tagline,
+  bio,
+  resumeUrl,
+  profileFields,
+  terminalSkills,
+  startTyping = true,
+}: WindowsTerminalProps) {
   const [displayedChars, setDisplayedChars] = useState(0)
   const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
   const [istTime, setIstTime]               = useState('')
@@ -325,6 +322,10 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl, startTyping = t
   const displayedBio   = bio.slice(0, displayedChars)
   const displayedLines = displayedBio.split('\n')
   const bioLines       = bio.split('\n')
+  const resolvedProfileFields = profileFields?.length ? profileFields : FALLBACK_PROFILE_FIELDS
+  const leftColumnProps = resolvedProfileFields.filter((entry) => entry.column !== 'right')
+  const rightColumnProps = resolvedProfileFields.filter((entry) => entry.column === 'right')
+  const resolvedTerminalSkills = terminalSkills?.length ? terminalSkills : FALLBACK_TERMINAL_SKILLS
 
   return (
     <motion.div
@@ -479,12 +480,12 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl, startTyping = t
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-14 gap-y-3">
             <div className="space-y-3">
               {leftColumnProps.map((entry) => (
-                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.href} />
+                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
               ))}
             </div>
             <div className="space-y-3">
               {rightColumnProps.map((entry) => (
-                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.href} />
+                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
               ))}
             </div>
           </div>
@@ -520,7 +521,7 @@ export function WindowsTerminal({ name, tagline, bio, resumeUrl, startTyping = t
               <span className="text-[#ce9178]"> show-skills --active</span>
             </p>
             <div className="flex flex-wrap gap-2 mt-5 sm:mt-3">
-              {skills.map((skill) => (
+              {resolvedTerminalSkills.map((skill) => (
                 <SkillChip key={skill.label} {...skill} />
               ))}
             </div>
