@@ -565,18 +565,18 @@ export function WindowsTerminal({
                 onClick={handleDownload}
                 disabled={downloadState !== 'idle'}
                 aria-label="Download resume as PDF"
-                initial={{ borderColor: 'rgba(255,255,255,0.14)' }}
+                initial={{ color: 'rgba(255,255,255,0.85)' }}
                 animate={
                   downloadState === 'idle'
-                    ? { borderColor: ['rgba(255,255,255,0.14)', 'rgba(255,255,255,0.42)', 'rgba(255,255,255,0.14)'] }
-                    : { borderColor: 'rgba(255,255,255,0.14)' }
+                    ? { color: ['rgba(255,255,255,0.85)', 'rgba(255,255,255,1)', 'rgba(255,255,255,0.85)'] }
+                    : { color: 'rgba(255,255,255,0.9)' }
                 }
                 transition={
                   downloadState === 'idle'
                     ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
                     : { duration: 0.2, ease: 'easeOut' }
                 }
-                className="relative font-mono text-xs leading-none px-2 py-0.5 border rounded-sm bg-[#050505]/80 hover:bg-[#050505] disabled:pointer-events-none"
+                className="relative font-mono text-xs leading-none px-1 py-0.5 bg-transparent hover:text-white disabled:pointer-events-none"
               >
                 <AnimatePresence mode="wait">
                   <motion.span

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { ChevronDown, MapPin } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import type { ExperienceItem, ExperienceRoleItem } from '@/lib/queries'
@@ -72,6 +72,7 @@ function normalizeRoles(item: ExperienceItem): ExperienceRoleItem[] {
 
 export function Experience({data}: ExperienceProps) {
   const [activeIds, setActiveIds] = useState<string[]>([])
+  const [isMobile, setIsMobile] = useState(false)
 
   const timelineRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -83,6 +84,16 @@ export function Experience({data}: ExperienceProps) {
     damping: 24,
     mass: 0.35,
   })
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)')
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches)
+
+    updateIsMobile()
+    mediaQuery.addEventListener('change', updateIsMobile)
+
+    return () => mediaQuery.removeEventListener('change', updateIsMobile)
+  }, [])
 
   const visibleItems = data?.length ? data : FALLBACK_EXPERIENCE_ITEMS
 
@@ -106,6 +117,8 @@ export function Experience({data}: ExperienceProps) {
         {visibleItems.map((item, index) => {
           const isOpen = activeIds.includes(item.id)
           const roleEntries = normalizeRoles(item)
+          const totalBulletCount = roleEntries.reduce((count, roleEntry) => count + roleEntry.bulletPoints.length, 0)
+          const estimatedContentWeight = totalBulletCount + roleEntries.length * 1.35
           const primaryRole = roleEntries[0]?.role ?? item.role ?? ''
           const extraRoleCount = Math.max(roleEntries.length - 1, 0)
           const collapsedRoleLabel = extraRoleCount
@@ -116,6 +129,21 @@ export function Experience({data}: ExperienceProps) {
             item.displayDates ??
             item.dates ??
             (roleEntries.length === 1 ? roleEntries[0]?.dates : `${roleEntries.length} roles`)
+          const openHeightDuration = isMobile
+            ? Math.min(2.8, 0.95 + estimatedContentWeight * 0.16)
+            : Math.min(
+                1.45,
+                (0.62 + estimatedContentWeight * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9)
+              )
+          const openOpacityDuration = isMobile
+            ? Math.min(1.05, 0.34 + roleEntries.length * 0.16)
+            : Math.min(
+                0.62,
+                (0.28 + roleEntries.length * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9)
+              )
+          const closeHeightDuration = isMobile
+            ? Math.min(0.72, 0.4 + roleEntries.length * 0.08)
+            : Math.min(0.5, 0.34 + roleEntries.length * 0.04)
 
           return (
             <ScrollReveal key={item.id} delay={index * 0.2}>
@@ -190,9 +218,22 @@ export function Experience({data}: ExperienceProps) {
                     <motion.div
                       key="content"
                       initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.28, ease: 'easeInOut' }}
+                      animate={{
+                        height: 'auto',
+                        opacity: 1,
+                        transition: {
+                          height: { duration: openHeightDuration, ease: [0.16, 1, 0.3, 1] },
+                          opacity: { duration: openOpacityDuration, ease: 'easeOut' },
+                        },
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                        transition: {
+                          height: { duration: closeHeightDuration, ease: [0.4, 0, 0.2, 1] },
+                          opacity: { duration: 0.22, ease: 'easeOut' },
+                        },
+                      }}
                       className="overflow-hidden"
                     >
                       <div className="border-t border-accent/10 pb-8 pt-6">

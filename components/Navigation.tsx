@@ -43,6 +43,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   const [heroExit, setHeroExit] = useState(720)
   const heroExitRef = useRef(heroExit)
   const [activeSection, setActiveSection] = useState<string>('home')
+  const [hasPassedHero, setHasPassedHero] = useState(false)
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
   const directionRef = useRef<'up' | 'down' | null>(null)
@@ -72,6 +73,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
     const direction = latest > lastScrollY.current ? 'down' : 'up'
     const delta     = Math.abs(latest - lastScrollY.current)
     const threshold = heroExitRef.current
+    setHasPassedHero(latest >= threshold - 24)
 
     if (latest < threshold) {
       // Still above the nav-visible zone — always reset hidden state
@@ -108,7 +110,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   const mobileNavOpacity    = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
   const mobileNavVisibility = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
 
-  const isOnHome = activeSection === 'home'
+  const isOnHome = !hasPassedHero
 
   return (
     <div
@@ -142,7 +144,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
             cd
           </span>
           <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
-            {' '}/d c:\
+            {' '}~
           </span>
         </a>
       </motion.div>
