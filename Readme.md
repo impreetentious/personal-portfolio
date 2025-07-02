@@ -1,6 +1,6 @@
 # Personal Portfolio
 
-This repository is the foundation for my personal portfolio: a highly interactive, dark-themed, terminal-inspired build designed for long-term stability. The architecture focuses on precise typography, modular UI components, and fluid layout physics.
+This repository is the foundation for my personal portfolio: a highly interactive, dark-themed, terminal-inspired build designed for long-term stability. The architecture focuses on precise typography, modular UI components and fluid layout physics.
 
 ## Core Goals
 
@@ -101,8 +101,8 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.1.5
-* **Portfolio Version: v3.1.5_2025-07-03_01:01:39 (IST)
+* **Base Format Version:** 3.2.0
+* **Portfolio Version: v3.2.0_2025-07-03_01:11:51 (IST)
 
 ## AI Agent Instructions
 
