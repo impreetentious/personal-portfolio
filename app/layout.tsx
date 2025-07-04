@@ -1,3 +1,4 @@
+import type { Viewport } from 'next'
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 
 import './globals.css'
@@ -5,6 +6,10 @@ import { LayoutShell } from '@/components/LayoutShell'
 import { getResumeUrl } from '@/lib/sanity'
 
 export const dynamic = 'force-dynamic'
+
+export const viewport: Viewport = {
+  themeColor: '#050505',
+}
 
 const inter = Inter({
   subsets : ['latin'],

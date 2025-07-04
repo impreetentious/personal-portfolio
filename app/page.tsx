@@ -33,6 +33,17 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title      : 'Sidakpreet Singh | Portfolio',
   description: "Sidakpreet Singh's interactive portfolio",
+  openGraph  : {
+    title      : 'Sidakpreet Singh | Portfolio',
+    description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
+    type       : 'website',
+    siteName   : 'Sidakpreet Singh',
+  },
+  twitter    : {
+    card       : 'summary_large_image',
+    title      : 'Sidakpreet Singh | Portfolio',
+    description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
+  },
 };
 
 export default async function Home() {
