@@ -92,7 +92,7 @@ export function Metrics({data}: MetricsProps) {
             devLabel="const indicators = outcomes.filter(significant)"
           >
             <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
-              {metrics.length}&nbsp;records returned
+              {metrics.length}&nbsp;{metrics.length === 1 ? 'record' : 'records'} returned
             </p>
           </SectionLabel>
         </div>

@@ -81,7 +81,7 @@ function PropertyRow({ propKey, value, href }: { propKey: string; value: string;
   )
 
   return (
-    <div className="flex items-center font-mono text-xs sm:text-sm">
+    <div className="flex items-baseline font-mono text-xs sm:text-sm">
       <span className="text-accent shrink-0">{propKey}</span>
       <span
         aria-hidden="true"
@@ -92,7 +92,7 @@ function PropertyRow({ propKey, value, href }: { propKey: string; value: string;
         }}
       />
       <span className="text-foreground/24 shrink-0">:</span>
-      <span className="ml-2 text-[#ce9178] min-w-0 break-all sm:break-normal shrink-0">
+      <span className="ml-2 text-[#ce9178] min-w-0 [overflow-wrap:anywhere]">
         <span className="text-foreground/18">&quot;</span>
         {valueNode}
         <span className="text-foreground/18">&quot;</span>
@@ -477,13 +477,13 @@ export function WindowsTerminal({
           <p className="font-mono text-[10px] sm:text-xs text-foreground mb-4 sm:mb-6 select-none uppercase tracking-[0.2em]">
             {'// properties'}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-14 gap-y-3">
-            <div className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-3">
+            <div className="space-y-3 min-w-0">
               {leftColumnProps.map((entry) => (
                 <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
               ))}
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 min-w-0">
               {rightColumnProps.map((entry) => (
                 <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
               ))}

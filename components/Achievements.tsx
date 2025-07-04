@@ -90,7 +90,7 @@ export function Achievements({data}: AchievementsProps) {
             label="Achievements"
           >
             <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
-              {achievements.length}&nbsp;tags found
+              {achievements.length}&nbsp;{achievements.length === 1 ? 'tag' : 'tags'} found
             </p>
           </SectionLabel>
         </div>

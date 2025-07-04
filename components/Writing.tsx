@@ -57,7 +57,7 @@ export function Writing({data}: WritingProps) {
             label="Writing"
           >
             <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
-              {writingItems.length}&nbsp;articles
+              {writingItems.length}&nbsp;{writingItems.length === 1 ? 'article' : 'articles'}
             </p>
           </SectionLabel>
         </div>
