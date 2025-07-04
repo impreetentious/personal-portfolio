@@ -29,7 +29,8 @@ const config: Config = {
         display: ['var(--font-display)', ...defaultTheme.fontFamily.sans],
       },
       boxShadow: {
-        panel: '0 20px 40px rgba(0, 0, 0, 0.28)',
+        panel:
+          'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 40px rgba(0, 0, 0, 0.28), 0 48px 100px rgba(0, 0, 0, 0.40)',
       },
       backgroundImage: {
         'hero-raster':

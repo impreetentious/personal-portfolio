@@ -1,4 +1,5 @@
 import React from "react";
+import { DecryptText } from "./DecryptText";
 
 export function SectionLabel({
   label,
@@ -33,7 +34,7 @@ export function SectionLabel({
             titleClassName ? ` ${titleClassName}` : ""
           }`}
         >
-          {label}
+          <DecryptText text={label} />
         </p>
         
         {children}
