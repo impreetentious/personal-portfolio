@@ -430,7 +430,7 @@ export function WindowsTerminal({
               </span>
             </motion.div>
           </div>
-          <h1 className="font-semibold tracking-normal text-white text-3xl md:text-5xl">
+          <h1 className="font-display font-semibold tracking-tight text-white text-3xl md:text-5xl">
             {name}
           </h1>
           <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/60 tracking-normal leading-snug">

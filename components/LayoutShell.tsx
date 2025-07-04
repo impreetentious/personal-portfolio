@@ -80,6 +80,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // ── Derived flags ─────────────────────────────────────────────────────────
   const bootBlocking = !isStudio && bootPhase !== 'done'
 
+  // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
+  const mainInert = (isPaletteOpen || bootBlocking) ? ('' as unknown as true) : undefined
+
   return (
     <>
       {/* Static cover — shown only during the pending check to block the page */}
@@ -108,7 +111,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
       <motion.main
         aria-hidden={(isPaletteOpen || bootBlocking) || undefined}
-        inert={(isPaletteOpen || bootBlocking) || undefined}
+        inert={mainInert}
         initial={{ scale: 1, filter: 'blur(0px)' }}
         animate={
           isPaletteOpen && !isStudio

@@ -115,7 +115,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   return (
     <div
       aria-hidden={isPaletteOpen || undefined}
-      inert={isPaletteOpen || undefined}
+      // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
+      inert={isPaletteOpen ? ('' as unknown as true) : undefined}
     >
 
       {/* ── Scroll progress bar ── */}

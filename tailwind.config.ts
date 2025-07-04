@@ -26,6 +26,7 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-mono)', ...defaultTheme.fontFamily.mono],
+        display: ['var(--font-display)', ...defaultTheme.fontFamily.sans],
       },
       boxShadow: {
         panel: '0 20px 40px rgba(0, 0, 0, 0.28)',

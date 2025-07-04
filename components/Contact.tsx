@@ -224,7 +224,7 @@ export function Contact({ socialLinks }: ContactProps) {
           <code className="block font-mono font-medium text-[10px] sm:text-[12px] tracking-wide text-metaphor/70 select-none mb-3 sm:mb-4">
             npm run connect
           </code>
-          <p className="font-semibold text-[21px] sm:text-2xl tracking-tight text-accent mb-6 sm:mb-11">
+          <p className="font-display font-semibold text-[21px] sm:text-2xl tracking-tight text-white/[0.92] mb-6 sm:mb-11">
             Contact
           </p>
         </div>

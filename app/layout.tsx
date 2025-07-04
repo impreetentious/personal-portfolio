@@ -1,4 +1,4 @@
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 
 import './globals.css'
 import { LayoutShell } from '@/components/LayoutShell'
@@ -10,6 +10,13 @@ const inter = Inter({
   subsets : ['latin'],
   display : 'swap',
   variable: '--font-inter',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets : ['latin'],
+  weight  : ['500', '600', '700'],
+  variable: '--font-display',
+  display : 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -30,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} ${inter.variable} ${jetbrainsMono.variable} bg-background text-foreground antialiased`}
+        className={`${inter.className} ${inter.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable} bg-background text-foreground antialiased`}
       >
         <div className="min-h-screen">
           <LayoutShell resumeUrl={resumeUrl}>
