@@ -17,7 +17,7 @@ const config: Config = {
         surface: '#0F1015',
         surface2: '#090A10',
         foreground: '#ABB2BF',
-        accent: '#00C8FF',
+        accent: '#38BDF8',
         success: '#d0752fff',
         metaphor: '#eded80ff',
         hairline: 'rgba(255,255,255,0.08)',

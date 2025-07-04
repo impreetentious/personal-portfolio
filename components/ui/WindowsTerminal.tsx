@@ -410,9 +410,9 @@ export function WindowsTerminal({
                 animate={{
                   opacity: [1, 0.68, 1],
                   boxShadow: [
-                    '0 0 6px rgba(0,200,255,0.12)',
-                    '0 0 18px rgba(0,200,255,0.30)',
-                    '0 0 6px rgba(0,200,255,0.12)',
+                    '0 0 6px rgba(56,189,248,0.12)',
+                    '0 0 18px rgba(56,189,248,0.30)',
+                    '0 0 6px rgba(56,189,248,0.12)',
                   ],
                 }}
                 transition={{

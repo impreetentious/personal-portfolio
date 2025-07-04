@@ -111,7 +111,7 @@ export function Experience({data}: ExperienceProps) {
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
         <motion.div
           style={{ scaleY: timelineProgress }}
-          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#00C8FF] via-[#00C8FF] to-[#f97316] shadow-[0_0_10px_rgba(0,200,255,0.20)] sm:left-2"
+          className="absolute bottom-0 left-1 top-0 w-px origin-top bg-gradient-to-b from-[#38BDF8] via-[#38BDF8] to-[#f97316] shadow-[0_0_10px_rgba(56,189,248,0.20)] sm:left-2"
         />
 
         {visibleItems.map((item, index) => {
@@ -153,7 +153,7 @@ export function Experience({data}: ExperienceProps) {
                 <div
                   aria-hidden="true"
                   style={{
-                    background: 'linear-gradient(90deg, transparent 1%, rgba(0,200,255,1) 50%, transparent 99%)',
+                    background: 'linear-gradient(90deg, transparent 1%, rgba(56,189,248,1) 50%, transparent 99%)',
                   }}
                   className="pointer-events-none absolute left-0 right-0 top-0 h-px opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                 />
@@ -169,7 +169,7 @@ export function Experience({data}: ExperienceProps) {
                   )}
 
                   {/* Static filled dot — always visible, centred inside the 4×4 wrapper */}
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#050505] shadow-[0_0_8px_rgba(0,200,255,0.25)]" />
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-accent bg-[#050505] shadow-[0_0_8px_rgba(56,189,248,0.25)]" />
                 </span>
 
                 <button

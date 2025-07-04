@@ -543,7 +543,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
                           <span
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors duration-100 ${
                               isActive
-                                ? 'border-accent/30 bg-accent/10 text-accent shadow-[0_0_12px_rgba(0,200,255,0.22)]'
+                                ? 'border-accent/30 bg-accent/10 text-accent shadow-[0_0_12px_rgba(56,189,248,0.22)]'
                                 : 'border-white/[0.06] bg-white/[0.02] text-foreground/40 group-hover:border-white/[0.12] group-hover:text-foreground/70'
                             }`}
                           >

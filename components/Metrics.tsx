@@ -116,7 +116,7 @@ export function Metrics({data}: MetricsProps) {
                 aria-hidden="true"
                 className="absolute inset-x-0 top-0 h-px opacity-0 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none z-10"
                 style={{
-                  background: 'linear-gradient(90deg, transparent 0%, #00C8FF 30%, #00C8FF 70%, transparent 100%)',
+                  background: 'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #38BDF8 70%, transparent 100%)',
                 }}
               />
               {/* Scan beam — slides down on hover */}
@@ -127,7 +127,7 @@ export function Metrics({data}: MetricsProps) {
                 <div
                   className="scan-beam-inner absolute inset-x-0 -top-20 h-20"
                   style={{
-                    background: 'linear-gradient(180deg, transparent 0%, rgba(0,200,255,0.05) 50%, transparent 100%)',
+                    background: 'linear-gradient(180deg, transparent 0%, rgba(56,189,248,0.05) 50%, transparent 100%)',
                   }}
                 />
               </div>

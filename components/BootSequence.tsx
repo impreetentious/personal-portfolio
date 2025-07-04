@@ -56,9 +56,9 @@ function StatusBadge({ variant }: { variant: Variant }) {
     <span
       style={{
         ...base,
-        color      : '#00C8FF',
-        border     : '1px solid rgba(0,200,255,0.20)',
-        background : 'rgba(0,200,255,0.05)',
+        color      : '#38BDF8',
+        border     : '1px solid rgba(56,189,248,0.20)',
+        background : 'rgba(56,189,248,0.05)',
         fontWeight : variant === 'ready' ? 700 : 400,
       }}
     >
@@ -244,7 +244,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
             className="font-mono"
             style={{
               fontSize     : 12,
-              color        : '#00C8FF',
+              color        : '#38BDF8',
               letterSpacing: '0.04em',
               marginTop    : 28,
               opacity      : taglineVisible ? 1 : 0,

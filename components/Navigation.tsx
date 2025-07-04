@@ -125,7 +125,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
         className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left pointer-events-none"
         style={{
           scaleX    : scrollYProgress,
-          background: 'linear-gradient(to right, #00C8FF, #f97316)',
+          background: 'linear-gradient(to right, #38BDF8, #f97316)',
         }}
       />
 
@@ -193,8 +193,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
                 <span
                   className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
                     isActive
-                      ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(0,200,255,0.18),0_0_16px_rgba(0,200,255,0.45)]'
-                      : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(0,200,255,0.18),0_0_16px_rgba(0,200,255,0.45)]'
+                      ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)]'
+                      : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)]'
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" strokeWidth={2} />
@@ -242,8 +242,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
                   <span
                     className={`flex h-11 w-11 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
                       isActive
-                        ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(0,200,255,0.20),0_0_22px_rgba(0,200,255,0.50)]'
-                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(0,200,255,0.14),0_0_18px_rgba(0,200,255,0.38)]'
+                        ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(56,189,248,0.20),0_0_22px_rgba(56,189,248,0.50)]'
+                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.14),0_0_18px_rgba(56,189,248,0.38)]'
                     }`}
                   >
                     <Icon className="h-4 w-4" strokeWidth={2} />
