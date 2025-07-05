@@ -33,10 +33,14 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title      : 'Sidakpreet Singh | Portfolio',
   description: "Sidakpreet Singh's interactive portfolio",
+  alternates : {
+    canonical: '/',
+  },
   openGraph  : {
     title      : 'Sidakpreet Singh | Portfolio',
     description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
     type       : 'website',
+    url        : siteConfig.url,
     siteName   : 'Sidakpreet Singh',
   },
   twitter    : {
@@ -67,8 +71,58 @@ export default async function Home() {
     sanityFetch<WritingItem[]>(writingQuery),
   ])
 
+  // Structured data (schema.org @graph) mirroring the landing-page convention —
+  // sameAs profile links are sourced from the same Sanity social data the UI uses.
+  const siteUrl = siteConfig.url
+  const profileUrls = (heroData?.socialLinks ?? [])
+    .filter((link) => ['linkedin', 'github', 'twitter'].includes(link.platform) && link.url)
+    .map((link) => link.url)
+
+  // Keep the structured-data email in sync with the CMS contact link.
+  const emailLink = (heroData?.socialLinks ?? []).find((link) => link.platform === 'email')
+  const email = emailLink?.copyValue || emailLink?.url?.replace(/^mailto:/, '') || siteConfig.email
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph'  : [
+      {
+        '@type'    : 'WebSite',
+        '@id'      : `${siteUrl}/#website`,
+        url        : `${siteUrl}/`,
+        name       : siteConfig.title,
+        description: siteConfig.description,
+        publisher  : { '@id': `${siteUrl}/#person` },
+      },
+      {
+        '@type'    : 'ProfilePage',
+        '@id'      : `${siteUrl}/#webpage`,
+        url        : `${siteUrl}/`,
+        name       : siteConfig.title,
+        description: siteConfig.description,
+        isPartOf   : { '@id': `${siteUrl}/#website` },
+        mainEntity : { '@id': `${siteUrl}/#person` },
+      },
+      {
+        '@type'    : 'Person',
+        '@id'      : `${siteUrl}/#person`,
+        name       : siteConfig.name,
+        url        : `${siteUrl}/`,
+        image      : `${siteUrl}/opengraph-image`,
+        email      : email,
+        description: heroData?.bio || siteConfig.description,
+        knowsAbout : ['Product Strategy', 'Technology', 'Systems'],
+        ...(profileUrls.length ? { sameAs: profileUrls } : {}),
+      },
+    ],
+  }
+
   return (
     <div id="main-content" className="relative flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <Hero data={heroData} resumeUrl={resumeUrl} />
 
       <Experience data={experienceItems ?? undefined} />

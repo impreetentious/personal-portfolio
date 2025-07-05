@@ -1,4 +1,11 @@
+import type {Metadata} from 'next'
 import type {ReactNode} from 'react'
+
+// The Studio is an authoring tool, not indexable content — keep search engines
+// out of it (mirrors the disallow rule in app/robots.ts).
+export const metadata: Metadata = {
+  robots: {index: false, follow: false},
+}
 
 /**
  * Studio layout isolation wrapper.

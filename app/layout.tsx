@@ -1,11 +1,17 @@
-import type { Viewport } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 
 import './globals.css'
 import { LayoutShell } from '@/components/LayoutShell'
+import { siteConfig } from '@/lib/config'
 import { getResumeUrl } from '@/lib/sanity'
 
 export const dynamic = 'force-dynamic'
+
+// Anchors all relative metadata URLs (OG image, canonical) to the real origin.
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+}
 
 export const viewport: Viewport = {
   themeColor: '#050505',
