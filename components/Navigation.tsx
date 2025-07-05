@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 
 import { siteConfig } from '@/lib/config'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 
 const NAV_SECTIONS = [ 
@@ -157,7 +158,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed bottom-7 left-9 z-50 hidden md:flex"
       >
-        {}
+        <Magnetic>
         <button
           onClick={onOpenPalette}
           aria-label="Open command palette (Ctrl+K)"
@@ -171,6 +172,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
             Ctrl+K
           </span>
         </button>
+        </Magnetic>
       </motion.div>
 
       {/* ── Mobile bottom nav ── */}

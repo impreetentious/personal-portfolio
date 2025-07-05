@@ -1,7 +1,13 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "framer-motion";
+import { useRef, type ReactNode } from "react";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import type { MetricItem } from "@/lib/queries";
@@ -73,6 +79,58 @@ type MetricsProps = {
   data?: MetricItem[]
 }
 
+const MAX_TILT_DEG = 5
+
+function TiltCard({
+  index,
+  inView,
+  className,
+  children,
+}: {
+  index: number
+  inView: boolean
+  className: string
+  children: ReactNode
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const prefersReduced = useReducedMotion()
+
+  const rotateX = useMotionValue(0)
+  const rotateY = useMotionValue(0)
+  const springRotateX = useSpring(rotateX, { stiffness: 260, damping: 20 })
+  const springRotateY = useSpring(rotateY, { stiffness: 260, damping: 20 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReduced || !ref.current) return
+    const rect = ref.current.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width - 0.5
+    const py = (e.clientY - rect.top) / rect.height - 0.5
+    rotateY.set(px * MAX_TILT_DEG)
+    rotateX.set(-py * MAX_TILT_DEG)
+  }
+
+  const resetTilt = () => {
+    rotateX.set(0)
+    rotateY.set(0)
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      custom={index}
+      variants={cardVariants}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={resetTilt}
+      style={{ rotateX: springRotateX, rotateY: springRotateY }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 export function Metrics({data}: MetricsProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, margin: "-80px" });
@@ -100,15 +158,14 @@ export function Metrics({data}: MetricsProps) {
         {/* ── Grid ── */}
         <div
           ref={gridRef}
+          style={{ perspective: 1200 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-accent/10 border border-accent/10 rounded-sm overflow-hidden"
         >
           {metrics.map((metric, i) => (
-            <motion.div
+            <TiltCard
               key={metric.label}
-              custom={i}
-              variants={cardVariants}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
+              index={i}
+              inView={inView}
               className="relative bg-background p-8 md:p-10 group hover:bg-accent/[0.035] transition-colors duration-300 overflow-hidden"
             >
               {/* Top accent gradient line — appears on hover */}
@@ -162,7 +219,7 @@ export function Metrics({data}: MetricsProps) {
 
               {/* Bottom rule — animates on hover */}
               <div className="absolute bottom-0 left-0 right-0 h-px bg-accent/10 group-hover:bg-accent/30 transition-colors duration-300" />
-            </motion.div>
+            </TiltCard>
           ))}
         </div>
 

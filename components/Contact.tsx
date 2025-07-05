@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { SocialLink } from "@/lib/queries";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
 
@@ -284,6 +285,7 @@ export function Contact({ socialLinks }: ContactProps) {
 
               return (
               <div key={`${platform}-${url}`} className="relative flex flex-1 justify-center sm:flex-none">
+                <Magnetic>
                 <a
                   href={url}
                   aria-label={copyValue ? `${resolvedLabel} — click to copy` : resolvedLabel}
@@ -311,6 +313,7 @@ export function Contact({ socialLinks }: ContactProps) {
                 >
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
+                </Magnetic>
 
                 <AnimatePresence>
                   {copied === resolvedLabel && (

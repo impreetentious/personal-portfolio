@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { TerminalPrompt } from '@/components/ui/TerminalPrompt'
 import type { HeroProfileField, HeroTerminalSkill } from '@/lib/queries'
 
 type WindowsTerminalProps = {
@@ -390,7 +391,7 @@ export function WindowsTerminal({
         </div>
       </div>
 
-      <div className="surface-2 overflow-y-auto flex-1 max-md:border-l-0">
+      <div className="js-terminal-scroll surface-2 overflow-y-auto flex-1 max-md:border-l-0">
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
           <div className="flex items-center justify-between mb-4 sm:mb-5">
             <p className="font-mono text-[10px] sm:text-xs text-foreground/22 tracking-tight select-none">
@@ -525,6 +526,12 @@ export function WindowsTerminal({
                 <SkillChip key={skill.label} {...skill} />
               ))}
             </div>
+            <TerminalPrompt
+              name={name}
+              tagline={tagline}
+              hasResume={!!resumeUrl}
+              onDownloadResume={handleDownload}
+            />
           </div>
         </div>
       </div>
