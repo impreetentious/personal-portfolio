@@ -160,7 +160,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       >
         <Magnetic>
         <button
-          onClick={onOpenPalette}
+          onClick={() => onOpenPalette?.()}
           aria-label="Open command palette (Ctrl+K)"
           className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10"
         >

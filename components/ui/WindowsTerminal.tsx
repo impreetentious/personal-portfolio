@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Terminal } from 'lucide-react'
 import { TerminalPrompt } from '@/components/ui/TerminalPrompt'
+import { usePalette } from '@/components/PaletteContext'
 import type { HeroProfileField, HeroTerminalSkill } from '@/lib/queries'
 
 type WindowsTerminalProps = {
@@ -197,6 +199,8 @@ export function WindowsTerminal({
   terminalSkills,
   startTyping = true,
 }: WindowsTerminalProps) {
+  const { openPalette } = usePalette()
+
   const [displayedChars, setDisplayedChars] = useState(0)
   const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
   const [istTime, setIstTime]               = useState('')
@@ -393,21 +397,26 @@ export function WindowsTerminal({
 
       <div className="js-terminal-scroll surface-2 overflow-y-auto flex-1 max-md:border-l-0">
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
-          <div className="flex items-center justify-between mb-4 sm:mb-5">
-            <p className="font-mono text-[10px] sm:text-xs text-foreground/22 tracking-tight select-none">
+          <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
+            <p className="font-mono text-[10px] sm:text-xs text-foreground/22 tracking-tight select-none min-w-0 truncate">
               {'/** @profile . latest */ - loading....'}
             </p>
-            <motion.div
+
+            {/* Desktop: clickable Ctrl+K hint → opens the command palette on the nav view */}
+            <motion.button
+              type="button"
+              onClick={() => openPalette('nav')}
+              aria-label="Open command palette (Ctrl+K)"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8, type: 'tween', ease: 'easeOut', duration: 0.8 }}
-              className="hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
+              className="group hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
             >
-              <span className="font-mono text-[10px] text-foreground/38">
+              <span className="font-mono text-[10px] text-foreground/38 transition-colors group-hover:text-foreground/60">
                 {'// press '}
               </span>
               <motion.span
-                className="font-mono text-[11px] border border-accent/35 bg-accent/[0.08] px-2 py-[3px] text-accent leading-none"
+                className="font-mono text-[11px] border border-accent/35 bg-accent/[0.08] px-2 py-[3px] text-accent leading-none transition-colors group-hover:border-accent/60 group-hover:bg-accent/[0.16]"
                 animate={{
                   opacity: [1, 0.68, 1],
                   boxShadow: [
@@ -426,10 +435,24 @@ export function WindowsTerminal({
               >
                 Ctrl+K
               </motion.span>
-              <span className="font-mono text-[10px] text-foreground/38">
+              <span className="font-mono text-[10px] text-foreground/38 transition-colors group-hover:text-foreground/60">
                 to navigate
               </span>
-            </motion.div>
+            </motion.button>
+
+            {/* Mobile: tappable trigger → opens the command palette on the nav view (Ctrl+K is meaningless on touch) */}
+            <motion.button
+              type="button"
+              onClick={() => openPalette('nav')}
+              aria-label="Open command palette"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.4, type: 'tween', ease: 'easeOut', duration: 0.6 }}
+              className="flex md:hidden items-center gap-1.5 shrink-0 select-none rounded border border-accent/35 bg-accent/[0.08] px-2 py-1 leading-none text-accent transition-transform active:scale-95"
+            >
+              <Terminal className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
+              <span className="font-mono text-[10px] uppercase tracking-wider">Menu</span>
+            </motion.button>
           </div>
           <h1 className="font-display font-semibold tracking-tight text-white text-3xl md:text-5xl">
             {name}
@@ -526,12 +549,7 @@ export function WindowsTerminal({
                 <SkillChip key={skill.label} {...skill} />
               ))}
             </div>
-            <TerminalPrompt
-              name={name}
-              tagline={tagline}
-              hasResume={!!resumeUrl}
-              onDownloadResume={handleDownload}
-            />
+            <TerminalPrompt name={name} tagline={tagline} />
           </div>
         </div>
       </div>

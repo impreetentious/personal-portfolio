@@ -166,14 +166,15 @@ const DOWNLOAD_COLOR_CLASS: Record<DownloadState, string> = {
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
-  isOpen    : boolean
-  onClose   : () => void
-  resumeUrl?: string
+  isOpen       : boolean
+  onClose      : () => void
+  resumeUrl?   : string
+  initialQuery?: string
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPaletteProps) {
+export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }: CommandPaletteProps) {
   const [query,         setQuery        ] = useState('')
   const [activeIndex,   setActiveIndex  ] = useState(0)
   const [downloadState, setDownloadState] = useState<DownloadState>('idle')
@@ -220,12 +221,12 @@ export function CommandPalette({ isOpen, onClose, resumeUrl }: CommandPalettePro
       clearTimeout(downloadTimeoutRef.current)
       downloadTimeoutRef.current = null
     }
-    setQuery('')
+    setQuery(initialQuery)
     setActiveIndex(0)
     setDownloadState('idle')
     const timer = setTimeout(() => inputRef.current?.focus(), 60)
     return () => clearTimeout(timer)
-  }, [isOpen])
+  }, [isOpen, initialQuery])
 
   useEffect(() => {
     if (!isOpen) return

@@ -101,8 +101,8 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.3.4
-* **Portfolio Version: v3.3.4_2025-07-05_22:32:29 (IST)
+* **Base Format Version:** 3.3.5
+* **Portfolio Version: v3.3.5_2025-07-05_23:50:55 (IST)
 
 ## AI Agent Instructions
 

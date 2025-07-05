@@ -1,13 +1,14 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { motion }         from 'framer-motion'
-import type { ReactNode } from 'react'
-import { Navigation }     from '@/components/Navigation'
-import { CommandPalette } from '@/components/CommandPalette'
-import { BootSequence }   from '@/components/BootSequence'
-import { BootProvider }   from '@/components/BootContext'
-import { usePathname }    from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { motion }          from 'framer-motion'
+import type { ReactNode }  from 'react'
+import { Navigation }      from '@/components/Navigation'
+import { CommandPalette }  from '@/components/CommandPalette'
+import { BootSequence }    from '@/components/BootSequence'
+import { BootProvider }    from '@/components/BootContext'
+import { PaletteProvider } from '@/components/PaletteContext'
+import { usePathname }     from 'next/navigation'
 
 interface LayoutShellProps {
   children   : ReactNode
@@ -18,6 +19,7 @@ type BootPhase = 'pending' | 'show' | 'done'
 
 export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)
+  const [paletteQuery,  setPaletteQuery]  = useState('')
   const [bootPhase,     setBootPhase]     = useState<BootPhase>('pending')
   
   const pathname = usePathname()
@@ -37,8 +39,17 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   }, [])
 
   // ── Palette handlers ──────────────────────────────────────────────────────
-  const openPalette  = useCallback(() => setIsPaletteOpen(true),  [])
+  const openPalette  = useCallback((initialQuery = '') => {
+    // Guard: callers wired as onClick={openPalette} pass a click event, not a
+    // string — coerce anything non-string back to the blank idle prompt
+    setPaletteQuery(typeof initialQuery === 'string' ? initialQuery : '')
+    setIsPaletteOpen(true)
+  }, [])
   const closePalette = useCallback(() => setIsPaletteOpen(false), [])
+
+  // Stable context value so terminal/hero triggers can open the palette from
+  // deep in the page tree without re-rendering consumers on every toggle
+  const paletteContextValue = useMemo(() => ({ openPalette }), [openPalette])
 
   useEffect(() => {
     // Disable command palette shortcuts while in Studio
@@ -48,6 +59,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       // Ctrl+K only — !metaKey explicitly excludes any Cmd binding
       if (e.ctrlKey && !e.metaKey && e.key === 'k') {
         e.preventDefault()
+        setPaletteQuery('') // shortcut opens the blank idle prompt
         setIsPaletteOpen((prev) => !prev)
         return
       }
@@ -125,17 +137,20 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           pointerEvents   : isPaletteOpen ? 'none' : 'auto',
         }}
       >
-        <BootProvider value={bootPhase === 'done' || !!isStudio}>
-          {children}
-        </BootProvider>
+        <PaletteProvider value={paletteContextValue}>
+          <BootProvider value={bootPhase === 'done' || !!isStudio}>
+            {children}
+          </BootProvider>
+        </PaletteProvider>
       </motion.main>
 
       {/* Exclude Command Palette from Studio */}
       {!isStudio && (
         <CommandPalette
-          isOpen    = {isPaletteOpen}
-          onClose   = {closePalette}
-          resumeUrl = {resumeUrl}
+          isOpen       = {isPaletteOpen}
+          onClose      = {closePalette}
+          resumeUrl    = {resumeUrl}
+          initialQuery = {paletteQuery}
         />
       )}
     </>

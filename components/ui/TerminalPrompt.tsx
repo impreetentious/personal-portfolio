@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { usePalette } from '@/components/PaletteContext'
 
 type Tone = 'plain' | 'ok' | 'err' | 'accent' | 'dim' | 'warn'
 
@@ -11,8 +12,6 @@ type HistoryEntry = { id: number; cmd: string; output: Line[] }
 type TerminalPromptProps = {
   name: string
   tagline: string
-  hasResume: boolean
-  onDownloadResume: () => void
 }
 
 const TONE_CLASS: Record<Tone, string> = {
@@ -23,26 +22,6 @@ const TONE_CLASS: Record<Tone, string> = {
   dim:    'text-foreground/40',
   warn:   'text-amber-300/90',
 }
-
-const SECTIONS = ['experience', 'skills', 'metrics', 'achievements', 'education', 'writing', 'contact'] as const
-
-const SECTION_ALIASES: Record<string, string> = {
-  awards: 'achievements',
-  work:   'experience',
-  home:   'home',
-  '~':    'home',
-}
-
-const HELP_LINES: Line[] = [
-  { text: 'Available commands:',                          tone: 'plain' },
-  { text: '  whoami          who am I',                   tone: 'dim' },
-  { text: '  ls              list sections',              tone: 'dim' },
-  { text: '  cd <section>    jump to a section',          tone: 'dim' },
-  { text: '  resume          download resume.pdf',        tone: 'dim' },
-  { text: '  contact         get in touch',               tone: 'dim' },
-  { text: '  time            current time (IST)',         tone: 'dim' },
-  { text: '  clear           clear the terminal',         tone: 'dim' },
-]
 
 const MAX_ENTRIES = 8
 
@@ -56,7 +35,9 @@ function getISTTime(): string {
   }).format(new Date())
 }
 
-export function TerminalPrompt({ name, tagline, hasResume, onDownloadResume }: TerminalPromptProps) {
+export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
+  const { openPalette } = usePalette()
+
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [value, setValue]     = useState('')
   const [cmdCursor, setCmdCursor] = useState(-1)
@@ -73,89 +54,45 @@ export function TerminalPrompt({ name, tagline, hasResume, onDownloadResume }: T
     })
   }
 
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   const run = (raw: string): Line[] | 'clear' => {
-    const input = raw.trim()
-    const [cmd, ...args] = input.split(/\s+/)
-    const arg = args.join(' ').toLowerCase()
+    const cmd = raw.trim().split(/\s+/)[0] ?? ''
 
     switch (cmd.toLowerCase()) {
       case '':
         return []
 
+      // help / --help / -h → hand off to the command palette (the real menu)
       case 'help':
       case '--help':
       case '-h':
-        return HELP_LINES
+        openPalette('help')
+        return [{ text: 'launching command palette....', tone: 'dim' }]
 
-      case 'whoami':
+      // ver — Windows version banner, repurposed as an identity line
+      case 'ver':
         return [
-          { text: name, tone: 'accent' },
-          { text: tagline, tone: 'dim' },
+          { text: `${name} — Portfolio [PowerShell Edition]`, tone: 'accent' },
+          { text: `(c) ${new Date().getFullYear()} ${name}. All rights reserved.`, tone: 'dim' },
         ]
 
-      case 'ls':
-      case 'dir':
-        return [{ text: SECTIONS.join('   '), tone: 'plain' }]
-
-      case 'cd':
-      case 'goto': {
-        const target = SECTION_ALIASES[arg] ?? arg
-        if (target === 'home') {
-          scrollToSection('home')
-          return [{ text: 'cd ~', tone: 'dim' }]
-        }
-        if ((SECTIONS as readonly string[]).includes(target)) {
-          scrollToSection(target)
-          return [{ text: `cd ~/${target}`, tone: 'dim' }]
-        }
-        return [
-          { text: `cd : Cannot find path '${arg || '~'}' because it does not exist.`, tone: 'err' },
-          { text: `Try 'ls' to list sections.`, tone: 'dim' },
-        ]
-      }
-
-      case 'contact':
-        scrollToSection('contact')
-        return [{ text: '[OK] Opening contact channel....', tone: 'ok' }]
-
-      case 'resume':
-      case 'cv': {
-        if (!hasResume) {
-          return [{ text: 'resume.pdf : file not found.', tone: 'err' }]
-        }
-        onDownloadResume()
-        return [
-          { text: '[COMPILING] resume.pdf ....', tone: 'warn' },
-          { text: '[OK] Download started.', tone: 'ok' },
-        ]
+      // tree — draw the tagline as a directory tree
+      case 'tree': {
+        const parts = tagline.split(/[·•|,/]/).map((s) => s.trim()).filter(Boolean)
+        const lines: Line[] = [{ text: 'C:\\Portfolio', tone: 'accent' }]
+        parts.forEach((part, i) => {
+          const branch = i === parts.length - 1 ? '└──' : '├──'
+          lines.push({ text: `${branch} ${part}`, tone: 'plain' })
+        })
+        return lines
       }
 
       case 'time':
       case 'date':
         return [{ text: `${getISTTime()} IST — Delhi NCR, India`, tone: 'plain' }]
 
-      case 'clear':
       case 'cls':
+      case 'clear':
         return 'clear'
-
-      case 'sudo': {
-        if (arg === 'hire-me' || arg === 'hire me') {
-          return [
-            { text: '[sudo] permission granted — excellent decision.', tone: 'ok' },
-            { text: 'Queued: offer_letter.pdf → work@sidakpreetsingh.com', tone: 'plain' },
-            { text: `Run 'contact' to finalize.`, tone: 'dim' },
-          ]
-        }
-        return [{ text: `sudo : '${arg}' requires elevated charm. Try 'sudo hire-me'.`, tone: 'warn' }]
-      }
-
-      case 'exit':
-      case 'quit':
-        return [{ text: `There is no escape. Try 'contact' instead.`, tone: 'warn' }]
 
       default:
         return [
@@ -163,7 +100,7 @@ export function TerminalPrompt({ name, tagline, hasResume, onDownloadResume }: T
             text: `${cmd} : The term '${cmd}' is not recognized as the name of a cmdlet.`,
             tone: 'err',
           },
-          { text: `Type 'help' to see available commands.`, tone: 'dim' },
+          { text: `Type 'help' to open the command palette.`, tone: 'dim' },
         ]
     }
   }
