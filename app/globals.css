@@ -119,3 +119,17 @@ body::after {
   0%   { opacity: 1; }
   100% { opacity: 0; }
 }
+
+/* Reduced-motion safety net for CSS-driven animation (Framer Motion is handled
+   globally via <MotionConfig reducedMotion="user">). Mirrors the landing page:
+   stop the blinking cursor and the hover scan-beam, and disable smooth scroll. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-cursor-blink,
+  .scan-beam-inner {
+    animation: none !important;
+  }
+}

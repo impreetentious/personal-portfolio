@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
 interface ScrollRevealProps {
@@ -16,17 +16,27 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
+  const prefersReduced = useReducedMotion();
+
+  // MotionConfig strips the y-transform for reduced-motion users, but not the
+  // blur filter — so collapse to a plain opacity fade here to keep it consistent.
+  const initial = prefersReduced
+    ? { opacity: 0 }
+    : { opacity: 0, y: 24, filter: "blur(6px)" };
+  const shown = prefersReduced
+    ? { opacity: 1 }
+    : { opacity: 1, y: 0, filter: "blur(0px)" };
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
-      animate={inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+      initial={initial}
+      animate={inView ? shown : {}}
       transition={{
-        duration: 0.55,
+        duration: prefersReduced ? 0.3 : 0.55,
         ease: "easeOut",
         type: "tween",
-        delay,
+        delay: prefersReduced ? 0 : delay,
       }}
       className={className}
     >

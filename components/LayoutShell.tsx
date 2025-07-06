@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { motion }          from 'framer-motion'
+import { motion, MotionConfig } from 'framer-motion'
 import type { ReactNode }  from 'react'
 import { Navigation }      from '@/components/Navigation'
 import { CommandPalette }  from '@/components/CommandPalette'
@@ -96,7 +96,10 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const mainInert = (isPaletteOpen || bootBlocking) ? ('' as unknown as true) : undefined
 
   return (
-    <>
+    // reducedMotion="user" makes every descendant motion component honour the OS
+    // "reduce motion" setting — disabling transform/layout entrances (Skills,
+    // Writing, Education, ScrollReveal, etc.) globally instead of per-component.
+    <MotionConfig reducedMotion="user">
       {/* Static cover — shown only during the pending check to block the page */}
       {bootPhase === 'pending' && !isStudio && (
         <div
@@ -153,6 +156,6 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           initialQuery = {paletteQuery}
         />
       )}
-    </>
+    </MotionConfig>
   )
 }
