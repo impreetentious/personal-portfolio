@@ -100,6 +100,16 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     // "reduce motion" setting — disabling transform/layout entrances (Skills,
     // Writing, Education, ScrollReveal, etc.) globally instead of per-component.
     <MotionConfig reducedMotion="user">
+      {/* Keyboard skip link — first focusable element; jumps past the nav to content */}
+      {!isStudio && (
+        <a
+          href="#main-content"
+          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[400] focus-visible:rounded-md focus-visible:border focus-visible:border-accent/40 focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:font-mono focus-visible:text-sm focus-visible:text-accent focus-visible:shadow-panel"
+        >
+          Skip to content
+        </a>
+      )}
+
       {/* Static cover — shown only during the pending check to block the page */}
       {bootPhase === 'pending' && !isStudio && (
         <div

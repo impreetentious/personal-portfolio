@@ -11,6 +11,10 @@ type SanityEnv = {
 
 const apiVersion = '2024-01-01'
 
+// Default ISR window for content fetches. Rendered pages and the underlying
+// Sanity responses revalidate on this cadence instead of refetching per request.
+const DEFAULT_REVALIDATE_SECONDS = 3600
+
 function readLocalEnvFile(): Record<string, string> {
   if (typeof window !== 'undefined') return {}
 
@@ -72,6 +76,7 @@ function createSanityClient(useCdn: boolean) {
 export async function sanityFetch<T>(
   query: string,
   params: QueryParams = {},
+  revalidate: number = DEFAULT_REVALIDATE_SECONDS,
 ): Promise<T | null> {
   const {projectId} = getSanityEnv()
 
@@ -81,7 +86,9 @@ export async function sanityFetch<T>(
   }
 
   const client = createSanityClient(false)
-  return client.fetch<T>(query, params)
+  // `next.revalidate` opts each response into Next's Data Cache so the route can
+  // render statically and refresh on the ISR window rather than per request.
+  return client.fetch<T>(query, params, {next: {revalidate}})
 }
 
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {

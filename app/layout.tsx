@@ -6,7 +6,8 @@ import { LayoutShell } from '@/components/LayoutShell'
 import { siteConfig } from '@/lib/config'
 import { getResumeUrl } from '@/lib/sanity'
 
-export const dynamic = 'force-dynamic'
+// ISR: statically render and revalidate hourly instead of rendering per request.
+export const revalidate = 3600
 
 // Anchors all relative metadata URLs (OG image, canonical) to the real origin.
 export const metadata: Metadata = {

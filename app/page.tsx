@@ -28,7 +28,8 @@ import {
 } from "@/lib/queries";
 import { getResumeUrl, sanityFetch } from "@/lib/sanity";
 
-export const dynamic = 'force-dynamic'
+// ISR: statically render and revalidate hourly instead of rendering per request.
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title      : 'Sidakpreet Singh | Portfolio',
@@ -117,7 +118,7 @@ export default async function Home() {
   }
 
   return (
-    <div id="main-content" className="relative flex flex-col">
+    <div id="main-content" tabIndex={-1} className="relative flex flex-col outline-none">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
