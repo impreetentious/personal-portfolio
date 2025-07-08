@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { usePalette } from '@/components/PaletteContext'
+import { getISTTime } from '@/lib/time'
 
 type Tone = 'plain' | 'ok' | 'err' | 'accent' | 'dim' | 'warn'
 
@@ -24,16 +25,6 @@ const TONE_CLASS: Record<Tone, string> = {
 }
 
 const MAX_ENTRIES = 8
-
-function getISTTime(): string {
-  return new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Kolkata',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(new Date())
-}
 
 export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
   const { openPalette } = usePalette()

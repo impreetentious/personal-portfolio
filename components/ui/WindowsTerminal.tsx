@@ -1,10 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Terminal } from 'lucide-react'
 import { TerminalPrompt } from '@/components/ui/TerminalPrompt'
+import { useResumeDownload, type DownloadState } from '@/components/ui/useResumeDownload'
 import { usePalette } from '@/components/PaletteContext'
+import { getISTTime } from '@/lib/time'
 import type { HeroProfileField, HeroTerminalSkill } from '@/lib/queries'
 
 type WindowsTerminalProps = {
@@ -39,37 +41,42 @@ const FALLBACK_TERMINAL_SKILLS: HeroTerminalSkill[] = [
 
 const SHOW_WORKING_STATUS = false
 
-type DownloadState = 'idle' | 'compiling' | 'ready'
-
 const DOWNLOAD_LABEL: Record<DownloadState, string> = {
   idle:      '↓ resume.pdf',
   compiling: '[COMPILING...]',
   ready:     '[READY]',
+  error:     '[FAILED]',
 }
 
 const DOWNLOAD_COLOR: Record<DownloadState, string> = {
   idle:      'text-white',
   compiling: 'text-amber-300/90',
   ready:     'text-green-300/90',
+  error:     'text-red-300/90',
 }
 
-const IST_FORMATTER = new Intl.DateTimeFormat('en-GB', { 
-  timeZone: 'Asia/Kolkata',
-  hour:     '2-digit',
-  minute:   '2-digit',
-  second:   '2-digit',
-  hour12:   false,
-})
+// Isolated clock so the once-a-second tick only re-renders this leaf, not the
+// whole terminal (typewriter, skills, live prompt, …).
+function ISTClock({ className, ariaLabel = false }: { className?: string; ariaLabel?: boolean }) {
+  const [time, setTime] = useState('')
 
-function getISTTime(): string {
-  const parts = IST_FORMATTER.formatToParts(new Date())
-  const h = parts.find((p) => p.type === 'hour')?.value   ?? '00'
-  const m = parts.find((p) => p.type === 'minute')?.value ?? '00'
-  const s = parts.find((p) => p.type === 'second')?.value ?? '00'
-  return `${h}:${m}:${s} IST`
+  useEffect(() => {
+    const tick = () => setTime(getISTTime())
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  if (!time) return null
+  const label = `${time} IST`
+  return (
+    <span className={className} aria-label={ariaLabel ? `Current IST: ${label}` : undefined}>
+      {label}
+    </span>
+  )
 }
 
-function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
+const PropertyRow = memo(function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
   const valueNode = href ? (
     <a
       href={href}
@@ -103,9 +110,9 @@ function PropertyRow({ propKey, value, href }: { propKey: string; value: string;
       <span className="ml-0.5 text-foreground/14 shrink-0">;</span>
     </div>
   )
-}
+})
 
-function SkillChip({ label, dot }: HeroTerminalSkill) {
+const SkillChip = memo(function SkillChip({ label, dot }: HeroTerminalSkill) {
   return (
     <span className="font-mono text-xs bg-white/[0.03] border border-white/10 px-2.5 py-1 rounded-md text-foreground/90 flex items-center gap-1.5 whitespace-nowrap select-none">
       <span
@@ -116,7 +123,7 @@ function SkillChip({ label, dot }: HeroTerminalSkill) {
       {label}
     </span>
   )
-}
+})
 
 function MinimizeIcon() {
   return (
@@ -202,15 +209,18 @@ export function WindowsTerminal({
   const { openPalette } = usePalette()
 
   const [displayedChars, setDisplayedChars] = useState(0)
-  const [downloadState, setDownloadState]   = useState<DownloadState>('idle')
-  const [istTime, setIstTime]               = useState('')
   const [isIdle, setIsIdle]                 = useState(false)
+
+  const { state: downloadState, start: handleDownload } = useResumeDownload(resumeUrl, {
+    fileName    : 'Sidakpreet_Singh_Resume.pdf',
+    readyDelayMs: 400,
+  })
 
   const idleTimerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
   const typeDelayRef     = useRef(BASE_TYPE_DELAY)
   const lastPointerRef   = useRef<{ x: number; y: number; t: number } | null>(null)
   const velocityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const downloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rafIdRef         = useRef<number | null>(null)
 
   useEffect(() => { setDisplayedChars(0) }, [bio])
 
@@ -220,12 +230,6 @@ export function WindowsTerminal({
     const id = setTimeout(() => setDisplayedChars((n) => n + 1), typeDelayRef.current)
     return () => clearTimeout(id)
   }, [bio, displayedChars, startTyping])
-
-  useEffect(() => {
-    setIstTime(getISTTime())
-    const intervalId = setInterval(() => setIstTime(getISTTime()), 1000)
-    return () => clearInterval(intervalId)
-  }, [])
 
   useEffect(() => {
     let lastFired = 0
@@ -254,74 +258,44 @@ export function WindowsTerminal({
   useEffect(() => {
     return () => {
       if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
+      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current)
     }
   }, [])
 
-  useEffect(() => {
-    return () => {
-      if (downloadTimerRef.current) clearTimeout(downloadTimerRef.current)
-    }
-  }, [])
-
+  // Adaptive typewriter speed: faster cursor → faster typing. Gated to one
+  // computation per animation frame so it can't run the sqrt/timer work on every
+  // raw mousemove event.
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const now = performance.now()
+    const x = e.clientX
+    const y = e.clientY
+    if (rafIdRef.current !== null) return
 
-    if (lastPointerRef.current) {
-      const dx = e.clientX - lastPointerRef.current.x
-      const dy = e.clientY - lastPointerRef.current.y
-      const dt = now - lastPointerRef.current.t
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null
+      const now = performance.now()
 
-      if (dt > 0) {
-        const speed           = Math.sqrt(dx * dx + dy * dy) / dt
-        const normalizedSpeed = Math.min(speed / MAX_VELOCITY, 1)
-        typeDelayRef.current  = Math.round(
-          BASE_TYPE_DELAY - normalizedSpeed * (BASE_TYPE_DELAY - MIN_TYPE_DELAY),
-        )
+      if (lastPointerRef.current) {
+        const dx = x - lastPointerRef.current.x
+        const dy = y - lastPointerRef.current.y
+        const dt = now - lastPointerRef.current.t
+
+        if (dt > 0) {
+          const speed           = Math.sqrt(dx * dx + dy * dy) / dt
+          const normalizedSpeed = Math.min(speed / MAX_VELOCITY, 1)
+          typeDelayRef.current  = Math.round(
+            BASE_TYPE_DELAY - normalizedSpeed * (BASE_TYPE_DELAY - MIN_TYPE_DELAY),
+          )
+        }
       }
-    }
 
-    lastPointerRef.current = { x: e.clientX, y: e.clientY, t: now }
+      lastPointerRef.current = { x, y, t: now }
 
-    if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
-    velocityTimerRef.current = setTimeout(() => {
-      typeDelayRef.current   = BASE_TYPE_DELAY
-      lastPointerRef.current = null
-    }, 280)
-  }
-
-  const handleDownload = async () => {
-    if (!resumeUrl || downloadState !== 'idle') return
-    setDownloadState('compiling')
-
-    try {
-      const results = await Promise.all([
-        fetch(resumeUrl).then((r) => {
-          if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`)
-          return r.blob()
-        }),
-        new Promise<void>((resolve) => setTimeout(resolve, 800)),
-      ])
-      const blob      = results[0]
-      const objectUrl = URL.createObjectURL(blob)
-
-      setDownloadState('ready')
-
-      const link    = document.createElement('a')
-      link.href     = objectUrl
-      link.download = 'Sidakpreet_Singh_Resume.pdf'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
-      downloadTimerRef.current = setTimeout(() => {
-        URL.revokeObjectURL(objectUrl)
-        setDownloadState('idle')
-        downloadTimerRef.current = null
-      }, 400)
-    } catch (error) {
-      console.error('[handleDownload] Resume fetch failed:', error)
-      setDownloadState('idle')
-    }
+      if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
+      velocityTimerRef.current = setTimeout(() => {
+        typeDelayRef.current   = BASE_TYPE_DELAY
+        lastPointerRef.current = null
+      }, 280)
+    })
   }
 
   const displayedBio   = bio.slice(0, displayedChars)
@@ -561,23 +535,12 @@ export function WindowsTerminal({
             <span className="font-mono text-xs text-white/85 leading-none">main</span>
           </div>
           <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
-          {istTime && (
-            <span className="sm:hidden font-mono text-xs text-white/85 leading-none tabular-nums">
-              {istTime}
-            </span>
-          )}
+          <ISTClock className="sm:hidden font-mono text-xs text-white/85 leading-none tabular-nums" />
         </div>
 
-        {istTime && (
-          <div
-            className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center pointer-events-none"
-            aria-label={`Current IST: ${istTime}`}
-          >
-            <span className="font-mono text-xs text-white/90 leading-none tabular-nums">
-              {istTime}
-            </span>
-          </div>
-        )}
+        <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center pointer-events-none">
+          <ISTClock className="font-mono text-xs text-white/90 leading-none tabular-nums" ariaLabel />
+        </div>
 
         <div className="hidden sm:flex items-center gap-3 sm:gap-4 ml-auto">
           {SHOW_WORKING_STATUS && <WorkingStatus />}
