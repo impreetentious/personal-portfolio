@@ -48,6 +48,10 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
   const directionRef = useRef<'up' | 'down' | null>(null)
+  // Mirror the last value handed to each setter so the scroll handler only calls
+  // setState when the value actually flips, not on every frame.
+  const hasPassedHeroRef  = useRef(false)
+  const mobileNavHiddenRef = useRef(false)
 
   useEffect(() => {
     const updateHeroExit = () => setHeroExit(window.innerHeight * 0.82)
@@ -74,14 +78,26 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
     const direction = latest > lastScrollY.current ? 'down' : 'up'
     const delta     = Math.abs(latest - lastScrollY.current)
     const threshold = heroExitRef.current
-    setHasPassedHero(latest >= threshold - 24)
+
+    const passedHero = latest >= threshold - 24
+    if (passedHero !== hasPassedHeroRef.current) {
+      hasPassedHeroRef.current = passedHero
+      setHasPassedHero(passedHero)
+    }
+
+    const setHidden = (hidden: boolean) => {
+      if (hidden !== mobileNavHiddenRef.current) {
+        mobileNavHiddenRef.current = hidden
+        setMobileNavHidden(hidden)
+      }
+    }
 
     if (latest < threshold) {
       // Still above the nav-visible zone — always reset hidden state
-      setMobileNavHidden(false)
+      setHidden(false)
       directionRef.current = null
     } else if (delta > 10 && direction !== directionRef.current) {
-      setMobileNavHidden(direction === 'down')
+      setHidden(direction === 'down')
       directionRef.current = direction
     }
 

@@ -30,7 +30,7 @@ export function SectionLabel({
         }`}
       >
         <p
-          className={`font-display font-semibold text-[33px] tracking-tight text-white/[0.92] antialiased subpixel-antialiased sm:text-4xl${
+          className={`font-display font-semibold text-[33px] tracking-tight text-white/[0.92] antialiased sm:text-4xl${
             titleClassName ? ` ${titleClassName}` : ""
           }`}
         >

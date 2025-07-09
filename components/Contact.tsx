@@ -298,7 +298,9 @@ export function Contact({ socialLinks }: ContactProps) {
                           try {
                             await navigator.clipboard.writeText(copyValue)
                             if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
-                            setCopied(resolvedLabel)
+                            // Key on the guaranteed-unique url, not the display
+                            // label — two links can share a label/platform.
+                            setCopied(url)
                             copyTimeoutRef.current = setTimeout(() => {
                               setCopied(null)
                               copyTimeoutRef.current = null
@@ -316,7 +318,7 @@ export function Contact({ socialLinks }: ContactProps) {
                 </Magnetic>
 
                 <AnimatePresence>
-                  {copied === resolvedLabel && (
+                  {copied === url && (
                     <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2">
                       <motion.span
                         key="tip"
@@ -374,7 +376,7 @@ export function Contact({ socialLinks }: ContactProps) {
                 <span style={{ color: TOKEN.success }}>[COPIED]&nbsp;</span>
                 <span style={{ color: 'rgba(255,255,255,0.35)' }}>
                   {'— '}
-                  {resolvedSocialLinks.find((link) => (link.label ?? link.platform) === copied)?.copyValue ?? ''}
+                  {resolvedSocialLinks.find((link) => link.url === copied)?.copyValue ?? ''}
                   {' → clipboard'}
                 </span>
               </div>

@@ -21,11 +21,11 @@ export function Footer() {
         {/* ── Main row ── */}
           <div className="flex items-center justify-between">
                 <p className="font-mono hidden sm:block text-[11px] text-foreground/50">
-                  © {new Date().getFullYear()} Sidakpreet Singh
+                  © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Sidakpreet Singh
                 </p>
 
                 <p className="font-mono sm:hidden text-[11px] text-foreground/50">
-                  © {new Date().getFullYear()}
+                  © <span suppressHydrationWarning>{new Date().getFullYear()}</span>
                 </p>
 
                 <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-foreground/50 select-none">

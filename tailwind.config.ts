@@ -24,7 +24,7 @@ const config: Config = {
         'muted-foreground': 'rgba(171,178,191,0.50)',
       },
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-mono)', ...defaultTheme.fontFamily.mono],
         display: ['var(--font-display)', ...defaultTheme.fontFamily.sans],
       },
