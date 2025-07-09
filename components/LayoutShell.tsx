@@ -59,6 +59,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       // Ctrl+K only — !metaKey explicitly excludes any Cmd binding
       if (e.ctrlKey && !e.metaKey && e.key === 'k') {
         e.preventDefault()
+        // Don't let the palette open behind the boot overlay — it would render
+        // under the boot screen and leave the scroll lock in an ambiguous state.
+        if (bootPhase !== 'done') return
         setPaletteQuery('') // shortcut opens the blank idle prompt
         setIsPaletteOpen((prev) => !prev)
         return
@@ -69,25 +72,23 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isStudio])
+  }, [isStudio, bootPhase])
 
-  useEffect(() => {
-    if (!isPaletteOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previousOverflow
-    }
-  }, [isPaletteOpen])
-
-  // ── Body scroll lock during boot phases ───────────────────────────────
+  // ── Body scroll lock ──────────────────────────────────────────────────────
+  // Single owner for `body.overflow`: the boot overlay and the palette both want
+  // to lock scroll, so deriving one boolean (instead of two effects that each
+  // save/restore) avoids the case where one effect's cleanup restored a stale
+  // value the other still needed, permanently locking the page.
   useEffect(() => {
     if (isStudio) return
-    if (bootPhase === 'pending' || bootPhase === 'show') {
-      document.body.style.overflow = 'hidden'
-      return () => { document.body.style.overflow = '' }
+    const shouldLock =
+      isPaletteOpen || bootPhase === 'pending' || bootPhase === 'show'
+    if (!shouldLock) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
     }
-  }, [bootPhase, isStudio])
+  }, [isPaletteOpen, bootPhase, isStudio])
 
   // ── Derived flags ─────────────────────────────────────────────────────────
   const bootBlocking = !isStudio && bootPhase !== 'done'

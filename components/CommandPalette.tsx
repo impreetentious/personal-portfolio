@@ -22,10 +22,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
+import { useResumeDownload, type DownloadState } from '@/components/ui/useResumeDownload'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-type DownloadState = 'idle' | 'compiling' | 'ready'
 
 interface PaletteAction {
   id                : string
@@ -155,12 +154,14 @@ const DOWNLOAD_LABEL: Record<DownloadState, string> = {
   idle      : 'Download Resume',
   compiling : '[COMPILING...]',
   ready     : '[READY]',
+  error     : '[FAILED]',
 }
 
 const DOWNLOAD_COLOR_CLASS: Record<DownloadState, string> = {
   idle      : '',
   compiling : 'text-amber-300/90',
   ready     : 'text-green-300/90',
+  error     : 'text-red-400/90',
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -175,14 +176,21 @@ interface CommandPaletteProps {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }: CommandPaletteProps) {
-  const [query,         setQuery        ] = useState('')
-  const [activeIndex,   setActiveIndex  ] = useState(0)
-  const [downloadState, setDownloadState] = useState<DownloadState>('idle')
+  const [query,       setQuery      ] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const {
+    state : downloadState,
+    start : handleDownload,
+    cancel: cancelDownload,
+  } = useResumeDownload(resumeUrl, {
+    fileName    : 'Sidakpreet_Singh_Resume.pdf',
+    readyDelayMs: 600,
+    onComplete  : onClose, // auto-close the palette once the download completes
+  })
 
   const inputRef             = useRef<HTMLInputElement>(null)
   const overlayRef           = useRef<HTMLDivElement>(null)
-  const downloadTimeoutRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const downloadSessionRef   = useRef(0)
   const modalRef             = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
@@ -207,26 +215,18 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
     return []
   }, [allActions, query])
 
-  // ── Cleanup floating download timer ───────────────────────────────────────
   useEffect(() => {
-    return () => {
-      if (downloadTimeoutRef.current) clearTimeout(downloadTimeoutRef.current)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isOpen) return
-    downloadSessionRef.current++
-    if (downloadTimeoutRef.current) {
-      clearTimeout(downloadTimeoutRef.current)
-      downloadTimeoutRef.current = null
+    // Closing (or unmounting) mid-download: cancel it so a fetch that resolves
+    // after the palette is gone can't fire a save dialog or leak its blob URL.
+    if (!isOpen) {
+      cancelDownload()
+      return
     }
     setQuery(initialQuery)
     setActiveIndex(0)
-    setDownloadState('idle')
     const timer = setTimeout(() => inputRef.current?.focus(), 60)
     return () => clearTimeout(timer)
-  }, [isOpen, initialQuery])
+  }, [isOpen, initialQuery, cancelDownload])
 
   useEffect(() => {
     if (!isOpen) return
@@ -267,41 +267,6 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
   useEffect(() => {
     setActiveIndex((i) => Math.min(i, Math.max(0, filtered.length - 1)))
   }, [filtered.length])
-
-  const handleDownload = useCallback(async () => {
-    if (!resumeUrl || downloadState !== 'idle') return
-    const session = ++downloadSessionRef.current
-    setDownloadState('compiling')
-    try {
-      const [blob] = await Promise.all([
-        fetch(resumeUrl).then((r) => {
-          if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`)
-          return r.blob()
-        }),
-        new Promise<void>((resolve) => setTimeout(resolve, 800)),
-      ])
-      if (session !== downloadSessionRef.current) return
-      const objectUrl = URL.createObjectURL(blob)
-      setDownloadState('ready')
-
-      const link    = document.createElement('a')
-      link.href     = objectUrl
-      link.download = 'Sidakpreet_Singh_Resume.pdf'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
-      downloadTimeoutRef.current = setTimeout(() => {
-        URL.revokeObjectURL(objectUrl)
-        setDownloadState('idle')
-        onClose()
-      }, 600)
-    } catch (error) {
-      if (session !== downloadSessionRef.current) return
-      console.error('[handleDownload] Resume fetch failed:', error)
-      setDownloadState('idle')
-    }
-  }, [resumeUrl, downloadState, onClose])
 
   // ── Execute action ────────────────────────────────────────────────────────
   const executeAction = useCallback(
@@ -375,8 +340,11 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
           setQuery('')
           setActiveIndex(0)
         } else {
-          // If already in Idle state, allow it to close
+          // Already idle → close. Stop the event here too (this listener is
+          // capture-phase) so it can't also reach the boot-sequence skip handler.
           e.preventDefault()
+          e.stopPropagation()
+          e.stopImmediatePropagation()
           onClose()
         }
       }

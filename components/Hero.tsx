@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useRef} from 'react' 
-import {motion, useMotionTemplate, useMotionValue, useScroll, useTransform} from 'framer-motion'
+import {motion, useMotionTemplate, useMotionValue, useReducedMotion, useScroll, useTransform} from 'framer-motion'
 import {WindowsTerminal} from '@/components/ui/WindowsTerminal'
 import {useBootComplete} from '@/components/BootContext'
 import type {HeroData} from '@/lib/queries'
@@ -35,6 +35,7 @@ type HeroProps = {
 export function Hero({data, resumeUrl}: HeroProps) {
   const hero = data ?? FALLBACK_HERO
   const bootComplete = useBootComplete()
+  const prefersReduced = useReducedMotion()
 
   // ── Mouse parallax ────────────────────────────────────────────────────────
   const sectionRef = useRef<HTMLElement>(null)
@@ -54,6 +55,8 @@ export function Hero({data, resumeUrl}: HeroProps) {
   const gradientBg = useMotionTemplate`radial-gradient(circle at ${gx}% ${gy}%, rgba(78,168,248,0.16), transparent 26rem)`
 
   useEffect(() => {
+    // Skip the ambient parallax entirely for users who prefer reduced motion.
+    if (prefersReduced) return
     const section = sectionRef.current
     if (!section) return
 
@@ -73,7 +76,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
       section.removeEventListener('mousemove', onMouseMove)
       if (rafId !== null) cancelAnimationFrame(rafId)
     }
-  }, [rawX, rawY])
+  }, [rawX, rawY, prefersReduced])
 
   return (
     <section

@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useRef} from 'react'
-import {animate, motion, useInView, useMotionValue, useTransform} from 'framer-motion'
+import {animate, motion, useInView, useMotionValue, useReducedMotion, useTransform} from 'framer-motion'
 
 type AnimatedCounterProps = {
   to: number
@@ -20,6 +20,7 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null)
 
   const isInView = useInView(ref, {once: true, margin: '-10% 0px'})
+  const prefersReduced = useReducedMotion()
 
   const motionValue = useMotionValue(0)
 
@@ -30,12 +31,18 @@ export function AnimatedCounter({
   useEffect(() => {
     if (!isInView) return
 
+    // Reduced-motion users get the final figure immediately instead of a count-up.
+    if (prefersReduced) {
+      motionValue.set(to)
+      return
+    }
+
     const controls = animate(motionValue, to, {
       duration,
       ease: 'easeOut',
     })
     return () => controls.stop()
-  }, [isInView, to, duration, motionValue])
+  }, [isInView, to, duration, motionValue, prefersReduced])
 
   return (
     <span ref={ref} aria-label={`${prefix}${to}${suffix}`}>
