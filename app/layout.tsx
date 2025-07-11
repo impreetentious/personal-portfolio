@@ -12,6 +12,9 @@ export const revalidate = 3600
 // Anchors all relative metadata URLs (OG image, canonical) to the real origin.
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
+  robots: siteConfig.isIndexable
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
 }
 
 export const viewport: Viewport = {
