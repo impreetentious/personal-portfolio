@@ -254,6 +254,14 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
             entering environment...
           </div>
 
+          <button
+            type="button"
+            onClick={completeOnce}
+            className="mt-8 rounded border border-white/15 bg-white/[0.02] px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/65 transition-colors hover:border-accent/45 hover:bg-accent/10 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            Skip intro
+          </button>
+
         </div>
       </div>
     </>

@@ -206,6 +206,8 @@ export function Contact({ socialLinks }: ContactProps) {
       return aOrder === bOrder ? a._fallbackIndex - b._fallbackIndex : aOrder - bOrder
     })
 
+  const socialLinkCount = resolvedSocialLinks.length
+
   return (
     <section
       ref={sectionRef}
@@ -343,7 +345,7 @@ export function Contact({ socialLinks }: ContactProps) {
         <ConsoleLine lineNumber={8} timestamp="04:07:04" delay={0.6} isVisible={isInView}>
           <span style={{ color: TOKEN.success }}>[SUCCESS]&nbsp;</span>
           <span style={{ color: "rgba(255,255,255,0.35)" }}>
-            - 5 endpoints securely loaded.
+            - {socialLinkCount} endpoint{socialLinkCount === 1 ? '' : 's'} securely loaded.
           </span>
         </ConsoleLine>
 
@@ -360,6 +362,8 @@ export function Contact({ socialLinks }: ContactProps) {
           {copied !== null && (
             <motion.div
               key="copy-feedback"
+              role="status"
+              aria-live="polite"
               className="flex items-start gap-3 min-h-[20px]"
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
