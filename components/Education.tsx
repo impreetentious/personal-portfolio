@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { showDevFallbacks } from "@/lib/config";
 import type { EducationItem } from "@/lib/queries";
 
 // ─── Configuration ────────────────────────────────────────────────────────────
@@ -31,7 +32,10 @@ type EducationProps = {
 }
 
 export function Education({data}: EducationProps) {
-  const educationItems = data?.length ? data : FALLBACK_EDUCATION_ITEMS
+  const educationItems = data?.length ? data : showDevFallbacks ? FALLBACK_EDUCATION_ITEMS : []
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  if (!educationItems.length) return null
 
   return (
     <section
@@ -64,7 +68,7 @@ export function Education({data}: EducationProps) {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-30px" }}
                   transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.15 }}
-                  className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/78"
+                  className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/[0.78]"
                 >
                   {item.years}
                 </motion.p>

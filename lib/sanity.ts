@@ -1,6 +1,4 @@
 import {createClient, type QueryParams} from '@sanity/client'
-import {existsSync, readFileSync} from 'fs'
-import path from 'path'
 import {cache} from 'react'
 import {resumeQuery} from './queries'
 
@@ -20,53 +18,14 @@ const DEFAULT_REVALIDATE_SECONDS = 3600
 // stall server rendering indefinitely.
 const FETCH_TIMEOUT_MS = 8000
 
-// Local env files never change while the process runs, so read them at most once
-// instead of on every getSanityEnv() call (previously ~18 sync disk reads per
-// page load). Cached across requests within the same server process.
-let localEnvCache: Record<string, string> | null = null
-
-function readLocalEnvFile(): Record<string, string> {
-  if (typeof window !== 'undefined') return {}
-  if (localEnvCache) return localEnvCache
-
-  const envPaths = [
-    path.join(process.cwd(), '.env.local'),
-    path.join(process.cwd(), '.env'),
-  ]
-
-  const merged: Record<string, string> = {}
-  for (const envPath of envPaths) {
-    if (!existsSync(envPath)) continue
-
-    const file = readFileSync(envPath, 'utf8')
-    for (const line of file.split(/\r?\n/)) {
-      if (!line || line.startsWith('#')) continue
-      const separatorIndex = line.indexOf('=')
-      if (separatorIndex === -1) continue
-      const key = line.slice(0, separatorIndex).trim()
-      // First file to define a key wins (.env.local takes precedence over .env).
-      if (!(key in merged)) merged[key] = line.slice(separatorIndex + 1).trim()
-    }
-  }
-
-  localEnvCache = merged
-  return localEnvCache
-}
-
+// Next.js loads .env.local/.env into process.env for every runtime path
+// (dev/build/start), so reading straight from process.env is sufficient — a
+// previous hand-rolled .env file parser here was unreachable dead code.
 function getSanityEnv(): SanityEnv {
-  const localEnv = readLocalEnvFile()
-
   return {
-    projectId:
-      process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
-      localEnv.NEXT_PUBLIC_SANITY_PROJECT_ID,
-    dataset:
-      process.env.NEXT_PUBLIC_SANITY_DATASET ??
-      localEnv.NEXT_PUBLIC_SANITY_DATASET ??
-      'production',
-    token:
-      process.env.SANITY_API_READ_TOKEN ??
-      localEnv.SANITY_API_READ_TOKEN,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production',
+    token: process.env.SANITY_API_READ_TOKEN,
   }
 }
 

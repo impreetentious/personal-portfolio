@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ChevronDown, Award } from "lucide-react";
 import { useRef, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { showDevFallbacks } from "@/lib/config";
 import type { AchievementItem } from "@/lib/queries";
 
 const FALLBACK_ACHIEVEMENTS: AchievementItem[] = [
@@ -75,7 +76,10 @@ export function Achievements({data}: AchievementsProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapperRef, { once: true, margin: "-60px" });
   const [activeId, setActiveId] = useState<string | null>(null);
-  const achievements = data?.length ? data : FALLBACK_ACHIEVEMENTS
+  const achievements = data?.length ? data : showDevFallbacks ? FALLBACK_ACHIEVEMENTS : []
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  if (!achievements.length) return null
 
   function toggle(id: string) {
     setActiveId((current) => (current === id ? null : id));

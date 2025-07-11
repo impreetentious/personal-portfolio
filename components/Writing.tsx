@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { showDevFallbacks } from "@/lib/config";
 import type { WritingItem } from "@/lib/queries";
 
 const FALLBACK_WRITING_ITEMS: WritingItem[] = [
@@ -46,7 +47,10 @@ type WritingProps = {
 }
 
 export function Writing({data}: WritingProps) {
-  const writingItems = data?.length ? data : FALLBACK_WRITING_ITEMS
+  const writingItems = data?.length ? data : showDevFallbacks ? FALLBACK_WRITING_ITEMS : []
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  if (!writingItems.length) return null
 
   return (
     <section id="writing" className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
@@ -106,7 +110,7 @@ export function Writing({data}: WritingProps) {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-30px" }}
                     transition={{ duration: 0.4, ease: "easeOut", type: "tween", delay: 0.1 }}
-                    className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/78"
+                    className="mt-4 md:mt-0 md:col-start-2 md:row-start-1 md:text-right text-sm font-medium uppercase tracking-[0.18em] text-foreground/[0.78]"
                   >
                     {item.year}
                   </motion.p>

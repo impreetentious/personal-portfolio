@@ -10,6 +10,7 @@ import {
 import { useRef, type ReactNode } from "react";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { showDevFallbacks } from "@/lib/config";
 import type { MetricItem } from "@/lib/queries";
 
 // ─── Data — exact mapping from spec ───────────────────────────────────────────
@@ -134,7 +135,10 @@ function TiltCard({
 export function Metrics({data}: MetricsProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, margin: "-80px" });
-  const metrics = data?.length ? data : FALLBACK_METRICS
+  const metrics = data?.length ? data : showDevFallbacks ? FALLBACK_METRICS : []
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  if (!metrics.length) return null
 
   return (
     <section

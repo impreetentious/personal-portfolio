@@ -101,8 +101,8 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.6.0
-* **Portfolio Version: v3.6.0_2025-07-12_01:23:36 (IST)
+* **Base Format Version:** 3.6.1
+* **Portfolio Version: v3.6.1_2025-07-12_02:34:01 (IST)
 
 ## AI Agent Instructions
 
@@ -112,7 +112,7 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 
 Follow this format for version control:
 
-* **Base Format Version:** 3.6.0
+* **Base Format Version:** 3.6.1
 * **Version:** `v[Base_Format_Version]_YYYY-MM-DD_HH:MM:SS` (IST)
 
 ---

@@ -5,6 +5,7 @@ import { ChevronDown, MapPin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
+import { showDevFallbacks } from '@/lib/config'
 import type { ExperienceItem, ExperienceRoleItem } from '@/lib/queries'
 
 const FALLBACK_EXPERIENCE_ITEMS: ExperienceItem[] = [
@@ -95,7 +96,10 @@ export function Experience({data}: ExperienceProps) {
     return () => mediaQuery.removeEventListener('change', updateIsMobile)
   }, [])
 
-  const visibleItems = data?.length ? data : FALLBACK_EXPERIENCE_ITEMS
+  const visibleItems = data?.length ? data : showDevFallbacks ? FALLBACK_EXPERIENCE_ITEMS : []
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  if (!visibleItems.length) return null
 
   return (
     <section
@@ -208,7 +212,7 @@ export function Experience({data}: ExperienceProps) {
                     </p>
                   </div>
 
-                  <p className="shrink-0 text-left text-sm font-medium leading-relaxed text-foreground/78 md:min-w-40 md:text-right">
+                  <p className="shrink-0 text-left text-sm font-medium leading-relaxed text-foreground/[0.78] md:min-w-40 md:text-right">
                     {collapsedDates}
                   </p>
                 </button>
@@ -238,7 +242,7 @@ export function Experience({data}: ExperienceProps) {
                     >
                       <div className="border-t border-accent/10 pb-8 pt-6">
                         {item.location && (
-                          <div className="flex items-center gap-2 text-sm text-foreground/72">
+                          <div className="flex items-center gap-2 text-sm text-foreground/[0.72]">
                             <MapPin className="h-4 w-4 text-accent" />
                             <span>{item.location}</span>
                           </div>
@@ -261,7 +265,7 @@ export function Experience({data}: ExperienceProps) {
                                     {roleEntry.role}
                                   </p>
                                   {roleEntry.dates && (
-                                    <p className="text-sm font-medium leading-relaxed text-foreground/72">
+                                    <p className="text-sm font-medium leading-relaxed text-foreground/[0.72]">
                                       {roleEntry.dates}
                                     </p>
                                   )}
@@ -272,7 +276,7 @@ export function Experience({data}: ExperienceProps) {
                                 {roleEntry.bulletPoints.map((point) => (
                                   <li
                                     key={`${roleEntry.role}-${point}`}
-                                    className="flex items-start gap-3 text-sm leading-7 text-foreground/86 sm:text-base"
+                                    className="flex items-start gap-3 text-sm leading-7 text-foreground/[0.86] sm:text-base"
                                   >
                                     <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
                                     <span className="min-w-0 flex-1 md:text-justify">{point}</span>

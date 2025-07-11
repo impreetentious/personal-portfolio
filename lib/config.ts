@@ -20,3 +20,10 @@ export const siteConfig = {
     showWriting: true,
   },
 };
+
+// The FALLBACK_* section content is a development aid only (placeholder career
+// data for layout work without a CMS connection). In production a section whose
+// Sanity fetch returned nothing renders nothing instead — an absent section is
+// strictly better than fabricated placeholder credentials under a real name.
+// Hero/Contact fallbacks are exempt: they carry real identity data.
+export const showDevFallbacks = process.env.NODE_ENV !== 'production';
