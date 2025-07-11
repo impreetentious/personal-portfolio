@@ -35,7 +35,7 @@ function PanelTab({
         "px-3.5 h-full items-center text-[10.5px] font-mono tracking-widest select-none",
         active
           ? "bg-[#0E0E1C] text-white/70 border-t border-x border-white/[0.08]"
-          : "text-white/18 border-t border-x border-transparent",
+          : "text-white/[0.18] border-t border-x border-transparent",
         className,
       ].join(" ")}
     >

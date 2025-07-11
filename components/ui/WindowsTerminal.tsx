@@ -101,13 +101,13 @@ const PropertyRow = memo(function PropertyRow({ propKey, value, href }: { propKe
           background: 'repeating-linear-gradient(90deg, #2c2c2c 0, #2c2c2c 3px, transparent 3px, transparent 9px)',
         }}
       />
-      <span className="text-foreground/24 shrink-0">:</span>
+      <span className="text-foreground/[0.24] shrink-0">:</span>
       <span className="ml-2 text-[#ce9178] min-w-0 [overflow-wrap:anywhere]">
-        <span className="text-foreground/18">&quot;</span>
+        <span className="text-foreground/[0.18]">&quot;</span>
         {valueNode}
-        <span className="text-foreground/18">&quot;</span>
+        <span className="text-foreground/[0.18]">&quot;</span>
       </span>
-      <span className="ml-0.5 text-foreground/14 shrink-0">;</span>
+      <span className="ml-0.5 text-foreground/[0.14] shrink-0">;</span>
     </div>
   )
 })
@@ -325,14 +325,14 @@ export function WindowsTerminal({
               <span className="text-[10px] sm:hidden">PS</span>
               <span className="hidden sm:inline text-xs whitespace-nowrap">Windows PowerShell</span>
             </span>
-            <span className="ml-0.5 sm:ml-1 font-mono text-sm leading-none cursor-default text-foreground/18 hover:text-foreground/45 transition-colors duration-100 shrink-0">
+            <span className="ml-0.5 sm:ml-1 font-mono text-sm leading-none cursor-default text-foreground/[0.18] hover:text-foreground/45 transition-colors duration-100 shrink-0">
               ×
             </span>
           </div>
           <button
             aria-hidden="true"
             tabIndex={-1}
-            className="flex items-center justify-center w-9 h-full cursor-default select-none text-foreground/18 hover:text-foreground/45 hover:bg-white/[0.04] transition-colors duration-100 text-lg leading-none shrink-0"
+            className="flex items-center justify-center w-9 h-full cursor-default select-none text-foreground/[0.18] hover:text-foreground/45 hover:bg-white/[0.04] transition-colors duration-100 text-lg leading-none shrink-0"
           >
             +
           </button>
@@ -372,7 +372,7 @@ export function WindowsTerminal({
       <div className="js-terminal-scroll surface-2 overflow-y-auto flex-1 max-md:border-l-0">
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
           <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
-            <p className="font-mono text-[10px] sm:text-xs text-foreground/22 tracking-tight select-none min-w-0 truncate">
+            <p className="font-mono text-[10px] sm:text-xs text-foreground/[0.22] tracking-tight select-none min-w-0 truncate">
               {'/** @profile . latest */ - loading....'}
             </p>
 
@@ -386,7 +386,7 @@ export function WindowsTerminal({
               transition={{ delay: 1.8, type: 'tween', ease: 'easeOut', duration: 0.8 }}
               className="group hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
             >
-              <span className="font-mono text-[10px] text-foreground/38 transition-colors group-hover:text-foreground/60">
+              <span className="font-mono text-[10px] text-foreground/[0.38] transition-colors group-hover:text-foreground/60">
                 {'// press '}
               </span>
               <motion.span
@@ -409,7 +409,7 @@ export function WindowsTerminal({
               >
                 Ctrl+K
               </motion.span>
-              <span className="font-mono text-[10px] text-foreground/38 transition-colors group-hover:text-foreground/60">
+              <span className="font-mono text-[10px] text-foreground/[0.38] transition-colors group-hover:text-foreground/60">
                 to navigate
               </span>
             </motion.button>
@@ -497,13 +497,13 @@ export function WindowsTerminal({
               </div>
             </div>
             <div className="flex items-center h-full pr-0.5">
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none">
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none">
                 +
               </button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100">
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100">
                 <TrashIcon />
               </button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/22 hover:text-foreground/52 hover:bg-white/[0.05] transition-colors duration-100">
+              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100">
                 <CloseXIcon size={9} />
               </button>
             </div>

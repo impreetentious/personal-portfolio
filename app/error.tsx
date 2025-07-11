@@ -121,7 +121,7 @@ export default function Error({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.5, delay: 1.0 }}
-          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/18 select-none"
+          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/[0.18] select-none"
         >
           Something threw while rendering. It&apos;s not you — it&apos;s the server.
         </motion.p>

@@ -182,13 +182,13 @@ export default function NotFound() {
             <div className="flex-1" />
             {/* Window controls */}
             <div aria-hidden="true" className="flex items-center h-9 shrink-0">
-              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/18 hover:text-white/45 hover:bg-white/[0.05] transition-colors duration-100">
+              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/[0.18] hover:text-white/45 hover:bg-white/[0.05] transition-colors duration-100">
                 <MinimizeIcon />
               </div>
-              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/18 hover:text-white/45 hover:bg-white/[0.05] transition-colors duration-100">
+              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/[0.18] hover:text-white/45 hover:bg-white/[0.05] transition-colors duration-100">
                 <MaximizeIcon />
               </div>
-              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/18 hover:text-white hover:bg-[#c42b1c] transition-colors duration-100">
+              <div className="flex items-center justify-center w-9 sm:w-11 h-full cursor-default select-none text-white/[0.18] hover:text-white hover:bg-[#c42b1c] transition-colors duration-100">
                 <CloseXIcon />
               </div>
             </div>
@@ -196,8 +196,8 @@ export default function NotFound() {
 
           {/* ── Breadcrumb (desktop only) ── */}
           <div className="hidden sm:flex items-center gap-1.5 h-8 px-4 bg-[#0f1017] border-b border-white/[0.04] font-mono text-[11px] select-none">
-            <span className="text-white/22 cursor-default">app</span>
-            <span className="text-white/12 mx-0.5">›</span>
+            <span className="text-white/[0.22] cursor-default">app</span>
+            <span className="text-white/[0.12] mx-0.5">›</span>
             <span className="text-red-400/60">not-found.tsx</span>
           </div>
 
@@ -254,7 +254,7 @@ export default function NotFound() {
                                 type declarations.
                               </p>
                             </div>
-                            <p className="mt-1.5 pl-4 font-mono text-[10px] text-white/22 select-none">
+                            <p className="mt-1.5 pl-4 font-mono text-[10px] text-white/[0.22] select-none">
                               ts(2307)
                             </p>
                           </div>
@@ -365,13 +365,13 @@ export default function NotFound() {
                 <span className="text-red-300/80">
                   Cannot find module &apos;./this-page&apos; or its corresponding type declarations.
                 </span>
-                <span className="text-white/22 text-[10px] ml-2">ts(2307)</span>
+                <span className="text-white/[0.22] text-[10px] ml-2">ts(2307)</span>
                 <div className="mt-1 flex items-center gap-1.5">
                   <span className="text-white/30 text-[10px] sm:text-[11px]">
                     app/not-found.tsx
                   </span>
                   <span className="text-white/15 text-[10px]" aria-hidden="true">·</span>
-                  <span className="text-white/22 text-[10px] tabular-nums">2:25</span>
+                  <span className="text-white/[0.22] text-[10px] tabular-nums">2:25</span>
                 </div>
               </div>
             </motion.div>
@@ -432,7 +432,7 @@ export default function NotFound() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.5, delay: 1.02 }}
-          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/18 select-none"
+          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/[0.18] select-none"
         >
           The page you requested does not exist in this registry.
         </motion.p>
