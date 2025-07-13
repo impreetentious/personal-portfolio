@@ -29,13 +29,15 @@ export function SectionLabel({
           isRight ? "justify-end" : "justify-between"
         }`}
       >
-        <p
+        {/* Real <h2> so the document outline is h1 → h2 → h3 (was a <p>, which
+            left the page with no level-2 headings for AT/SEO). */}
+        <h2
           className={`font-display font-semibold text-[33px] tracking-tight text-white/[0.92] antialiased sm:text-4xl${
             titleClassName ? ` ${titleClassName}` : ""
           }`}
         >
           <DecryptText text={label} />
-        </p>
+        </h2>
         
         {children}
       </div>

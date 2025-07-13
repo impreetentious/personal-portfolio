@@ -1,6 +1,6 @@
 # Action Plan — June 2025 Audit Fixes & Premium Polish
 
-> **Purpose:** single source of truth for what is done / pending from the 2025-06-04 codebase
+> **Purpose:** single source of truth for what is done / pending from the 2025-06-05 codebase
 > audit, so any agent on any device can resume instantly. Update statuses **in place** as work
 > lands. Full audit evidence (compile tests, live-browser verification) lives in the audit
 > session; the conclusions are summarised here.
@@ -137,7 +137,7 @@ Descriptions only showed on hover of a non-focusable span (`components/Skills.ts
    items, social icons; remove `md:text-justify` on Experience bullets (rivers).
 9. `[ ]` OG image tagline sync with hero tagline (or confirm the divergence is intentional).
 
-### Rejected / not planned (owner decisions, 2025-06-04)
+### Rejected / not planned (owner decisions, 2025-06-05)
 - `[d]` Mac `⌘K` **glyph/visuals** — never; theme is Windows/terminal (binding itself OK, see #3).
 - `[d]` Experience accordion timing change — current slow-open is deliberate for multi-role
   orgs; revisit only if it bothers later. (ScrollReveal index-stagger cap parked with it.)

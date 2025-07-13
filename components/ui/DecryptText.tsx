@@ -47,7 +47,11 @@ export function DecryptText({ text, className }: DecryptTextProps) {
   }, [inView, prefersReduced, text])
 
   return (
-    <span ref={ref} className={`relative inline-block ${className ?? ''}`} aria-label={text}>
+    // Real text lives in an sr-only node: aria-label on a generic <span> is
+    // unreliably exposed by assistive tech, and both visual layers are
+    // aria-hidden (the sizer keeps layout; the overlay animates).
+    <span ref={ref} className={`relative inline-block ${className ?? ''}`}>
+      <span className="sr-only">{text}</span>
       <span aria-hidden="true" className="invisible">{text}</span>
       <span aria-hidden="true" className="absolute inset-0 whitespace-nowrap">{display}</span>
     </span>
