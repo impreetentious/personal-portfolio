@@ -142,7 +142,7 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
   ],
   'hire': [
     { id: 'h1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Initiating hire sequence...' },
-    { id: 'h2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  email     hello@sidakpreetsingh.com' },
+    { id: 'h2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  email     work@sidakpreetsingh.com' },
     { id: 'h3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  linkedin  linkedin.com/in/sidakpreetsinghk' },
     { id: 'h4', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Note: Serious enquiries only. Coffee optional.' },
   ],
@@ -395,7 +395,16 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
             transition={{ type: 'tween', ease: 'easeOut', duration: 0.22 }}
             className="fixed top-[12vh] left-1/2 z-[90] w-full max-w-xl px-4 sm:px-0"
           >
-            <div ref={modalRef} className="relative overflow-hidden rounded-xl border border-white/[0.12] bg-[#0A0A0E] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
+            {/* role/aria-modal so assistive tech announces the modal and treats
+                the page behind it as inert (the visual inert is handled in
+                LayoutShell). */}
+            <div
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Command palette"
+              className="relative overflow-hidden rounded-xl border border-white/[0.12] bg-[#0A0A0E] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]"
+            >
 
               {/* ── Terminal Scan Beam ── */}
               <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden rounded-xl">

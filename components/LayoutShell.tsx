@@ -75,18 +75,32 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   }, [isStudio, bootPhase])
 
   // ── Body scroll lock ──────────────────────────────────────────────────────
-  // Single owner for `body.overflow`: the boot overlay and the palette both want
+  // Single owner for the body lock: the boot overlay and the palette both want
   // to lock scroll, so deriving one boolean (instead of two effects that each
   // save/restore) avoids the case where one effect's cleanup restored a stale
   // value the other still needed, permanently locking the page.
+  // Uses the position:fixed pattern (not just overflow:hidden) because iOS
+  // Safari ignores body overflow for touch scrolling; the saved scroll offset
+  // is restored instantly on unlock so smooth-scroll CSS can't animate it.
   useEffect(() => {
     if (isStudio) return
     const shouldLock =
       isPaletteOpen || bootPhase === 'pending' || bootPhase === 'show'
     if (!shouldLock) return
-    document.body.style.overflow = 'hidden'
+    const scrollY = window.scrollY
+    const { style } = document.body
+    style.position = 'fixed'
+    style.top = `-${scrollY}px`
+    style.left = '0'
+    style.right = '0'
+    style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = ''
+      style.position = ''
+      style.top = ''
+      style.left = ''
+      style.right = ''
+      style.overflow = ''
+      window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' })
     }
   }, [isPaletteOpen, bootPhase, isStudio])
 
@@ -111,10 +125,19 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         </a>
       )}
 
+      {/* Without JS the boot effect never runs, so the SSR'd 'pending' cover
+          would blanket the page forever — let no-JS visitors read the content. */}
+      {!isStudio && (
+        <noscript>
+          <style>{`[data-boot-cover]{display:none !important}`}</style>
+        </noscript>
+      )}
+
       {/* Static cover — shown only during the pending check to block the page */}
       {bootPhase === 'pending' && !isStudio && (
         <div
           aria-hidden="true"
+          data-boot-cover=""
           style={{
             position     : 'fixed',
             inset        : 0,
@@ -125,7 +148,8 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         />
       )}
 
-      {/* Full animated boot sequence — first visit only */}
+      {/* Full animated boot sequence — plays on every load by design; visitors
+          can skip via the button, Esc, or Space (see BootSequence). */}
       {bootPhase === 'show' && !isStudio && (
         <BootSequence onComplete={handleBootComplete} />
       )}
