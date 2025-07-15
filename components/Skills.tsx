@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { showDevFallbacks } from "@/lib/config";
 import type { SkillItem, SkillsEntry } from "@/lib/queries";
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
@@ -115,7 +116,7 @@ type SkillsProps = {
 }
 
 export function Skills({data}: SkillsProps) {
-  const skillEntries = data?.length ? data : FALLBACK_SKILL_ENTRIES
+  const skillEntries = data?.length ? data : showDevFallbacks ? FALLBACK_SKILL_ENTRIES : []
 
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,
@@ -146,6 +147,10 @@ export function Skills({data}: SkillsProps) {
       clearTimeout(debounceTimer)
     }
   }, [])
+
+  // Production with no CMS data: hide the section rather than show placeholders.
+  // Placed after hooks so hook order stays stable across renders.
+  if (!skillEntries.length) return null
 
   return (
     <section
@@ -184,55 +189,69 @@ export function Skills({data}: SkillsProps) {
               </motion.p>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                {entry.items.map((item) => (
-                  // ── Tooltip wrapper & Animated Pill ──
-                  <motion.div
-                    key={item.name}
-                    variants={pillVariants}
-                    className="group relative"
-                  >
-
-                    {/* Tooltip card — only renders when description is present */}
-                    {item.description && (
-                      <div
-                        className={[
-                          // Positioning
-                          'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
-                          // Visibility
-                          'opacity-0 group-hover:opacity-100',
-                          // Interaction & stacking
-                          'pointer-events-none z-20',
-                          // Sizing
-                          'w-56',
-                          // Transition
-                          'transition-opacity duration-200 ease-out',
-                        ].join(' ')}
-                        role="tooltip"
-                      >
-                        {/* Card body */}
-                        <div className="rounded-lg border border-white/10 bg-zinc-900/95 px-3 py-2.5 text-xs leading-relaxed text-foreground/75 shadow-2xl backdrop-blur-sm">
-                          {item.description}
-                        </div>
-
-                        {/* Arrow — a transparent border trick pointing downward */}
-                        <div className="absolute left-1/2 top-full -translate-x-1/2 border-[5px] border-transparent border-t-white/10" />
-                      </div>
-                    )}
-
-                    {/* Skill tag */}
-                    <span
-                      className={[
-                        'hover-glow',
-                        'inline-block cursor-default select-none',
-                        'rounded-full border border-white/12 px-4 py-2 font-sans text-sm',
-                        'text-foreground transition-all duration-150',
-                        'hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-accent',
-                      ].join(' ')}
+                {entry.items.map((item) => {
+                  // Deterministic tooltip id so aria-describedby wires the pill
+                  // to it (spaces/punctuation stripped for a valid HTML id).
+                  const tooltipId = item.description
+                    ? `skill-tip-${entry.category}-${item.name}`.replace(/[^\w-]/g, '-')
+                    : undefined
+                  return (
+                    // ── Tooltip wrapper & Animated Pill ──
+                    <motion.div
+                      key={item.name}
+                      variants={pillVariants}
+                      className="group relative"
                     >
-                      {item.name}
-                    </span>
-                  </motion.div>
-                ))}
+
+                      {/* Tooltip card — only renders when description is present.
+                          Reveals on hover (mouse) or when focus lands inside the
+                          group (keyboard Tab or touch tap-focus). */}
+                      {item.description && (
+                        <div
+                          id={tooltipId}
+                          className={[
+                            // Positioning
+                            'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
+                            // Visibility
+                            'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100',
+                            // Interaction & stacking
+                            'pointer-events-none z-20',
+                            // Sizing
+                            'w-56',
+                            // Transition
+                            'transition-opacity duration-200 ease-out',
+                          ].join(' ')}
+                          role="tooltip"
+                        >
+                          {/* Card body */}
+                          <div className="rounded-lg border border-white/10 bg-zinc-900/95 px-3 py-2.5 text-xs leading-relaxed text-foreground/75 shadow-2xl backdrop-blur-sm">
+                            {item.description}
+                          </div>
+
+                          {/* Arrow — a transparent border trick pointing downward */}
+                          <div className="absolute left-1/2 top-full -translate-x-1/2 border-[5px] border-transparent border-t-white/10" />
+                        </div>
+                      )}
+
+                      {/* Skill tag — focusable only when it carries a description,
+                          so tooltip-less pills don't clutter the tab order. */}
+                      <span
+                        tabIndex={item.description ? 0 : undefined}
+                        aria-describedby={tooltipId}
+                        className={[
+                          'hover-glow',
+                          'inline-block cursor-default select-none',
+                          'rounded-full border border-white/[0.12] px-4 py-2 font-sans text-sm',
+                          'text-foreground transition-all duration-150',
+                          'hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-accent',
+                          'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                        ].join(' ')}
+                      >
+                        {item.name}
+                      </span>
+                    </motion.div>
+                  )
+                })}
               </div>
             </motion.div>
           )
