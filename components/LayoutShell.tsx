@@ -3,25 +3,30 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 import type { ReactNode }  from 'react'
-import { Navigation }      from '@/components/Navigation'
-import { CommandPalette }  from '@/components/CommandPalette'
-import { BootSequence }    from '@/components/BootSequence'
-import { BootProvider }    from '@/components/BootContext'
-import { PaletteProvider } from '@/components/PaletteContext'
-import { usePathname }     from 'next/navigation'
+import { Navigation }             from '@/components/Navigation'
+import { CommandPalette }         from '@/components/CommandPalette'
+import { BootSequence }           from '@/components/BootSequence'
+import { SessionRestoredFlash }   from '@/components/SessionRestoredFlash'
+import { BootProvider }           from '@/components/BootContext'
+import { PaletteProvider }        from '@/components/PaletteContext'
+import { usePathname }            from 'next/navigation'
 
 interface LayoutShellProps {
   children   : ReactNode
   resumeUrl? : string
 }
 
-type BootPhase = 'pending' | 'show' | 'done'
+// 'full'  → first visit in this browser tab session → play full boot sequence
+// 'flash' → same-session repeat load → play brief "session restored" flash
+type BootPhase = 'pending' | 'full' | 'flash' | 'done'
+
+const SESSION_VISITED_KEY = 'sps-session-visited'
 
 export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)
   const [paletteQuery,  setPaletteQuery]  = useState('')
   const [bootPhase,     setBootPhase]     = useState<BootPhase>('pending')
-  
+
   const pathname = usePathname()
   const isStudio = pathname?.startsWith('/studio')
 
@@ -31,10 +36,23 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       setBootPhase('done')
       return
     }
-    setBootPhase('show')
+    // Same tab session → skip full boot for a brief flash. sessionStorage is
+    // cleared when the tab closes, so a fresh tab still gets the full sequence.
+    let hasVisited = false
+    try {
+      hasVisited = sessionStorage.getItem(SESSION_VISITED_KEY) === '1'
+    } catch {
+      // Private-mode Safari or blocked storage — fall through to full boot.
+    }
+    setBootPhase(hasVisited ? 'flash' : 'full')
   }, [isStudio])
 
   const handleBootComplete = useCallback(() => {
+    try {
+      sessionStorage.setItem(SESSION_VISITED_KEY, '1')
+    } catch {
+      // Ignore; the visitor still gets a full boot on next load, which is fine.
+    }
     setBootPhase('done')
   }, [])
 
@@ -56,8 +74,10 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     if (isStudio) return 
     
     const handler = (e: KeyboardEvent) => {
-      // Ctrl+K only — !metaKey explicitly excludes any Cmd binding
-      if (e.ctrlKey && !e.metaKey && e.key === 'k') {
+      // Ctrl+K on any OS, plus ⌘K on Mac. Visual hints in the UI still show
+      // "Ctrl+K" by owner decision — the Windows/terminal theme is deliberate;
+      // the extra Cmd binding is a functional courtesy, not a visual one.
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault()
         // Don't let the palette open behind the boot overlay — it would render
         // under the boot screen and leave the scroll lock in an ambiguous state.
@@ -85,7 +105,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   useEffect(() => {
     if (isStudio) return
     const shouldLock =
-      isPaletteOpen || bootPhase === 'pending' || bootPhase === 'show'
+      isPaletteOpen || bootPhase !== 'done'
     if (!shouldLock) return
     const scrollY = window.scrollY
     const { style } = document.body
@@ -148,10 +168,16 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         />
       )}
 
-      {/* Full animated boot sequence — plays on every load by design; visitors
+      {/* Full animated boot sequence — first tab-session load only. Visitors
           can skip via the button, Esc, or Space (see BootSequence). */}
-      {bootPhase === 'show' && !isStudio && (
+      {bootPhase === 'full' && !isStudio && (
         <BootSequence onComplete={handleBootComplete} />
+      )}
+
+      {/* Session-restored micro-flash — same-tab repeat load. Very brief, not
+          a blank skip; conveys "we picked up where you were" and auto-fades. */}
+      {bootPhase === 'flash' && !isStudio && (
+        <SessionRestoredFlash onComplete={handleBootComplete} />
       )}
 
       {/* Exclude Navigation from Studio */}
