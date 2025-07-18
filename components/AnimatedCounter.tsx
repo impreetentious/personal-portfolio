@@ -24,8 +24,10 @@ export function AnimatedCounter({
 
   const motionValue = useMotionValue(0)
 
+  // Precision comes from the target, not the animated intermediate value —
+  // otherwise integer targets flash decimals mid-count (e.g. "213.4" → "500").
   const displayValue = useTransform(motionValue, (latest) =>
-    latest % 1 === 0 ? Math.round(latest).toString() : latest.toFixed(1),
+    Number.isInteger(to) ? Math.round(latest).toString() : latest.toFixed(1),
   )
 
   useEffect(() => {
