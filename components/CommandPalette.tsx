@@ -6,10 +6,12 @@ import {
   BarChart,
   BookOpen,
   Briefcase,
+  Cpu,
   Download,
   GraduationCap,
-  Layers,
+  ListTodo,
   Mail,
+  Package,
   Sparkles,
   Terminal,
   Trophy,
@@ -109,12 +111,17 @@ const RESUME_ACTION: PaletteAction = {
 
 // ─── Terminal Engine Dictionaries ─────────────────────────────────────────────
 
+// Roster note: `stack` and `hire` were retired here because they duplicated
+// the Skills and Contact navigation destinations respectively — the palette
+// already routes there through nav. The 3 Windows-native replacements below
+// (winfetch/winget/tasklist) keep the terminal theme without shadowing nav.
 const HELP_ACTIONS: PaletteAction[] = [
-  { id: 'cmd-who',    shortLabel: '> who',    icon: User,      description: 'about me' },
-  { id: 'cmd-ping',   shortLabel: '> ping',   icon: Wifi,      description: 'connection test' },
-  { id: 'cmd-status', shortLabel: '> status', icon: Activity,  description: 'system report' },
-  { id: 'cmd-stack',  shortLabel: '> stack',  icon: Layers,    description: 'tech stack' },
-  { id: 'cmd-hire',   shortLabel: '> hire',   icon: Briefcase, description: 'work with me' },
+  { id: 'cmd-who',      shortLabel: '> who',      icon: User,      description: 'about me' },
+  { id: 'cmd-ping',     shortLabel: '> ping',     icon: Wifi,      description: 'connection test' },
+  { id: 'cmd-status',   shortLabel: '> status',   icon: Activity,  description: 'system report' },
+  { id: 'cmd-winfetch', shortLabel: '> winfetch', icon: Cpu,       description: 'system info card' },
+  { id: 'cmd-winget',   shortLabel: '> winget',   icon: Package,   description: 'install sidakpreet' },
+  { id: 'cmd-tasklist', shortLabel: '> tasklist', icon: ListTodo,  description: 'running processes' },
 ]
 
 const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
@@ -134,17 +141,31 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
     { id: 's3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  portfolio   deployed & active ✓' },
     { id: 's4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  ambition    unbounded' },
   ],
-  'stack': [
-    { id: 'k1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  tech.stack → activating....' },
-    { id: 'k2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  framework   Next.js 14 (App Router)' },
-    { id: 'k3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  styling     Tailwind CSS + Framer Motion' },
-    { id: 'k4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  content     Sanity CMS Headless' },
+  'winfetch': [
+    { id: 'wf1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '        Sidakpreet Singh @ sidakpreet-os' },
+    { id: 'wf2', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '        ─────────────────────────────────' },
+    { id: 'wf3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        OS       sidakpreet-os v3.11.8' },
+    { id: 'wf4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Shell    PowerShell 7.4' },
+    { id: 'wf5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: "        Host     IIM Indore MBA '25" },
+    { id: 'wf6', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Kernel   ex-Bain · HCLSoftware' },
+    { id: 'wf7', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        GPU      gaming-grade' },
+    { id: 'wf8', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Uptime   always-on' },
   ],
-  'hire': [
-    { id: 'h1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Initiating hire sequence...' },
-    { id: 'h2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  email     work@sidakpreetsingh.com' },
-    { id: 'h3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  linkedin  linkedin.com/in/sidakpreetsinghk' },
-    { id: 'h4', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Note: Serious enquiries only. Coffee optional.' },
+  'winget': [
+    { id: 'wi1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  > winget install sidakpreet' },
+    { id: 'wi2', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Found Sidakpreet Singh [Portfolio v3.11.8]' },
+    { id: 'wi3', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Downloading package.....' },
+    { id: 'wi4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  [████████████████████] 100%' },
+    { id: 'wi5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  Successfully installed. Try ‘winfetch’ next.' },
+  ],
+  'tasklist': [
+    { id: 'tl1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Image Name        PID    Priority' },
+    { id: 'tl2', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  ────────────────  ────   ──────────────' },
+    { id: 'tl3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  strategy.exe      0001   High' },
+    { id: 'tl4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  systems.exe       0002   Realtime' },
+    { id: 'tl5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  product.exe       0003   High' },
+    { id: 'tl6', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  gaming.exe        0069   Above Normal' },
+    { id: 'tl7', shortLabel: '', isTerminalOutput: true, colorMode: 'warn',    textLine: '  sleep.exe         0420   Not Responding' },
   ],
 }
 
@@ -199,20 +220,37 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
     [resumeUrl],
   )
 
-  // ── Strict Terminal Engine ────────────────────────────────────────────────
+  // ── Terminal Engine ───────────────────────────────────────────────────────
+  // Easter-egg commands (help/nav/who/ping/…) remain strict exact-match to keep
+  // the terminal metaphor honest. Only navigation actions get forgiveness so
+  // "exp" → Experience, "con" → Contact, "res" → Resume, etc.
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim()
-    
+
     // 1. Idle State: Force the user to type
     if (!q) return []
 
-    // 2. Strict Exact Matches
+    // 2. Strict Exact Matches (easter eggs + explicit navigation trigger)
     if (q === 'help') return HELP_ACTIONS
     if (q === 'nav' || q === 'navigate' || q === 'navigation') return allActions
     if (TERMINAL_OUTPUTS[q]) return TERMINAL_OUTPUTS[q]
 
-    // 3. Fallback: No fuzzy matching allowed anymore. Return empty.
-    return []
+    // 3. Forgiving prefix / substring match — nav actions only. Prefix hits
+    //    win over substring so "exp" → Experience surfaces before any
+    //    incidental substring match. NAV_ACTIONS order is preserved within
+    //    each bucket so results feel stable.
+    const prefixHits    : PaletteAction[] = []
+    const substringHits : PaletteAction[] = []
+    for (const action of allActions) {
+      const id    = action.id.toLowerCase()
+      const label = action.shortLabel.toLowerCase()
+      if (id.startsWith(q) || label.startsWith(q)) {
+        prefixHits.push(action)
+      } else if (id.includes(q) || label.includes(q)) {
+        substringHits.push(action)
+      }
+    }
+    return [...prefixHits, ...substringHits]
   }, [allActions, query])
 
   useEffect(() => {
@@ -513,7 +551,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                           onMouseEnter={() => setActiveIndex(i)}
                           disabled={isRunning}
                           data-selected={isActive}
-                          className={`group flex w-full items-center gap-4 px-5 py-3 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 ${
+                          className={`group flex w-full items-center gap-4 px-5 py-3 transition-[background-color,transform] duration-100 active:scale-[0.985] active:bg-accent/[0.12] disabled:cursor-not-allowed disabled:opacity-50 ${
                             isActive ? 'bg-accent/[0.06]' : 'hover:bg-white/[0.02]'
                           }`}
                         >

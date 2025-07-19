@@ -36,7 +36,11 @@ const spaceGrotesk = Space_Grotesk({
 
 const jetbrainsMono = JetBrains_Mono({
   subsets : ['latin'],
-  weight  : ['400', '700'],
+  // 500 & 600 are required because font-medium / font-semibold are applied to
+  // `font-mono` copy in ~5 places (SectionLabel, Skills category, Contact tab,
+  // WindowsTerminal skills header, Navigation wordmark); loading only 400/700
+  // makes the browser synthesise a faux-bold, which looks smudged.
+  weight  : ['400', '500', '600', '700'],
   variable: '--font-mono',
   display : 'swap',
 })
