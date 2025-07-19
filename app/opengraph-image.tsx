@@ -93,7 +93,10 @@ export default function OpenGraphImage() {
                 marginTop: 24,
               }}
             >
-              {'// Product Strategy · Tech · Systems'}
+              {/* Keep in sync with the Hero fallback tagline (components/Hero.tsx).
+                  This surface is edge-rendered and cached, so it doesn't hit
+                  Sanity — the source of truth is the fallback string. */}
+              {'// Strategy · Tech · Systems · Gaming'}
             </div>
 
             <div

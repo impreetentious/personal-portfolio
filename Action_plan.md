@@ -1,6 +1,6 @@
 # Action Plan — June 2025 Audit Fixes & Premium Polish
 
-> **Purpose:** single source of truth for what is done / pending from the 2025-06-07 codebase
+> **Purpose:** single source of truth for what is done / pending from the 2025-06-08 codebase
 > audit, so any agent on any device can resume instantly. Update statuses **in place** as work
 > lands. Full audit evidence (compile tests, live-browser verification) lives in the audit
 > session; the conclusions are summarised here.
@@ -9,6 +9,28 @@
 > `Readme.md` with the current IST timestamp (permanent rule, see Readme "AI Agent Instructions").
 
 **Status legend:** `[ ]` pending · `[~]` in progress · `[x]` done · `[d]` deferred / rejected by owner
+
+---
+
+## Handoff status (as of `v3.7.3`, 2025-07-20)
+
+- **Phase 1:** ✅ complete (v3.6.0 → v3.6.5, series `/1F5 → /8F5`).
+- **Phase 2:** ✅ complete (v3.7.0 → v3.7.3, series `/1F5 → /5F5` under the F5 tag).
+  Every item below is `[x]` or `[d]`. Post-Phase-2 dev/lint/typecheck all clean.
+
+### Open follow-ups (surfaced during Phase 2, not blockers)
+
+1. **Hero vs OG tagline personas.** The CMS-driven Hero tagline reads as a career pitch
+   (`Product Strategy @ HCLSoftware | Bain & Co. | IIM Indore`); the Hero fallback and OG image
+   now share `Strategy · Tech · Systems · Gaming`. Two different voices coexist. **Decision
+   needed:** either pick one canonical tagline for both surfaces, or accept the divergence and
+   document it.
+2. **Resume PDF in dev.** The `res` palette query returned empty in dev — the connected Sanity
+   dataset has no resume asset. Not a code bug, but **confirm production has the PDF uploaded**
+   before shipping, otherwise the palette Resume row simply won't render there either.
+3. **Retired `hire` easter egg.** Removing `hire` also removed the "recruiter callback"
+   punchline. If the owner wants that tone back, slot in the `sudo` egg from the earlier plan
+   (still one under the 7-cap).
 
 ---
 
@@ -108,43 +130,55 @@ Descriptions only showed on hover of a non-focusable span (`components/Skills.ts
 
 ## Phase 2 — Premium polish (start only after Phase 1 is confirmed)
 
-1. `[ ]` **Session-restored micro-flash** *(owner-approved shape)*: full boot (with Skip) on
+1. `[x]` **Session-restored micro-flash** *(owner-approved shape)*: full boot (with Skip) on
    first visit per session; on same-session repeat loads show a brief "session restored" flash
    instead of the full sequence — **not** an instant blank skip. `sessionStorage` flag.
+   - **Done:** new `components/SessionRestoredFlash.tsx` (~550 ms visible + 320 ms fade,
+     skippable via Esc/Space, honours `prefers-reduced-motion`). `LayoutShell` now branches
+     `pending → full | flash → done` on `sessionStorage['sps-session-visited']`; the flag is
+     set on boot completion so a fresh tab still gets the full sequence.
 2. `[x]` Restore designed text hierarchy — done via Phase 1 fix #1.
-3. `[ ]` **Cmd+K binding, Ctrl+K visuals** *(owner decision)*: additionally bind `⌘K`
+3. `[x]` **Cmd+K binding, Ctrl+K visuals** *(owner decision)*: additionally bind `⌘K`
    functionally for Mac visitors, but every visual hint keeps saying `Ctrl+K` — the Windows/
    terminal theme is deliberate and stays.
-4. `[ ]` **Palette forgiveness for nav**: prefix/substring-match the navigation actions
+   - **Done:** `LayoutShell` shortcut now fires on `(ctrlKey || metaKey) && key === k`.
+     No visual strings touched (Navigation trigger, Hero terminal hint, palette footer all
+     still say `Ctrl+K`).
+4. `[x]` **Palette forgiveness for nav**: prefix/substring-match the navigation actions
    (`exp` → Experience). Easter-egg commands stay strict exact-match.
-5. `[ ]` **Easter-egg roster** — currently 5 exist (`who`, `ping`, `status`, `stack`, `hire`);
-   owner cap is 7 → room for 2. **Owner to pick 2 of these 3 suggestions** (all are static
-   `TERMINAL_OUTPUTS` entries, Windows-native on purpose):
-   - `winfetch` — neofetch-style profile card: `OS: sidakpreet-os v3.10 · Shell: PowerShell ·
-     Host: IIM Indore '25 · Kernel: ex-Bain · GPU: gaming-grade · Uptime: <years> yrs`.
-   - `winget` — fake `winget install sidakpreet` log: `Found Sidakpreet Singh [Portfolio] ·
-     Installing... ██████ 100% · Successfully installed. Run 'hire' to activate license.`
-   - `tasklist` — running processes gag: `strategy.exe · systems.exe · product.exe ·
-     gaming.exe (high priority) · sleep.exe (not responding)`.
-   - *(alt if one above is dropped: `sudo` — "User is not in the sudoers file. This incident
-     will be reported (to your recruiter).")*
-6. `[ ]` **Real mono weights**: JetBrains Mono loads only 400/700 but `font-medium`/
-   `font-semibold` are used with `font-mono` in 7 places (browser fakes the weights). Load
-   500 & 600 in `app/layout.tsx`, or normalise usage.
-7. `[ ]` **Custom scrollbar** (`::-webkit-scrollbar` + `scrollbar-color`, thin/dark) — the
-   default scrollbar is the one unthemed element.
-8. `[ ]` **Press feedback + typography nits**: `active:` states on palette rows, nav rail
-   items, social icons; remove `md:text-justify` on Experience bullets (rivers).
-9. `[ ]` OG image tagline sync with hero tagline (or confirm the divergence is intentional).
+   - **Done:** `CommandPalette.filtered` runs prefix match first, substring as fallback,
+     over `NAV_ACTIONS` (+ Resume when available). `help` / `nav` / easter-egg keys stay
+     strict so partial input can't accidentally trigger `who` / `ping` / etc.
+5. `[x]` **Easter-egg roster** — owner flagged `stack` and `hire` as redundant with the
+   Skills / Contact nav destinations. Retired those two, added three Windows-native ones:
+   - **Kept:** `who`, `ping`, `status`.
+   - **New:** `winfetch` (neofetch-style profile card), `winget` (fake install log →
+     "Try 'winfetch' next."), `tasklist` (running processes gag —
+     `strategy.exe / systems.exe / product.exe / gaming.exe / sleep.exe (Not Responding)`).
+   - **Total:** 6 commands, under owner cap of 7.
+6. `[x]` **Real mono weights**: `app/layout.tsx` now loads JetBrains Mono `400/500/600/700`
+   so `font-medium` / `font-semibold` on `font-mono` copy resolves to the real weight instead
+   of a synthesised faux-bold. (Confirmed 5 mono+weight sites in the tree, not the 7 the
+   original audit note claimed — the fix is still the correct one.)
+7. `[x]` **Custom scrollbar** (`::-webkit-scrollbar` + `scrollbar-color`, thin/dark) — added
+   in `app/globals.css`. `html { scrollbar-width: thin; scrollbar-color: ... }` for Firefox;
+   10px WebKit thumb (`rgba(255,255,255,0.10)`, accent-tinted on hover/active, rounded).
+8. `[x]` **Press feedback + typography nits**:
+   - `active:scale-[0.985] active:bg-accent/[0.12]` on palette rows.
+   - `active:scale-95` on mobile bottom nav, desktop side rail, and desktop Ctrl+K trigger.
+   - `active:translate-y-0 active:scale-95 active:border-orange-500/60` on Contact social
+     icons (also cancels the hover lift so the tap lands "into" the icon).
+   - Removed `md:text-justify` from Experience bullets — kills the rivers on wide breakpoints.
+9. `[x]` OG image tagline synced to Hero fallback tagline (`Strategy · Tech · Systems ·
+   Gaming`). Comment left in `app/opengraph-image.tsx` so future edits keep both in step —
+   the edge runtime doesn't hit Sanity, so the fallback is the single source of truth.
 
-### Rejected / not planned (owner decisions, 2025-06-07)
+### Rejected (owner decisions, 2025-07-20)
 - `[d]` Mac `⌘K` **glyph/visuals** — never; theme is Windows/terminal (binding itself OK, see #3).
 - `[d]` Experience accordion timing change — current slow-open is deliberate for multi-role
   orgs; revisit only if it bothers later. (ScrollReveal index-stagger cap parked with it.)
 - `[d]` Email/social click-to-copy behaviour — stays exactly as is.
 - `[d]` `apple-icon` — not needed.
-- `[d]` LazyMotion bundle trim — skipped.
-- `[d]` Custom cursor / WebGL / sound / PWA / page transitions — out of scope by design.
 
 ---
 
