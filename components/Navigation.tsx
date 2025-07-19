@@ -178,7 +178,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
         <button
           onClick={() => onOpenPalette?.()}
           aria-label="Open command palette (Ctrl+K)"
-          className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10"
+          className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10 active:scale-95 active:bg-accent/15"
         >
           <Terminal className="h-4 w-4 text-foreground/50 transition-colors group-hover:text-accent" strokeWidth={2} />
           <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 transition-colors group-hover:text-accent">
@@ -206,7 +206,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
               <a
                 key={label}
                 href={href}
-                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium transition-transform duration-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
               >
                 <span
                   className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
@@ -245,7 +245,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
                 <a
                   key={label}
                   href={href}
-                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium transition-transform duration-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                 >
                   {/* Left hook — slides out from left on hover/active, fades in sync with other states */}
                   <span

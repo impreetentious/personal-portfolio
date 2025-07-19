@@ -313,7 +313,7 @@ export function Contact({ socialLinks }: ContactProps) {
                         }
                       : undefined
                   }
-                  className={`hover-glow inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10${copyValue ? ' cursor-copy' : ''}`}
+                  className={`hover-glow inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center border border-white/10 transition-all duration-150 hover:-translate-y-0.5 hover:border-orange-500/45 hover:bg-orange-500/10 active:translate-y-0 active:scale-95 active:border-orange-500/60${copyValue ? ' cursor-copy' : ''}`}
                 >
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>

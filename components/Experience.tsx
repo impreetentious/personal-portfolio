@@ -279,7 +279,7 @@ export function Experience({data}: ExperienceProps) {
                                     className="flex items-start gap-3 text-sm leading-7 text-foreground/[0.86] sm:text-base"
                                   >
                                     <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-                                    <span className="min-w-0 flex-1 md:text-justify">{point}</span>
+                                    <span className="min-w-0 flex-1">{point}</span>
                                   </li>
                                 ))}
                               </ul>
