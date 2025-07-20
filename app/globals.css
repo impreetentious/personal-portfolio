@@ -7,6 +7,11 @@
 }
 
 html {
+  /* Non-static so framer-motion's viewport useScroll (the Experience timeline
+     tracks a target against the document scroller, which defaults to <html>)
+     can measure scroll offsets without warning. relative creates no containing
+     block for fixed descendants, so the fixed nav/overlays are unaffected. */
+  position: relative;
   scroll-behavior: smooth;
   background-color: #050505;
   overflow-x: hidden;

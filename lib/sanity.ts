@@ -29,16 +29,26 @@ function getSanityEnv(): SanityEnv {
   }
 }
 
-function createSanityClient(useCdn: boolean) {
-  const {projectId, dataset, token} = getSanityEnv()
+// One client for all content fetches, built lazily on first use. Constructing a
+// client isn't free and sanityFetch runs ~8×/render (the page's Promise.all), so
+// a fresh client per query was pure waste. Module-level state persists across
+// requests in the server runtime, which is fine — the query, params, and cache
+// window are all passed per fetch, not baked into the client. useCdn is false
+// because Next's Data Cache (next.revalidate) already fronts these reads.
+let sanityClient: ReturnType<typeof createClient> | null = null
 
-  return createClient({
-    projectId: projectId ?? '',
-    dataset,
-    apiVersion,
-    useCdn,
-    token,
-  })
+function getSanityClient() {
+  if (!sanityClient) {
+    const {projectId, dataset, token} = getSanityEnv()
+    sanityClient = createClient({
+      projectId: projectId ?? '',
+      dataset,
+      apiVersion,
+      useCdn: false,
+      token,
+    })
+  }
+  return sanityClient
 }
 
 export async function sanityFetch<T>(
@@ -53,7 +63,7 @@ export async function sanityFetch<T>(
     return null
   }
 
-  const client = createSanityClient(false)
+  const client = getSanityClient()
 
   // Every query is guarded here so a single failing/timed-out fetch degrades to
   // `null` (letting each section fall back to its FALLBACK_* data) instead of

@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { motion, MotionConfig } from 'framer-motion'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { animate, motion, MotionConfig, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
 import type { ReactNode }  from 'react'
 import { Navigation }             from '@/components/Navigation'
 import { CommandPalette }         from '@/components/CommandPalette'
@@ -130,6 +130,36 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
   const mainInert = (isPaletteOpen || bootBlocking) ? ('' as unknown as true) : undefined
 
+  // Palette-open push-back: blur + scale <main> down. Scale rides framer's
+  // declarative `animate` prop (scale:1 resolves to `transform: none` at rest,
+  // harmless). `filter` is derived from a numeric driver via useTransform so the
+  // resting value maps to the literal `none` — never a real filter function.
+  // That matters because any filter (even `blur(0px)`) makes <main> a containing
+  // block for the whole page, breaking `position: fixed` for descendants and
+  // pinning it to its own compositor layer. Framer can't interpolate to/from
+  // `none`, so we animate the blur *amount* (0↔4) and let the transform pick the
+  // `none` cutoff — the map is the only place `none` is ever produced.
+  const wantsBlur = isPaletteOpen && !isStudio
+  const prefersReduced = useReducedMotion()
+  const blurAmount = useMotionValue(0)
+  const mainFilter = useTransform(blurAmount, (v) => (v < 0.05 ? 'none' : `blur(${v}px)`))
+  const hasOpenedRef = useRef(false)
+
+  useEffect(() => {
+    if (wantsBlur) {
+      hasOpenedRef.current = true
+      if (prefersReduced) { blurAmount.set(4); return }
+      const controls = animate(blurAmount, 4, { duration: 0.3, ease: 'easeOut' })
+      return () => controls.stop()
+    }
+    // Closing. Skip on the very first mount (nothing was ever blurred) so the
+    // page doesn't flash a phantom un-blur on first paint.
+    if (!hasOpenedRef.current) return
+    if (prefersReduced) { blurAmount.set(0); return }
+    const controls = animate(blurAmount, 0, { duration: 0.3, ease: 'easeOut' })
+    return () => controls.stop()
+  }, [wantsBlur, prefersReduced, blurAmount])
+
   return (
     // reducedMotion="user" makes every descendant motion component honour the OS
     // "reduce motion" setting — disabling transform/layout entrances (Skills,
@@ -188,15 +218,12 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       <motion.main
         aria-hidden={(isPaletteOpen || bootBlocking) || undefined}
         inert={mainInert}
-        initial={{ scale: 1, filter: 'blur(0px)' }}
-        animate={
-          isPaletteOpen && !isStudio
-            ? { scale: 0.98, filter: 'blur(4px)' }
-            : { scale: 1,    filter: 'blur(0px)' }
-        }
+        initial={{ scale: 1 }}
+        animate={{ scale: wantsBlur ? 0.98 : 1 }}
         transition={{ type: 'tween', ease: 'easeOut', duration: 0.3 }}
         className="min-h-screen pb-3 md:pb-4"
         style={{
+          filter          : mainFilter,
           transformOrigin : '50% 30%',
           pointerEvents   : isPaletteOpen ? 'none' : 'auto',
         }}
