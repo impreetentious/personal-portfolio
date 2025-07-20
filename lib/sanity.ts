@@ -68,7 +68,7 @@ export async function sanityFetch<T>(
   // Every query is guarded here so a single failing/timed-out fetch degrades to
   // `null` (letting each section fall back to its FALLBACK_* data) instead of
   // rejecting the caller's Promise.all and taking the whole page to the error
-  // boundary.
+  // boundary. The one exception is the production build (see catch below).
   // `next.revalidate` opts each response into Next's Data Cache so the route can
   // render statically and refresh on the ISR window rather than per request.
   try {
@@ -78,6 +78,17 @@ export async function sanityFetch<T>(
     )
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
+    // During the production build a failed query must fail the build: degrading
+    // to `null` here would let a configured-but-unreachable Sanity (DNS, auth,
+    // dataset, timeout) exit 0 and deploy a page with every content section
+    // empty. Runtime (ISR revalidation) keeps the degrade-to-null behaviour,
+    // and the next.config.js smoke-build escape hatch is honoured.
+    if (
+      process.env.NEXT_PHASE === 'phase-production-build' &&
+      process.env.ALLOW_BUILD_WITHOUT_SANITY !== 'true'
+    ) {
+      throw new Error(`[sanityFetch] query failed during the production build: ${message}`)
+    }
     console.error('[sanityFetch] query failed or timed out:', message)
     return null
   }

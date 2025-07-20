@@ -119,9 +119,13 @@ export default async function Home() {
 
   return (
     <div id="main-content" tabIndex={-1} className="relative flex flex-col outline-none">
+      {/* JSON.stringify alone isn't <script>-safe: a CMS-authored value containing
+          a closing script tag would terminate this block early. Escaping every
+          `<` to its JSON unicode-escape form neutralises that and still parses
+          back to `<` when consumers read the JSON. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       <Hero data={heroData} resumeUrl={resumeUrl} />
