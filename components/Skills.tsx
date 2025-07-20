@@ -127,6 +127,11 @@ export function Skills({data}: SkillsProps) {
     items: [] as SkillItem[],
   }
 
+  // Only render columns that actually have pills — a category present in the CMS
+  // with an empty items list (or entirely absent) would otherwise leave a bare
+  // "TOOLS"/"SKILLS" heading with nothing under it.
+  const columns = [tools, skills].filter((entry) => entry.items.length > 0)
+
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
     setIsDesktop(window.innerWidth >= 1024)
@@ -148,9 +153,9 @@ export function Skills({data}: SkillsProps) {
     }
   }, [])
 
-  // Production with no CMS data: hide the section rather than show placeholders.
-  // Placed after hooks so hook order stays stable across renders.
-  if (!skillEntries.length) return null
+  // Production with no CMS data (or only empty categories): hide the section
+  // rather than show placeholders. Placed after hooks so hook order stays stable.
+  if (!columns.length) return null
 
   return (
     <section
@@ -165,7 +170,7 @@ export function Skills({data}: SkillsProps) {
 
       {/* ── Grid ── */}
       <div className="mt-6 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
-        {[tools, skills].map((entry, index) => {
+        {columns.map((entry, index) => {
           // If desktop, the second column comes from the right. If mobile, everything comes from the left.
           const direction = index === 0 ? "left" : isDesktop ? "right" : "left";
 

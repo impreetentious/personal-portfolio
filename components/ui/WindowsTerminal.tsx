@@ -361,10 +361,12 @@ export function WindowsTerminal({
               {'/** @profile . latest */ - loading....'}
             </p>
 
-            {/* Desktop: clickable Ctrl+K hint → opens the command palette on the nav view */}
+            {/* Desktop: clickable Ctrl+K hint → opens the command palette on its
+                idle prompt (no pre-typed query) so the visitor types the command
+                themselves — the interactive terminal is the whole point. */}
             <motion.button
               type="button"
-              onClick={() => openPalette('nav')}
+              onClick={() => openPalette()}
               aria-label="Open command palette (Ctrl+K)"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -399,10 +401,12 @@ export function WindowsTerminal({
               </span>
             </motion.button>
 
-            {/* Mobile: tappable trigger → opens the command palette on the nav view (Ctrl+K is meaningless on touch) */}
+            {/* Mobile: tappable trigger → opens the command palette on its idle
+                prompt (Ctrl+K is meaningless on touch). It shows the prompt and
+                waits for the visitor to tap the field and type nav/help. */}
             <motion.button
               type="button"
-              onClick={() => openPalette('nav')}
+              onClick={() => openPalette()}
               aria-label="Open command palette"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

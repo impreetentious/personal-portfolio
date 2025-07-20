@@ -11,15 +11,17 @@ export const metadata: Metadata = {
  * Studio layout isolation wrapper.
  *
  * Problem this solves:
- *   The root app/layout.tsx wraps all children inside a <div class="md:pl-28">
- *   and renders the portfolio Navigation on every page. Sanity Studio needs to
- *   fill the full viewport with no inherited padding or overlapping nav elements.
+ *   Every route renders inside LayoutShell's <motion.main>, which carries
+ *   min-height and bottom padding (and, on content routes, the Navigation and
+ *   boot overlays). LayoutShell already skips the nav/palette/boot chrome for
+ *   /studio, but the Studio still needs to fill the full viewport with none of
+ *   that inherited layout or padding.
  *
  * Solution:
  *   This layout renders a position:fixed, inset-0, z-index:9999 container.
- *   Fixed positioning is always relative to the viewport (not the containing
- *   block), so the root layout's padding div has zero effect on the Studio.
- *   The z-index keeps the Studio above the portfolio Navigation (z-50 / z-40).
+ *   Fixed positioning is relative to the viewport (not the containing block),
+ *   so any ancestor sizing/padding has zero effect on the Studio, and the high
+ *   z-index keeps it above the portfolio chrome as a belt-and-braces measure.
  *
  * This layout only applies to routes under /studio — all other pages are
  * completely unaffected.

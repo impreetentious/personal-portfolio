@@ -15,7 +15,7 @@ This repository is the foundation for my personal portfolio: a highly interactiv
 * `Tailwind CSS` (Utility-first styling, custom arbitrary values)
 * `Framer Motion` (Gesture support, layout animations)
 * `TypeScript` (Strict typing for all component props and data models)
-* `Inter` & System Mono (Variable sans-serif for UI, monospaced fonts for terminal outputs)
+* Fonts (all via `next/font/google`): `Inter` (UI sans-serif), `JetBrains Mono` 400/500/600/700 (terminal & mono output), `Space Grotesk` (display headings)
 
 ## Current Architecture & Folder Structure
 
@@ -25,35 +25,52 @@ The component structure has been flattened and refined for direct access, utiliz
 personal-portfolio/
 ├── app/
 │   ├── globals.css
-│   ├── layout.tsx
-│   ├── not-found.tsx
-│   └── page.tsx
+│   ├── layout.tsx            # root layout → LayoutShell
+│   ├── page.tsx              # single-page composition + JSON-LD
+│   ├── error.tsx             # route-level error boundary (themed)
+│   ├── global-error.tsx      # last-resort boundary (inline-styled)
+│   ├── not-found.tsx         # server wrapper (exports 404 metadata)
+│   ├── icon.tsx              # dynamic favicon (edge runtime)
+│   ├── opengraph-image.tsx   # dynamic OG image (edge runtime)
+│   ├── robots.ts
+│   ├── sitemap.ts
+│   └── studio/               # embedded Sanity Studio (/studio)
 ├── components/
 │   ├── Achievements.tsx
 │   ├── AnimatedCounter.tsx
-│   ├── BootContext.tsx
-│   ├── BootSequence.tsx
+│   ├── BootContext.tsx       # boot-complete context (gates hero typing)
+│   ├── BootSequence.tsx      # first-visit boot overlay
+│   ├── SessionRestoredFlash.tsx  # same-session repeat-load flash
 │   ├── CommandPalette.tsx
 │   ├── Contact.tsx
 │   ├── Education.tsx
 │   ├── Experience.tsx
 │   ├── Footer.tsx
 │   ├── Hero.tsx
+│   ├── LayoutShell.tsx       # nav + boot + palette orchestration, scroll lock
 │   ├── Metrics.tsx
 │   ├── Navigation.tsx
+│   ├── NotFoundClient.tsx    # client half of the 404 page
+│   ├── PaletteContext.tsx    # openPalette() context
 │   ├── ScrollReveal.tsx
 │   ├── Skills.tsx
 │   ├── Writing.tsx
 │   └── ui/
+│       ├── DecryptText.tsx
+│       ├── Magnetic.tsx
 │       ├── SectionLabel.tsx
-│       └── WindowsTerminal.tsx
+│       ├── TerminalPrompt.tsx
+│       ├── WindowsTerminal.tsx
+│       └── useResumeDownload.ts
 ├── lib/
-│   ├── queries.ts
-│   ├── sanity.ts
-│   ├── config.ts
+│   ├── config.ts             # siteConfig, showDevFallbacks
+│   ├── identity.ts           # single source of truth for real contact/identity fallbacks
+│   ├── queries.ts            # GROQ queries + result types
+│   ├── sanity.ts             # memoised client, guarded sanityFetch, getResumeUrl
+│   └── time.ts               # shared IST clock formatter
 ├── sanity/schemas/
 │   ├── index.ts
-│   └── [hero, experience, skills, metrics, education, achievements, writing, resume].ts
+│   └── [hero, resume, experience, projects, metrics, education, skills, achievements, writing].ts
 ├── tailwind.config.ts
 └── next.config.js
 
@@ -101,8 +118,8 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.8.3
-* **Portfolio Version: v3.8.3_2025-07-21_00:13:56 (IST)
+* **Base Format Version:** 3.8.4
+* **Portfolio Version: v3.8.4_2025-07-21_03:23:05 (IST)
 
 ## AI Agent Instructions
 
@@ -112,7 +129,7 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 
 Follow this format for version control:
 
-* **Base Format Version:** 3.8.3
+* **Base Format Version:** [current release version]
 * **Version:** `v[Base_Format_Version]_YYYY-MM-DD_HH:MM:SS` (IST)
 
 ---

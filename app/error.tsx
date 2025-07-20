@@ -20,7 +20,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16">
+    <div id="main-content" tabIndex={-1} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16 outline-none">
 
       {/* Ambient red fog — matches the 404 error state */}
       <div

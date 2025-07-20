@@ -24,6 +24,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
+
+// Fictional "sidakpreet-os" build number shown in the winfetch/winget easter
+// eggs. Deliberately a fixed, thematic value (mirrors the BIOS v1.4.7 in the
+// boot sequence) — NOT the repo/portfolio version, so it never needs bumping and
+// should not be "corrected" to the package version by a future audit.
+const OS_VERSION = '1.4.7'
 import { useResumeDownload, type DownloadState } from '@/components/ui/useResumeDownload'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -144,7 +150,7 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
   'winfetch': [
     { id: 'wf1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '        Sidakpreet Singh @ sidakpreet-os' },
     { id: 'wf2', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '        ─────────────────────────────────' },
-    { id: 'wf3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        OS       sidakpreet-os v3.11.8' },
+    { id: 'wf3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: `        OS       sidakpreet-os v${OS_VERSION}` },
     { id: 'wf4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Shell    PowerShell 7.4' },
     { id: 'wf5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: "        Host     IIM Indore MBA '25" },
     { id: 'wf6', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Kernel   ex-Bain · HCLSoftware' },
@@ -153,7 +159,7 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
   ],
   'winget': [
     { id: 'wi1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  > winget install sidakpreet' },
-    { id: 'wi2', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Found Sidakpreet Singh [Portfolio v3.11.8]' },
+    { id: 'wi2', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: `  Found Sidakpreet Singh [Portfolio v${OS_VERSION}]` },
     { id: 'wi3', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Downloading package.....' },
     { id: 'wi4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  [████████████████████] 100%' },
     { id: 'wi5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  Successfully installed. Try ‘winfetch’ next.' },
@@ -262,7 +268,15 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
     }
     setQuery(initialQuery)
     setActiveIndex(0)
-    const timer = setTimeout(() => inputRef.current?.focus(), 60)
+    const timer = setTimeout(() => {
+      // Touch devices: don't auto-focus. Focusing the field pops the soft
+      // keyboard instantly and buries the idle prompt — on mobile the palette
+      // should present the prompt and let the visitor tap the bar to type (that
+      // tap is what raises the keyboard). Fine-pointer (desktop) keeps
+      // auto-focus so you can start typing immediately.
+      if (window.matchMedia('(pointer: coarse)').matches) return
+      inputRef.current?.focus()
+    }, 60)
     return () => clearTimeout(timer)
   }, [isOpen, initialQuery, cancelDownload])
 
