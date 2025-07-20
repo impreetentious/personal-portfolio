@@ -32,13 +32,6 @@ const config: Config = {
         panel:
           'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 40px rgba(0, 0, 0, 0.28), 0 48px 100px rgba(0, 0, 0, 0.40)',
       },
-      backgroundImage: {
-        'hero-raster':
-          'radial-gradient(circle at top, rgba(97, 175, 239, 0.16), transparent 34%), linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-      },
-      backgroundSize: {
-        'hero-raster': '100% 100%, 32px 32px, 32px 32px',
-      },
     },
   },
   plugins: [],

@@ -151,19 +151,8 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
   }, [completeOnce])
 
   // ── Render ────────────────────────────────────────────────────────────────
+  // The boot-fade-out keyframe lives in app/globals.css (single definition).
   return (
-    <>
-      {/*
-        Self-contained keyframe — does NOT depend on globals.css Phase 2 being applied.
-        Once Phase 2 is in place, this duplicate definition is harmless (last-write-wins).
-      */}
-      <style>{`
-        @keyframes boot-fade-out {
-          0%   { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      `}</style>
-
       <div
         style={{
           position       : 'fixed',
@@ -264,6 +253,5 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
 
         </div>
       </div>
-    </>
   )
 }

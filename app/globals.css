@@ -116,10 +116,6 @@ body::after {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
   .hover-glow {
     transition:
       border-color 200ms ease,
