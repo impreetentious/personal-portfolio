@@ -7,6 +7,7 @@ import { TerminalPrompt } from '@/components/ui/TerminalPrompt'
 import { useResumeDownload, type DownloadState } from '@/components/ui/useResumeDownload'
 import { usePalette } from '@/components/PaletteContext'
 import { getISTTime } from '@/lib/time'
+import { FALLBACK_PROFILE_FIELDS, FALLBACK_TERMINAL_SKILLS } from '@/lib/identity'
 import type { HeroProfileField, HeroTerminalSkill } from '@/lib/queries'
 
 type WindowsTerminalProps = {
@@ -22,22 +23,6 @@ type WindowsTerminalProps = {
 const BASE_TYPE_DELAY = 22
 const MIN_TYPE_DELAY  = 4
 const MAX_VELOCITY    = 8
-
-const FALLBACK_PROFILE_FIELDS: HeroProfileField[] = [
-  { key: 'Location', value: 'Delhi NCR, India', column: 'left' },
-  { key: 'Email',    value: 'work@sidakpreetsingh.com', url: 'mailto:work@sidakpreetsingh.com', column: 'left' },
-  { key: 'Phone',    value: '+91 90344 31886', url: 'tel:+919034431886', column: 'right' },
-  { key: 'LinkedIn', value: 'Sidakpreet Singh', url: 'https://linkedin.com/in/sidakpreetsinghk', column: 'right' },
-]
-
-const FALLBACK_TERMINAL_SKILLS: HeroTerminalSkill[] = [
-  { label: 'React',      dot: '#61AFEF' },
-  { label: 'Next.js',    dot: '#4EC9B0' },
-  { label: 'TypeScript', dot: '#4FC1FF' },
-  { label: 'Tailwind',   dot: '#38BDF8' },
-  { label: 'Python',     dot: '#DCDCAA' },
-  { label: 'Node.js',    dot: '#A3E635' },
-]
 
 const SHOW_WORKING_STATUS = false
 

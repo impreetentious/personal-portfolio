@@ -1,3 +1,5 @@
+import { identity } from './identity';
+
 // Canonical origin for the deployed portfolio. Override per-environment with
 // NEXT_PUBLIC_SITE_URL (e.g. a Vercel preview URL); the trailing slash is
 // stripped so callers can safely template `${url}/path`.
@@ -10,11 +12,11 @@ const isIndexable = process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true';
 
 export const siteConfig = {
   url: rawSiteUrl.replace(/\/+$/, ''),
-  name: 'Sidakpreet Singh',
-  title: 'Sidakpreet Singh | Portfolio',
+  name: identity.name,
+  title: `${identity.name} | Portfolio`,
   description:
     'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
-  email: 'work@sidakpreetsingh.com',
+  email: identity.email,
   isIndexable,
   features: {
     showWriting: true,

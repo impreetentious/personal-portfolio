@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { SocialLink } from "@/lib/queries";
+import { FALLBACK_SOCIAL_LINKS } from "@/lib/identity";
 import { Magnetic } from "@/components/ui/Magnetic";
 
 // ─── VS Code Syntax Token Colours ─────────────────────────────────────────────
@@ -160,14 +161,6 @@ function TwitterIcon({ className }: BrandIconProps) {
 }
 
 // ─── Social Links Data ────────────────────────────────────────────────────────
-
-const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
-  { platform: 'phone', url: 'tel:+919034431886', order: 0, label: 'Phone', copyValue: '+91 90344 31886' },
-  { platform: 'email', url: 'mailto:work@sidakpreetsingh.com', order: 1, label: 'Email', copyValue: 'work@sidakpreetsingh.com' },
-  { platform: 'linkedin', url: 'https://linkedin.com/in/sidakpreetsinghk', order: 2, label: 'LinkedIn' },
-  { platform: 'whatsapp', url: 'https://wa.me/+919034431886', order: 3, label: 'WhatsApp' },
-  { platform: 'github', url: 'https://github.com/ItsMonarch04', order: 4, label: 'GitHub' },
-]
 
 const PLATFORM_ICONS = {
   phone: PhoneIcon,
