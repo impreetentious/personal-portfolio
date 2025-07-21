@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { animate, motion, MotionConfig, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
 import type { ReactNode }  from 'react'
+import { Analytics }              from '@vercel/analytics/next'
+import { SpeedInsights }          from '@vercel/speed-insights/next'
 import { Navigation }             from '@/components/Navigation'
 import { CommandPalette }         from '@/components/CommandPalette'
 import { BootSequence }           from '@/components/BootSequence'
@@ -249,6 +251,18 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           resumeUrl    = {resumeUrl}
           initialQuery = {paletteQuery}
         />
+      )}
+
+      {/* Vercel Analytics + Speed Insights — public-site only. Excluded from
+          /studio for the same reason nav/palette/boot are: Studio is authoring
+          traffic (owner-only) and shouldn't pollute the Core Web Vitals baseline
+          P5 exists to establish. Both packages self-gate to debug mode in dev
+          and only beacon /_vercel/insights/* on a Vercel deploy. */}
+      {!isStudio && (
+        <>
+          <Analytics />
+          <SpeedInsights />
+        </>
       )}
     </MotionConfig>
   )

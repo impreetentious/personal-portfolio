@@ -12,6 +12,18 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Inline styles can't express :focus-visible, and this fallback
+            deliberately avoids Tailwind/global CSS so it survives even when the
+            main stylesheet fails to load. A tiny inline <style> is the only way
+            to give the retry button a visible keyboard focus indicator here. */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html:
+              '.ge-retry:focus-visible{outline:2px solid #38BDF8;outline-offset:2px;background:rgba(56,189,248,0.18);}',
+          }}
+        />
+      </head>
       <body
         style={{
           margin: 0,
@@ -52,6 +64,7 @@ export default function GlobalError({
             {error?.message || 'A critical error occurred. Please try again.'}
           </p>
           <button
+            className="ge-retry"
             onClick={() => reset()}
             style={{
               border: '1px solid rgba(56,189,248,0.3)',

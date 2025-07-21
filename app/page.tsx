@@ -31,23 +31,26 @@ import { getResumeUrl, sanityFetch } from "@/lib/sanity";
 // ISR: statically render and revalidate hourly instead of rendering per request.
 export const revalidate = 3600
 
+// Metadata values are sourced from siteConfig (which resolves identity.name)
+// so the tab title, OG card, and Twitter card stay in lockstep with the JSON-LD
+// block below and never drift when the name/description change.
 export const metadata: Metadata = {
-  title      : 'Sidakpreet Singh | Portfolio',
-  description: "Sidakpreet Singh's interactive portfolio",
+  title      : siteConfig.title,
+  description: siteConfig.description,
   alternates : {
     canonical: '/',
   },
   openGraph  : {
-    title      : 'Sidakpreet Singh | Portfolio',
-    description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
+    title      : siteConfig.title,
+    description: siteConfig.description,
     type       : 'website',
     url        : siteConfig.url,
-    siteName   : 'Sidakpreet Singh',
+    siteName   : siteConfig.name,
   },
   twitter    : {
     card       : 'summary_large_image',
-    title      : 'Sidakpreet Singh | Portfolio',
-    description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
+    title      : siteConfig.title,
+    description: siteConfig.description,
   },
 };
 
