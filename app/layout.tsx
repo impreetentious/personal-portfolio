@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import './globals.css'
 import { LayoutShell } from '@/components/LayoutShell'
@@ -63,6 +65,11 @@ export default async function RootLayout({
             {children}
           </LayoutShell>
         </div>
+        {/* No-ops locally; the beacons only fire on Vercel deploys (env-gated
+            by the packages themselves). Wired now so the first production
+            deploy has a real Core Web Vitals baseline. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

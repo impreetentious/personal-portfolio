@@ -53,6 +53,9 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
   // setState when the value actually flips, not on every frame.
   const hasPassedHeroRef  = useRef(false)
   const mobileNavHiddenRef = useRef(false)
+  // Gate hash-sync so a deep-link (including one pointing at a hidden section)
+  // is preserved until the user actually scrolls — see the effect below.
+  const hasScrolledRef = useRef(false)
 
   useEffect(() => {
     const updateHeroExit = () => setHeroExit(window.innerHeight * 0.82)
@@ -120,9 +123,31 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
       const el = document.getElementById(id)
       if (el) observer.observe(el)
     })
-    
+
     return () => observer.disconnect()
   }, [])
+
+  // ── Deep-link preservation gate ──
+  // A hash pointing at a hidden (CMS-empty) section can't be scrolled to, so
+  // the browser never fires a scroll. Waiting for the first real scroll before
+  // rewriting the URL keeps that hash intact until the user chooses to leave.
+  useEffect(() => {
+    const markScrolled = () => { hasScrolledRef.current = true }
+    window.addEventListener('scroll', markScrolled, { passive: true, once: true })
+    return () => window.removeEventListener('scroll', markScrolled)
+  }, [])
+
+  // ── Hash sync ──
+  // Mirror the visible section into the URL with replaceState so the address
+  // is shareable and Back doesn't drown in a history entry per section. Home
+  // clears the hash entirely instead of leaving a stale `#home`.
+  useEffect(() => {
+    if (!hasScrolledRef.current) return
+    const nextHash = activeSection === 'home' ? '' : `#${activeSection}`
+    if (nextHash === window.location.hash) return
+    const nextUrl = `${window.location.pathname}${window.location.search}${nextHash}`
+    window.history.replaceState(window.history.state, '', nextUrl)
+  }, [activeSection])
 
   // Mobile nav retains continuous scroll transform for fluid entry
   const mobileNavOpacity    = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
