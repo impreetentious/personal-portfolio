@@ -185,13 +185,15 @@ export function Skills({data}: SkillsProps) {
               viewport={{ once: true, margin: "-60px" }}
               className="min-w-0 border-l border-accent/20 pl-5"
             >
-              {/* Animated Category Title */}
-              <motion.p
+              {/* Animated Category Title — real <h3> so category labels appear
+                  in the document outline (h1 → h2 "Skills" → h3 "Tools"/"Skills"),
+                  matching Experience/Education/Writing's per-item heading level. */}
+              <motion.h3
                 variants={pillVariants}
                 className="font-mono text-sm font-medium uppercase tracking-[0.22em] text-success"
               >
                 {entry.category}
-              </motion.p>
+              </motion.h3>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 {entry.items.map((item) => {

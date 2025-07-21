@@ -220,9 +220,13 @@ export function Contact({ socialLinks }: ContactProps) {
           <code className="block font-mono font-medium text-[10px] sm:text-[12px] tracking-wide text-metaphor/70 select-none mb-3 sm:mb-4">
             npm run connect
           </code>
-          <p className="font-display font-semibold text-[21px] sm:text-2xl tracking-tight text-white/[0.92] mb-6 sm:mb-11">
+          {/* Real <h2> so the document outline is h1 → h2 → h3 across sections
+              (every other section uses SectionLabel which renders an h2). The
+              section's aria-label already named this landmark "Contact" for AT,
+              but heading navigation (screen-reader H key) needs a real heading. */}
+          <h2 className="font-display font-semibold text-[21px] sm:text-2xl tracking-tight text-white/[0.92] mb-6 sm:mb-11">
             Contact
-          </p>
+          </h2>
         </div>
       </div>
 
@@ -276,6 +280,11 @@ export function Contact({ socialLinks }: ContactProps) {
           <div className="flex w-full gap-3 py-2 sm:w-auto sm:justify-start sm:gap-5">
             {resolvedSocialLinks.map(({ platform, label, url, copyValue }) => {
               const Icon = PLATFORM_ICONS[platform]
+              // A future Sanity schema addition (e.g. new platform value) that
+              // hasn't been wired into PLATFORM_ICONS yet would otherwise throw
+              // "Icon is not a function". Drop the item silently instead —
+              // rendering nothing is strictly better than a client crash.
+              if (!Icon) return null
               const resolvedLabel = label ?? platform
 
               return (
