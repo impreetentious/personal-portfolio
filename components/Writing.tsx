@@ -79,7 +79,7 @@ export function Writing({data}: WritingProps) {
                       href={item.url} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="group/link flex w-fit items-start gap-2 focus:outline-none"
+                      className="group/link flex w-fit items-start gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                       aria-label={`Read "${item.title}" (opens in new tab)`}
                     >
                       <motion.h3

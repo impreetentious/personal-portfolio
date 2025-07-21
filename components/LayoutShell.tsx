@@ -210,9 +210,15 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         <SessionRestoredFlash onComplete={handleBootComplete} />
       )}
 
-      {/* Exclude Navigation from Studio */}
+      {/* Exclude Navigation from Studio. Navigation lives outside <main>, so the
+          boot overlay's inert on <main> never covers it — pass the boot state
+          explicitly or its (invisible) controls stay Tab-reachable during boot. */}
       {!isStudio && (
-        <Navigation onOpenPalette={openPalette} isPaletteOpen={isPaletteOpen} />
+        <Navigation
+          onOpenPalette={openPalette}
+          isPaletteOpen={isPaletteOpen}
+          isBootBlocking={bootBlocking}
+        />
       )}
 
       <motion.main

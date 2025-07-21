@@ -37,9 +37,10 @@ const OBSERVED_SECTIONS = ['home', ...NAV_SECTIONS.map(s => s.id)]
 interface NavigationProps {
   onOpenPalette?: () => void
   isPaletteOpen?: boolean
+  isBootBlocking?: boolean
 }
 
-export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationProps) {
+export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlocking = false }: NavigationProps) {
   const { scrollY, scrollYProgress } = useScroll()
   const [heroExit, setHeroExit] = useState(720)
   const heroExitRef = useRef(heroExit)
@@ -129,11 +130,16 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
 
   const isOnHome = !hasPassedHero
 
+  // The boot overlay covers the nav visually but doesn't block Tab focus into
+  // it — without inert, an invisible control could still open the palette
+  // behind the boot screen. Same treatment as the open palette.
+  const isSuppressed = isPaletteOpen || isBootBlocking
+
   return (
     <div
-      aria-hidden={isPaletteOpen || undefined}
+      aria-hidden={isSuppressed || undefined}
       // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
-      inert={isPaletteOpen ? ('' as unknown as true) : undefined}
+      inert={isSuppressed ? ('' as unknown as true) : undefined}
     >
 
       {/* ── Scroll progress bar ── */}
@@ -147,9 +153,12 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
       />
 
       {/* ── Desktop wordmark (Top Left) ── */}
+      {/* visibility rides the tween (framer applies 'hidden' at tween end, 'visible'
+          immediately) so the faded-out state is unfocusable and unclickable, not
+          just transparent — same pattern as the side rail below. */}
       <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={!isOnHome ? { y: 0, opacity: 1 } : { y: -20, opacity: 0 }}
+        initial={{ y: -20, opacity: 0, visibility: 'hidden' }}
+        animate={!isOnHome ? { y: 0, opacity: 1, visibility: 'visible' } : { y: -20, opacity: 0, visibility: 'hidden' }}
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed top-7 left-9 z-50 hidden md:flex items-center gap-3"
       >
@@ -169,8 +178,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false }: NavigationP
 
       {/* ── Desktop Command Trigger (Bottom Left) ── */}
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={!isOnHome ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+        initial={{ y: 20, opacity: 0, visibility: 'hidden' }}
+        animate={!isOnHome ? { y: 0, opacity: 1, visibility: 'visible' } : { y: 20, opacity: 0, visibility: 'hidden' }}
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed bottom-7 left-9 z-50 hidden md:flex"
       >
