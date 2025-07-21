@@ -5,10 +5,9 @@ import {defineField, defineType} from 'sanity'
  * Upload the PDF once via Sanity Studio. Re-uploading replaces the
  * previous file without any code changes required.
  *
- * To enforce singleton behaviour in the Studio (prevent creating
- * additional documents), restrict __experimental_actions to
- * ['update', 'publish'] inside sanity.config.ts, following the
- * same pattern used for the hero schema.
+ * Singleton behaviour is enforced in sanity.config.ts (`singletonTypes`):
+ * resume is excluded from all new-document menus and its Duplicate action
+ * is removed, matching the hero schema.
  */
 export const resumeSchema = defineType({
   name: 'resume',

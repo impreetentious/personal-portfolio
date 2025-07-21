@@ -27,8 +27,12 @@ export type HeroData = {
   terminalSkills?: HeroTerminalSkill[]
 }
 
+// Singleton reads (hero, resume): order explicitly so `[0]` is deterministic —
+// GROQ guarantees nothing without order(), so if a duplicate ever slipped in,
+// the original (oldest) document keeps winning instead of the pick being
+// arbitrary. Studio-side guards live in sanity.config.ts.
 export const heroQuery = `
-  *[_type == "hero"][0] {
+  *[_type == "hero"] | order(_createdAt asc) [0] {
     name,
     tagline,
     bio,
@@ -214,4 +218,4 @@ export const writingQuery = `
   }
 `
 
-export const resumeQuery = `*[_type == "resume"][0]{ "url": file.asset->url, showDownloadButton }`
+export const resumeQuery = `*[_type == "resume"] | order(_createdAt asc) [0]{ "url": file.asset->url, showDownloadButton }`

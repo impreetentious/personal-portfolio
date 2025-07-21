@@ -80,7 +80,7 @@ personal-portfolio/
 
 Data is structured around these primary interfaces:
 
-* **Experience:** `company`, `role`, `location`, `dates`, `bulletPoints`, `skillsUsed`, `isHidden`
+* **Experience:** `company`, optional `location`/`displayDates`, and either legacy single-role fields (`role`, `dates`, `bulletPoints`, `skillsUsed`) or ordered nested `roles[]`; entries can be hidden with `isHidden`
 * **Skills:** Grouped by `category` ('Tools' | 'Skills') containing `name` and optional `description` (for tooltips)
 * **Metrics:** `value`, optional `prefix`, optional `suffix`, `label`, optional `sub`
 * **Achievements:** `event`, `organizer`, `date`, `notes`, optional `description`
@@ -118,18 +118,20 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.9.1
-* **Portfolio Version: v3.9.1_2025-07-21_15:14:49 (IST)
+* **Base Format Version:** 3.9.2
+* **Portfolio Version: v3.9.2_2025-07-21_21:34:55 (IST)
 
 ## AI Agent Instructions
 
-Before making any new commits, update the Version Control string in this file with the current IST time of commit (`Asia/Kolkata`).
+Before making any new commits, update the Version Control string in this file with the current IST time of commit (`Asia/Kolkata`). Keep the same numeric release version in `package.json` and the root package entries of `package-lock.json`.
 
 This IST timestamp rule is permanent for all future workflows, commits, and AI agents working in this repository.
 
 Follow this format for version control:
 
 * **Base Format Version:** [current release version]
-* **Version:** `v[Base_Format_Version]_YYYY-MM-DD_HH:MM:SS` (IST)
+* **Portfolio Version: v3.9.2_2025-07-21_21:34:55 (IST)
+
+Never commit or push unless the owner explicitly asks. The commit message — subject and the owner's private suffix code — is owner-authored; present the exact proposed messages and wait for confirmation. Before a requested commit, show the exact files and scope, exclude unrelated work, and run the appropriate checks.
 
 ---

@@ -2,9 +2,10 @@ import {defineField, defineType} from 'sanity'
 
 /**
  * Hero — singleton document.
- * One entry is expected. To enforce singleton behaviour in the studio,
- * configure this type inside sanity.config.ts using the singletonPlugin
- * or by restricting __experimental_actions to ['update', 'publish'].
+ * One entry is expected. Enforced in sanity.config.ts (`singletonTypes`):
+ * hero is excluded from all new-document menus and its Duplicate action is
+ * removed. The frontend query additionally orders by _createdAt so the
+ * original document wins deterministically if a duplicate ever exists.
  */
 export const heroSchema = defineType({
   name: 'hero',
