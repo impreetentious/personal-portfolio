@@ -393,7 +393,7 @@ export function NotFoundClient() {
               <span className="text-white/35 mx-1">{'>'}</span>
               <Link
                 href="/"
-                className="group inline-flex items-center transition-all duration-200 ease-out"
+                className="group inline-flex items-center rounded-sm transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={{ color: '#CE9178' }}
               >
                 <span className="group-hover:text-accent transition-colors duration-200 ease-out">

@@ -167,6 +167,7 @@ export function Achievements({data}: AchievementsProps) {
                             toggle(item.id);
                           }}
                           aria-expanded={isOpen}
+                          aria-controls={`${item.id}-details`}
                           aria-label={`${isOpen ? 'Collapse' : 'Expand'} details for ${item.event}`}
                           className="sr-only"
                         />
@@ -232,8 +233,10 @@ export function Achievements({data}: AchievementsProps) {
 
                   <tr key={`${item.id}-exp`}>
                     <td colSpan={4} className="p-0">
-                      {/* FIX E: intermediate block wrapper so motion.div is not a direct child of td, fixing Safari/Firefox height collapse */}
-                      <div>
+                      {/* FIX E: intermediate block wrapper so motion.div is not a direct child of td, fixing Safari/Firefox height collapse.
+                          id here is the aria-controls target for the sr-only toggle above; keeping it on the always-mounted
+                          wrapper means the reference is stable whether the content is expanded or collapsed. */}
+                      <div id={`${item.id}-details`}>
                         <AnimatePresence initial={false}>
                           {isOpen && item.description && (
                             <motion.div

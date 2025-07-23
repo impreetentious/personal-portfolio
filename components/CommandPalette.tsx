@@ -498,6 +498,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                       setActiveIndex(0)
                     }}
                     placeholder="Type 'navigate' or 'help' to begin..."
+                    aria-label="Search commands"
                     className="flex-1 bg-transparent font-sans text-[15px] font-medium text-foreground placeholder:text-foreground/40 focus:outline-none"
                     spellCheck={false}
                     autoComplete="off"
