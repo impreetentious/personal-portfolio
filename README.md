@@ -118,8 +118,8 @@ CLI support:
 
 # Version Control
 
-* **Base Format Version:** 3.10.4
-* **Portfolio Version: v3.10.4_2025-07-24_21:18:08 (IST)
+* **Base Format Version:** 3.10.5
+* **Portfolio Version: v3.10.5_2025-07-25_00:04:28 (IST)
 
 ## AI Agent Instructions
 
@@ -130,7 +130,7 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 Follow this format for version control:
 
 * **Base Format Version:** [current release version]
-* **Portfolio Version: v3.10.4_2025-07-24_21:18:08 (IST)
+* **Portfolio Version: v3.10.5_2025-07-25_00:04:28 (IST)
 
 Never commit or push unless the owner explicitly asks. The commit message — subject and the owner's private suffix code — is owner-authored; present the exact proposed messages and wait for confirmation. Before a requested commit, show the exact files and scope, exclude unrelated work, and run the appropriate checks.
 

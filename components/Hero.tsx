@@ -62,6 +62,7 @@ export function Hero({data, resumeUrl}: HeroProps) {
     <section
       ref={sectionRef}
       id="home"
+      aria-label="Introduction"
       className="relative min-h-screen overflow-hidden px-6 pt-10 pb-40 sm:px-8 md:px-12 md:pt-8 md:pb-20"
     >
       {/* Parallax gradient — origin tracks mouse ±6% from base (18%, 24%) */}

@@ -40,6 +40,7 @@ export function Education({data}: EducationProps) {
   return (
     <section
       id="education"
+      aria-label="Education"
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       <SectionLabel

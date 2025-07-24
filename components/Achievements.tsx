@@ -86,7 +86,7 @@ export function Achievements({data}: AchievementsProps) {
   }
 
   return (
-    <section id="achievements" className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
+    <section id="achievements" aria-label="Achievements" className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <SectionLabel
