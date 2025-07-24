@@ -51,6 +51,7 @@ export const heroSchema = defineType({
               name: 'platform',
               title: 'Platform',
               type: 'string',
+              description: 'Which social channel this link belongs to. Controls the icon rendered and whether the click copies (Email/Phone) or navigates (LinkedIn/WhatsApp/GitHub/Twitter).',
               options: {
                 list: [
                   {title: 'Email', value: 'email'},
@@ -79,7 +80,7 @@ export const heroSchema = defineType({
               name: 'order',
               title: 'Order',
               type: 'number',
-              description: 'Controls display order. Lower numbers appear first.',
+              description: 'Controls display order in the Contact section (lower numbers appear first). Ties resolve to the CMS array position. Leave blank to sort this item last.',
               validation: (Rule) => Rule.integer().min(0),
             }),
             defineField({
@@ -119,12 +120,14 @@ export const heroSchema = defineType({
               name: 'key',
               title: 'Label',
               type: 'string',
+              description: 'Left-hand label shown before the value, e.g. "Location" or "Email".',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'value',
               title: 'Value',
               type: 'string',
+              description: 'The value displayed to the right of the label — the text a visitor reads.',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
@@ -142,6 +145,7 @@ export const heroSchema = defineType({
               name: 'column',
               title: 'Column',
               type: 'string',
+              description: 'Which column this row appears in inside the two-column properties block. Order within a column follows the array order.',
               options: {
                 list: [
                   {title: 'Left', value: 'left'},
@@ -177,6 +181,7 @@ export const heroSchema = defineType({
               name: 'label',
               title: 'Label',
               type: 'string',
+              description: 'Skill chip label, e.g. "React", "Next.js", "Python".',
               validation: (Rule) => Rule.required(),
             }),
             defineField({

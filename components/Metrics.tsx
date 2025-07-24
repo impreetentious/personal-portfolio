@@ -166,8 +166,11 @@ export function Metrics({data}: MetricsProps) {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-accent/10 border border-accent/10 rounded-sm overflow-hidden"
         >
           {metrics.map((metric, i) => (
+            // Labels come from the CMS with no uniqueness constraint; combining
+            // label with index keeps React's key stable and unique even if two
+            // metrics ever share a label.
             <TiltCard
-              key={metric.label}
+              key={`${metric.label}-${i}`}
               index={i}
               inView={inView}
               className="relative bg-background p-8 md:p-10 group hover:bg-accent/[0.035] transition-colors duration-300 overflow-hidden"

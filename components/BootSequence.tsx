@@ -98,10 +98,18 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
 
   // ── Effect 1 — reduced-motion check + keyboard skip ──────────────────────
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reducedMotion.matches) {
       completeOnce()
       return
     }
+
+    // If the user toggles reduced-motion mid-boot (OS-level accessibility
+    // toggle), honour it immediately by short-circuiting to done.
+    const onMotionChange = () => {
+      if (reducedMotion.matches) completeOnce()
+    }
+    reducedMotion.addEventListener('change', onMotionChange)
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === ' ') {
@@ -110,7 +118,10 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
       }
     }
     window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
+    return () => {
+      reducedMotion.removeEventListener('change', onMotionChange)
+      window.removeEventListener('keydown', handler)
+    }
   }, [completeOnce])
 
   // ── Effect 2 — boot sequence timing ──────────────────────────────────────

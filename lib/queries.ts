@@ -22,7 +22,10 @@ export type HeroData = {
   name: string
   tagline: string
   bio: string
-  socialLinks: SocialLink[]
+  // Optional: the hero schema doesn't validate socialLinks (a hero doc without
+  // any links is valid), and GROQ returns null when the source array is absent,
+  // not an empty [].
+  socialLinks?: SocialLink[]
   profileFields?: HeroProfileField[]
   terminalSkills?: HeroTerminalSkill[]
 }
@@ -61,7 +64,9 @@ export type ExperienceRoleItem = {
   role: string
   dates?: string
   bulletPoints: string[]
-  skillsUsed: string[]
+  // Schema validation doesn't require skillsUsed, so a role can legitimately
+  // return undefined. Consumers already guard with `?? []`.
+  skillsUsed?: string[]
 }
 
 export type ExperienceItem = {

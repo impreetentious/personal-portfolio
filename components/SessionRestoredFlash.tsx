@@ -32,10 +32,18 @@ export function SessionRestoredFlash({ onComplete }: SessionRestoredFlashProps) 
   }, [])
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reducedMotion.matches) {
       completeOnce()
       return
     }
+
+    // If the user toggles reduced-motion mid-flash (OS-level accessibility
+    // toggle), honour it immediately by short-circuiting to done.
+    const onMotionChange = () => {
+      if (reducedMotion.matches) completeOnce()
+    }
+    reducedMotion.addEventListener('change', onMotionChange)
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === ' ') {
@@ -51,6 +59,7 @@ export function SessionRestoredFlash({ onComplete }: SessionRestoredFlashProps) 
     }, VISIBLE_MS)
 
     return () => {
+      reducedMotion.removeEventListener('change', onMotionChange)
       window.removeEventListener('keydown', handler)
       clearTimeout(startFade)
       if (fadeTimerRef.current) {
