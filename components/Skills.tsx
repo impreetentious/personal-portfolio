@@ -160,6 +160,7 @@ export function Skills({data}: SkillsProps) {
   return (
     <section
       id="skills"
+      aria-label="Skills"
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       {/* ── Section header ── */}
@@ -241,10 +242,22 @@ export function Skills({data}: SkillsProps) {
                       )}
 
                       {/* Skill tag — focusable only when it carries a description,
-                          so tooltip-less pills don't clutter the tab order. */}
+                          so tooltip-less pills don't clutter the tab order.
+                          Escape blurs the pill, which drops `group-focus-within`
+                          and hides the tooltip (WAI-ARIA 1.2 tooltip pattern). */}
                       <span
                         tabIndex={item.description ? 0 : undefined}
                         aria-describedby={tooltipId}
+                        onKeyDown={
+                          item.description
+                            ? (e) => {
+                                if (e.key === 'Escape') {
+                                  e.stopPropagation()
+                                  e.currentTarget.blur()
+                                }
+                              }
+                            : undefined
+                        }
                         className={[
                           'hover-glow',
                           'inline-block cursor-default select-none',

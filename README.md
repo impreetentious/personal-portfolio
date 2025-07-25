@@ -116,11 +116,6 @@ CLI support:
 
 * `sanity.cli.ts` is included so future Sanity CLI commands can resolve the same project and dataset as the embedded Studio.
 
-# Version Control
-
-* **Base Format Version:** 3.10.5
-* **Portfolio Version: v3.10.5_2025-07-25_00:04:28 (IST)
-
 ## AI Agent Instructions
 
 Before making any new commits, update the Version Control string in this file with the current IST time of commit (`Asia/Kolkata`). Keep the same numeric release version in `package.json` and the root package entries of `package-lock.json`.
@@ -129,9 +124,6 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 
 Follow this format for version control:
 
-* **Base Format Version:** [current release version]
-* **Portfolio Version: v3.10.5_2025-07-25_00:04:28 (IST)
-
-Never commit or push unless the owner explicitly asks. The commit message — subject and the owner's private suffix code — is owner-authored; present the exact proposed messages and wait for confirmation. Before a requested commit, show the exact files and scope, exclude unrelated work, and run the appropriate checks.
-
+* **Base Format Version:** 3.10.6
+* **Portfolio Version: v3.10.6_2025-07-25_23:54:55 (IST)
 ---

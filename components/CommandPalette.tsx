@@ -499,6 +499,19 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                     }}
                     placeholder="Type 'navigate' or 'help' to begin..."
                     aria-label="Search commands"
+                    // ARIA combobox pattern: input controls the results listbox
+                    // and points at the currently-highlighted option so screen
+                    // readers can announce arrow-key navigation while focus
+                    // stays on the input.
+                    role="combobox"
+                    aria-expanded={filtered.length > 0}
+                    aria-controls="palette-listbox"
+                    aria-autocomplete="list"
+                    aria-activedescendant={
+                      filtered[activeIndex] && !filtered[activeIndex].isTerminalOutput
+                        ? `palette-option-${filtered[activeIndex].id}`
+                        : undefined
+                    }
                     className="flex-1 bg-transparent font-sans text-[15px] font-medium text-foreground placeholder:text-foreground/40 focus:outline-none"
                     spellCheck={false}
                     autoComplete="off"
@@ -521,7 +534,12 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                 </div>
 
                 {/* ── Actions list / Idle State ── */}
-                <div className="max-h-[440px] overflow-y-auto py-2">
+                <div
+                  id="palette-listbox"
+                  role="listbox"
+                  aria-label="Command results"
+                  className="max-h-[440px] overflow-y-auto py-2"
+                >
                   {filtered.length === 0 && !query ? (
                     // IDLE STATE: 1pt larger, brighter colors
                     <div className="px-5 py-6 text-left font-mono text-[12px] leading-relaxed text-foreground/60">
@@ -562,6 +580,9 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                       return (
                         <button
                           key={action.id}
+                          id={`palette-option-${action.id}`}
+                          role="option"
+                          aria-selected={isActive}
                           onClick={() => !isRunning && executeAction(action)}
                           onMouseEnter={() => setActiveIndex(i)}
                           disabled={isRunning}

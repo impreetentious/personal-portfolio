@@ -1,6 +1,6 @@
 {
   "name": "myportfolio",
-  "version": "3.10.5",
+  "version": "3.10.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sanity/client": "^7.5.0",
+    "@sanity/client": "^7.6.0",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "framer-motion": "^11.3.19",

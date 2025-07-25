@@ -104,6 +104,7 @@ export function Experience({data}: ExperienceProps) {
   return (
     <section
       id="experience"
+      aria-label="Experience"
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       <SectionLabel
@@ -187,6 +188,7 @@ export function Experience({data}: ExperienceProps) {
                   }
                     className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
                   aria-expanded={isOpen}
+                  aria-controls={`${item.id}-details`}
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-3">
@@ -217,6 +219,10 @@ export function Experience({data}: ExperienceProps) {
                   </p>
                 </button>
 
+                {/* Always-mounted wrapper hosts the stable id that the button's
+                    aria-controls points at, so screen readers see the expandable
+                    relationship whether the row is open or collapsed. */}
+                <div id={`${item.id}-details`}>
                 <AnimatePresence initial={false}>
                   {isOpen ? (
                     <motion.div
@@ -311,6 +317,7 @@ export function Experience({data}: ExperienceProps) {
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
+                </div>
               </div>
             </ScrollReveal>
           )
