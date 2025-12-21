@@ -124,6 +124,6 @@ This IST timestamp rule is permanent for all future workflows, commits, and AI a
 
 Follow this format for version control:
 
-* **Base Format Version:** 3.10.6
-* **Portfolio Version: v3.10.6_2025-07-25_23:54:55 (IST)
+* **Base Format Version:** 3.11.0
+* **Portfolio Version: v3.11.0_2025-12-22_00:04:16 (IST)
 ---
