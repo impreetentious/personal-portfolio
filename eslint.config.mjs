@@ -20,6 +20,13 @@ export default defineConfig([
   {
     // The project configuration intentionally remains CommonJS because its
     // phase-aware build guard uses Next's CJS constants API.
-    ignores: ['next.config.js'],
+    ignores: [
+      'next.config.js',
+      'playwright.config.ts',
+      'e2e/**',
+      'tests/**',
+      'playwright-report/**',
+      'test-results/**',
+    ],
   },
 ])

@@ -2,6 +2,8 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
+**Portfolio Version: v3.12.1_2025-12-23_01:27:57 (IST)
+
 ## Tech Stack
 
 * Next.js 16 (App Router)
@@ -22,10 +24,14 @@ Interactive, terminal-inspired personal portfolio with Sanity-backed content, Fr
 NEXT_PUBLIC_ENABLE_STUDIO=true
 ```
 
+Requires Node **22.12+** (see `.nvmrc` and `package.json` `engines`).
+
 ```bash
 npm ci
 npm run dev
 ```
+
+Dev/preview listens on **port 3004**.
 
 ```bash
 npm run lint
