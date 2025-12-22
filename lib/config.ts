@@ -1,4 +1,5 @@
 import { identity } from './identity';
+import { shouldUseCareerFallbacks } from './careerFallbacks';
 
 // Canonical origin for the deployed portfolio. Override per-environment with
 // NEXT_PUBLIC_SITE_URL (e.g. a Vercel preview URL); the trailing slash is
@@ -23,9 +24,15 @@ export const siteConfig = {
   },
 };
 
-// The FALLBACK_* section content is a development aid only (placeholder career
-// data for layout work without a CMS connection). In production a section whose
-// Sanity fetch returned nothing renders nothing instead — an absent section is
-// strictly better than fabricated placeholder credentials under a real name.
-// Hero/Contact fallbacks are exempt: they carry real identity data.
-export const showDevFallbacks = process.env.NODE_ENV !== 'production';
+// P8 production gate. Career-section fallbacks (Experience/Skills/Metrics/
+// Achievements/Education/Writing) stay development-only until the owner vets
+// real copy in lib/careerFallbacks.ts and sets
+// NEXT_PUBLIC_USE_CAREER_FALLBACKS=true. Hero/Contact identity fallbacks are
+// always production-safe and are unaffected by this switch.
+export const useCareerFallbacks = shouldUseCareerFallbacks({
+  nodeEnv: process.env.NODE_ENV,
+  envFlag: process.env.NEXT_PUBLIC_USE_CAREER_FALLBACKS,
+});
+
+/** @deprecated Prefer useCareerFallbacks — kept as a thin alias for readability. */
+export const showDevFallbacks = useCareerFallbacks;

@@ -2,7 +2,7 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
-**Portfolio Version: v3.12.1_2025-12-23_01:27:57 (IST)
+**Portfolio Version: v3.12.2_2025-12-23_02:33:15 (IST)
 
 ## Tech Stack
 
@@ -45,6 +45,8 @@ npm run build
 `/studio` is **disabled by default**. It returns 404 unless `NEXT_PUBLIC_ENABLE_STUDIO=true`. Do not enable that flag on a public production origin; use Sanity’s hosted Studio and project ACLs for editing instead.
 
 Search indexing is controlled by `NEXT_PUBLIC_ALLOW_INDEXING` (default false in `.env.example`).
+
+Career-section fallbacks stay development-only until `NEXT_PUBLIC_USE_CAREER_FALLBACKS=true` (see `.env.example` and `lib/careerFallbacks.ts`).
 
 ## Architecture
 
