@@ -1,5 +1,9 @@
 import {createClient, type QueryParams} from '@sanity/client'
 import {cache} from 'react'
+import {
+  EmptyCmsResultError,
+  shouldRejectEmptyCmsResult,
+} from './careerFallbacks'
 import {resumeQuery} from './queries'
 
 type SanityEnv = {
@@ -66,17 +70,36 @@ export async function sanityFetch<T>(
   const client = getSanityClient()
 
   // Every query is guarded here so a single failing/timed-out fetch degrades to
-  // `null` (letting each section fall back to its FALLBACK_* data) instead of
+  // `null` (letting each section fall back via resolveSectionData) instead of
   // rejecting the caller's Promise.all and taking the whole page to the error
-  // boundary. The one exception is the production build (see catch below).
+  // boundary. Exceptions: production build failures (see catch) and empty-array
+  // results at production runtime (ISR empty-success protection below).
   // `next.revalidate` opts each response into Next's Data Cache so the route can
   // render statically and refresh on the ISR window rather than per request.
   try {
-    return await withTimeout(
+    const result = await withTimeout(
       client.fetch<T>(query, params, {next: {revalidate}}),
       FETCH_TIMEOUT_MS,
     )
+    // An hourly ISR revalidation that *succeeds* with [] would otherwise replace
+    // a good cached page with blank sections. Refuse empty arrays at runtime so
+    // Next keeps the previous generation; build-time empties remain allowed.
+    if (
+      shouldRejectEmptyCmsResult({
+        result,
+        nodeEnv: process.env.NODE_ENV,
+        nextPhase: process.env.NEXT_PHASE,
+      })
+    ) {
+      throw new EmptyCmsResultError(
+        '[sanityFetch] refusing empty CMS array at runtime — preserving prior ISR generation',
+      )
+    }
+    return result
   } catch (err) {
+    // Empty-array refusal must propagate so the revalidation fails closed.
+    if (err instanceof EmptyCmsResultError) throw err
+
     const message = err instanceof Error ? err.message : String(err)
     // During the production build a failed query must fail the build: degrading
     // to `null` here would let a configured-but-unreachable Sanity (DNS, auth,

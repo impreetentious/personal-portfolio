@@ -2,7 +2,7 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
-**Portfolio Version: v3.12.2_2025-12-23_02:33:15 (IST)
+**Portfolio Version: v3.12.3_2025-12-23_07:15:24 (IST)
 
 ## Tech Stack
 
@@ -36,6 +36,7 @@ Dev/preview listens on **port 3004**.
 ```bash
 npm run lint
 npm run build
+npm run test
 ```
 
 `npm run build` fails without `NEXT_PUBLIC_SANITY_PROJECT_ID` unless you set `ALLOW_BUILD_WITHOUT_SANITY=true` (used in CI smoke builds).
