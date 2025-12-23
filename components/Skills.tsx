@@ -3,83 +3,9 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { showDevFallbacks } from "@/lib/config";
+import { useCareerFallbacks } from "@/lib/config";
+import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
 import type { SkillItem, SkillsEntry } from "@/lib/queries";
-
-// ─── Fallback data ────────────────────────────────────────────────────────────
-
-const FALLBACK_SKILL_ENTRIES: SkillsEntry[] = [
-  {
-    category: 'Tools',
-    items: [
-      {
-        name: 'Next.js',
-        description:
-          'React framework for production — App Router, RSC, streaming SSR, and edge-ready deployments out of the box.',
-      },
-      {
-        name: 'Sanity.io',
-        description:
-          'Structured content platform with GROQ querying, typed schemas, and real-time collaborative editing.',
-      },
-      {
-        name: 'Tailwind CSS',
-        description:
-          'Utility-first CSS framework enabling rapid, consistent, and design-token-driven styling at scale.',
-      },
-      {
-        name: 'Framer Motion',
-        description:
-          'Production-ready animation library for React with gesture support, layout animations, and shared layouts.',
-      },
-      {
-        name: 'GitHub',
-        description:
-          'Version control and collaboration via pull requests, Actions CI/CD pipelines, and conventional branch workflows.',
-      },
-      {
-        name: 'VS Code',
-        description:
-          'Primary editor configured with TypeScript strict mode, ESLint, Prettier, and workspace-scoped settings.',
-      },
-    ],
-  },
-  {
-    category: 'Skills',
-    items: [
-      {
-        name: 'Frontend Architecture',
-        description:
-          'Designing scalable component hierarchies, predictable data-flow patterns, and maintainable file structure conventions.',
-      },
-      {
-        name: 'Responsive Design',
-        description:
-          'Building fluid layouts with mobile-first breakpoints, fluid typography via clamp(), and adaptive spacing scales.',
-      },
-      {
-        name: 'Component Systems',
-        description:
-          'Authoring reusable, accessible, and composable design-system primitives with clearly typed, minimal-surface APIs.',
-      },
-      {
-        name: 'Content Modeling',
-        description:
-          'Structuring Sanity schemas to mirror UI needs while keeping the editorial authoring experience intuitive and safe.',
-      },
-      {
-        name: 'Performance Thinking',
-        description:
-          'Applying Core Web Vitals analysis, route-level code splitting, and image optimisation strategies to hit green scores.',
-      },
-      {
-        name: 'UI Polish',
-        description:
-          'Crafting micro-interactions, precise transition timing curves, and visual details that lift perceived quality.',
-      },
-    ],
-  },
-]
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 
@@ -116,7 +42,11 @@ type SkillsProps = {
 }
 
 export function Skills({data}: SkillsProps) {
-  const skillEntries = data?.length ? data : showDevFallbacks ? FALLBACK_SKILL_ENTRIES : []
+  const skillEntries = resolveSectionData(
+    data,
+    [...careerFallbacks.skills],
+    useCareerFallbacks,
+  )
 
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,

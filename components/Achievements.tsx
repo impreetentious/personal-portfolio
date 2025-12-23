@@ -4,47 +4,9 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ChevronDown, Award } from "lucide-react";
 import { useRef, useState } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { showDevFallbacks } from "@/lib/config";
+import { useCareerFallbacks } from "@/lib/config";
+import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
 import type { AchievementItem } from "@/lib/queries";
-
-const FALLBACK_ACHIEVEMENTS: AchievementItem[] = [
-  {
-    id: "hackathon-2024",
-    event: "National Hackathon Championship",
-    organizer: "TechCrunch Disrupt",
-    date: "Nov 2024",
-    notes: "1st of 400+ teams",
-    description:
-      "Built a real-time collaborative AI code editor in 36 hours. The submission featured live pair-programming with GPT-4 integration, conflict-free merge resolution, and a sandboxed preview environment. Judges highlighted the product polish and live demo stability across 400+ competing teams.",
-  },
-  {
-    id: "aws-build-2024",
-    event: "Best Technical Implementation",
-    organizer: "AWS Build On",
-    date: "Aug 2024",
-    notes: "Top of 200+ submissions",
-    description:
-      "Architected a serverless event-driven pipeline on AWS Lambda, SQS, and DynamoDB that processed 1M+ telemetry events per day at sub-50ms p99 latency. Recognised for infrastructure-as-code discipline, cost efficiency, and zero-downtime blue-green deployment strategy.",
-  },
-  {
-    id: "github-os-2023",
-    event: "Open Source Excellence Award",
-    organizer: "GitHub Universe",
-    date: "Oct 2023",
-    notes: "Recognised — 15K+ stars",
-    description:
-      "A developer utility library for composing type-safe API clients with auto-generated TypeScript bindings. Adopted by teams at multiple YC-backed startups. Recognised for documentation quality, semantic versioning discipline, and active community maintenance.",
-  },
-  {
-    id: "google-sprint-2023",
-    event: "Finalist — Product Design Sprint",
-    organizer: "Google for Startups",
-    date: "Jun 2023",
-    notes: "Top 5 of 300 applicants",
-    description:
-      "Competed in a five-day design sprint focused on consumer fintech accessibility. Delivered a high-fidelity prototype with a novel onboarding flow that cut task completion time by 38% in usability testing. Selected as one of five finalists from over 300 global applicants.",
-  },
-];
 
 const tbodyVariants = {
   visible: {
@@ -76,9 +38,13 @@ export function Achievements({data}: AchievementsProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapperRef, { once: true, margin: "-60px" });
   const [activeId, setActiveId] = useState<string | null>(null);
-  const achievements = data?.length ? data : showDevFallbacks ? FALLBACK_ACHIEVEMENTS : []
+  const achievements = resolveSectionData(
+    data,
+    [...careerFallbacks.achievements],
+    useCareerFallbacks,
+  )
 
-  // Production with no CMS data: hide the section rather than show placeholders.
+  // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!achievements.length) return null
 
   function toggle(id: string) {

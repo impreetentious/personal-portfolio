@@ -10,47 +10,9 @@ import {
 import { useRef, type ReactNode } from "react";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { showDevFallbacks } from "@/lib/config";
+import { useCareerFallbacks } from "@/lib/config";
+import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
 import type { MetricItem } from "@/lib/queries";
-
-// ─── Data — exact mapping from spec ───────────────────────────────────────────
-const FALLBACK_METRICS: MetricItem[] = [
-  {
-    value: 500,
-    suffix: "K+",
-    label: "Lines of Code Written",
-    sub: "Across production systems",
-  },
-  {
-    value: 1,
-    suffix: "M+",
-    label: "Users Impacted",
-    sub: "Monthly active reach",
-  },
-  {
-    value: 40,
-    suffix: "+",
-    label: "Deployments Shipped",
-    sub: "Zero critical regressions",
-  },
-  {
-    value: 98.9,
-    suffix: "%",
-    label: "Uptime Maintained",
-    sub: "Across all services",
-  },
-  {
-    value: 12,
-    label: "Open Source Projects",
-    sub: "Public & actively maintained",
-  },
-  {
-    value: 5,
-    suffix: "+",
-    label: "Countries Reached",
-    sub: "Global user footprint",
-  },
-];
 
 // ─── Animation variants — unchanged from original ─────────────────────────────
 const cardVariants = {
@@ -135,9 +97,13 @@ function TiltCard({
 export function Metrics({data}: MetricsProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, margin: "-80px" });
-  const metrics = data?.length ? data : showDevFallbacks ? FALLBACK_METRICS : []
+  const metrics = resolveSectionData(
+    data,
+    [...careerFallbacks.metrics],
+    useCareerFallbacks,
+  )
 
-  // Production with no CMS data: hide the section rather than show placeholders.
+  // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!metrics.length) return null
 
   return (

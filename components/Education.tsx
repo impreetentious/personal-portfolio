@@ -3,27 +3,13 @@
 import { motion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { showDevFallbacks } from "@/lib/config";
+import { useCareerFallbacks } from "@/lib/config";
+import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
 import type { EducationItem } from "@/lib/queries";
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
 const SHOW_GPA = true; // Toggle this to false to hide GPAs globally
-
-const FALLBACK_EDUCATION_ITEMS: EducationItem[] = [
-  {
-    institution: 'Chandigarh University',
-    degree: 'Bachelor of Engineering in Computer Science',
-    years: '2019 - 2023',
-    gpa: 'CGPA 8.7 / 10',
-  },
-  {
-    institution: 'Indian School of Business',
-    degree: 'Post Graduate Programme in Management',
-    years: '2025 - 2026',
-    gpa: 'GPA 3.9 / 4.0', // Example placeholder
-  },
-]
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -32,9 +18,13 @@ type EducationProps = {
 }
 
 export function Education({data}: EducationProps) {
-  const educationItems = data?.length ? data : showDevFallbacks ? FALLBACK_EDUCATION_ITEMS : []
+  const educationItems = resolveSectionData(
+    data,
+    [...careerFallbacks.education],
+    useCareerFallbacks,
+  )
 
-  // Production with no CMS data: hide the section rather than show placeholders.
+  // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!educationItems.length) return null
 
   return (

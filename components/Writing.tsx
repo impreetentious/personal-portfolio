@@ -4,52 +4,22 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { showDevFallbacks } from "@/lib/config";
+import { useCareerFallbacks } from "@/lib/config";
+import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
 import type { WritingItem } from "@/lib/queries";
-
-const FALLBACK_WRITING_ITEMS: WritingItem[] = [
-  {
-    id: "1",
-    title: "Navigating the AI Inflection Point",
-    url: "https://hbr.org",
-    year: "2024",
-    description:
-      "How enterprise leaders can separate signal from noise and build AI strategy that outlasts the hype cycle.",
-  },
-  {
-    id: "2",
-    title: "Why Roadmaps Lie",
-    url: "https://productcoalition.com",
-    year: "2024",
-    description:
-      "A practitioner's framework for prioritisation that survives first contact with the market — and the CEO.",
-  },
-  {
-    id: "3",
-    title: "The Strategy-Tech Gap and How to Close It",
-    url: "https://www.fortuneindia.com",
-    year: "2023",
-    description:
-      "Why the best strategy work now requires technical fluency, and a practical path to building it without becoming an engineer.",
-  },
-  {
-    id: "4",
-    title: "India's SaaS Moment: Patterns from the First Wave",
-    url: "https://www.livemint.com",
-    year: "2022",
-    description:
-      "Structural observations on go-to-market, pricing, and customer success drawn from conversations with forty B2B founders.",
-  },
-];
 
 type WritingProps = {
   data?: WritingItem[]
 }
 
 export function Writing({data}: WritingProps) {
-  const writingItems = data?.length ? data : showDevFallbacks ? FALLBACK_WRITING_ITEMS : []
+  const writingItems = resolveSectionData(
+    data,
+    [...careerFallbacks.writing],
+    useCareerFallbacks,
+  )
 
-  // Production with no CMS data: hide the section rather than show placeholders.
+  // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!writingItems.length) return null
 
   return (

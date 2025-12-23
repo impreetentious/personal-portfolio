@@ -2,7 +2,7 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
-**Portfolio Version: v3.12.3_2025-12-23_07:15:24 (IST)
+**Portfolio Version: v3.12.4_2025-12-23_21:20:19 (IST)
 
 ## Tech Stack
 

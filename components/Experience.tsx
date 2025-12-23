@@ -5,50 +5,9 @@ import { ChevronDown, MapPin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { showDevFallbacks } from '@/lib/config'
+import { useCareerFallbacks } from '@/lib/config'
+import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
 import type { ExperienceItem, ExperienceRoleItem } from '@/lib/queries'
-
-const FALLBACK_EXPERIENCE_ITEMS: ExperienceItem[] = [
-  {
-    id: 'fallback-open-systems-lab',
-    company: 'Open Systems Lab',
-    role: 'Software Engineer',
-    location: 'Remote',
-    dates: '2024 - Present',
-    bulletPoints: [
-      'Built interactive frontend features for product dashboards and internal tooling.',
-      'Collaborated across design and engineering to translate rough ideas into polished user experiences.',
-      'Improved maintainability by organizing reusable components and shared UI patterns.',
-    ],
-    skillsUsed: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-  },
-  {
-    id: 'fallback-northstar-digital',
-    company: 'Northstar Digital',
-    role: 'Frontend Developer',
-    location: 'Chandigarh, India',
-    dates: '2022 - 2024',
-    bulletPoints: [
-      'Developed responsive interfaces with a strong focus on smooth interactions and accessibility.',
-      'Worked closely with stakeholders to convert business requirements into production-ready releases.',
-      'Maintained design consistency across landing pages, product surfaces, and content modules.',
-    ],
-    skillsUsed: ['React', 'JavaScript', 'CSS', 'REST APIs'],
-  },
-  {
-    id: 'fallback-freelance',
-    company: 'Freelance',
-    role: 'Web Developer',
-    location: 'Remote',
-    dates: '2020 - 2022',
-    bulletPoints: [
-      'Delivered portfolio sites and business websites with custom sections, animation, and CMS integrations.',
-      'Managed end-to-end implementation from layout planning to deployment handoff.',
-      'Created flexible content structures so clients could update text without technical support.',
-    ],
-    skillsUsed: ['Sanity.io', 'Node.js', 'Deployment', 'UI Architecture'],
-  },
-]
 
 type ExperienceProps = {
   data?: ExperienceItem[]
@@ -96,9 +55,13 @@ export function Experience({data}: ExperienceProps) {
     return () => mediaQuery.removeEventListener('change', updateIsMobile)
   }, [])
 
-  const visibleItems = data?.length ? data : showDevFallbacks ? FALLBACK_EXPERIENCE_ITEMS : []
+  const visibleItems = resolveSectionData(
+    data,
+    [...careerFallbacks.experience],
+    useCareerFallbacks,
+  )
 
-  // Production with no CMS data: hide the section rather than show placeholders.
+  // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!visibleItems.length) return null
 
   return (
