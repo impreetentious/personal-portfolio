@@ -2,7 +2,7 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
-**Portfolio Version: v3.12.5_2025-12-23_21:35:57 (IST)
+**Portfolio Version: v3.12.6_2025-12-23_22:55:38 (IST)
 
 ## Tech Stack
 
@@ -56,7 +56,9 @@ Career-section fallbacks stay development-only until `NEXT_PUBLIC_USE_CAREER_FAL
 personal-portfolio/
 ├── app/                  # routes, metadata, robots, sitemap, studio
 ├── components/           # UI sections + ui/ primitives
-├── lib/                  # config, identity, Sanity client, queries
+├── e2e/                  # Playwright interaction + axe suite
+├── lib/                  # config, identity, Sanity client, P8 fallbacks, queries
+├── tests/                # Node unit tests (P8 gate, launch-gate logic)
 ├── sanity/schemas/       # CMS schemas
 ├── tailwind.config.ts
 └── next.config.js
