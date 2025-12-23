@@ -1,5 +1,10 @@
 node_modules/
 .next/
+/out/
+/coverage/
+.vercel
+# Office temp/lock files (e.g. ~$Book.xlsx)
+~$*
 .env
 .env.*
 !.env.example
