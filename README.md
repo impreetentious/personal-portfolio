@@ -2,7 +2,7 @@
 
 Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
 
-**Portfolio Version: v3.12.4_2025-12-23_21:20:19 (IST)
+**Portfolio Version: v3.12.5_2025-12-23_21:35:57 (IST)
 
 ## Tech Stack
 
@@ -37,9 +37,10 @@ Dev/preview listens on **port 3004**.
 npm run lint
 npm run build
 npm run test
+npm run test:e2e
 ```
 
-`npm run build` fails without `NEXT_PUBLIC_SANITY_PROJECT_ID` unless you set `ALLOW_BUILD_WITHOUT_SANITY=true` (used in CI smoke builds).
+`npm run build` fails without `NEXT_PUBLIC_SANITY_PROJECT_ID` unless you set `ALLOW_BUILD_WITHOUT_SANITY=true` (used in CI smoke builds). Run `ALLOW_BUILD_WITHOUT_SANITY=true npm run build` before `npm run test:e2e` so Playwright can start the production server.
 
 ## Studio access
 

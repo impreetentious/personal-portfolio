@@ -127,7 +127,13 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   }, [isPaletteOpen, bootPhase, isStudio])
 
   // ── Derived flags ─────────────────────────────────────────────────────────
-  const bootBlocking = !isStudio && bootPhase !== 'done'
+  // Only the real boot overlays (`full` / `flash`) must inert the tree.
+  // `pending` is the pre-effect check: without JS that effect never runs, so
+  // treating pending as blocking would leave <main aria-hidden inert> forever
+  // (noscript only hides the visual cover). Brief pre-hydration tab access is
+  // an accepted trade for no-JS readability.
+  const bootBlocking =
+    !isStudio && (bootPhase === 'full' || bootPhase === 'flash')
 
   // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
   const mainInert = (isPaletteOpen || bootBlocking) ? ('' as unknown as true) : undefined
