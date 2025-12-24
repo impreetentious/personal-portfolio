@@ -7,7 +7,7 @@ interface SessionRestoredFlashProps {
 }
 
 const VISIBLE_MS = 550
-const FADE_MS    = 320
+const FADE_MS = 320
 
 export function SessionRestoredFlash({ onComplete }: SessionRestoredFlashProps) {
   const [isFading, setIsFading] = useState(false)
@@ -84,16 +84,19 @@ export function SessionRestoredFlash({ onComplete }: SessionRestoredFlashProps) 
 
       <div
         style={{
-          position       : 'fixed',
-          inset          : 0,
-          zIndex         : 200,
-          background     : '#050505',
-          display        : 'flex',
-          alignItems     : 'center',
-          justifyContent : 'center',
-          padding        : '0 24px',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 200,
+          background: '#050505',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 24px',
           ...(isFading
-            ? { animation: `session-flash-fade-out ${FADE_MS}ms ease-out forwards`, pointerEvents: 'none' }
+            ? {
+                animation: `session-flash-fade-out ${FADE_MS}ms ease-out forwards`,
+                pointerEvents: 'none',
+              }
             : {}),
         }}
         onAnimationEnd={() => {
@@ -109,23 +112,23 @@ export function SessionRestoredFlash({ onComplete }: SessionRestoredFlashProps) 
         <div
           className="font-mono"
           style={{
-            display       : 'flex',
-            alignItems    : 'center',
-            gap           : 10,
-            animation     : 'session-flash-fade-in 240ms ease-out both',
-            fontSize      : 12.5,
-            letterSpacing : '0.04em',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            animation: 'session-flash-fade-in 240ms ease-out both',
+            fontSize: 12.5,
+            letterSpacing: '0.04em',
           }}
         >
           <span
             aria-hidden="true"
             style={{
-              display        : 'inline-block',
-              width          : 6,
-              height         : 6,
-              borderRadius   : '50%',
+              display: 'inline-block',
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
               backgroundColor: '#38BDF8',
-              boxShadow      : '0 0 10px rgba(56,189,248,0.55)',
+              boxShadow: '0 0 10px rgba(56,189,248,0.55)',
             }}
           />
           <span style={{ color: 'rgba(255,255,255,0.55)' }}>session</span>

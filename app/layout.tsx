@@ -12,9 +12,7 @@ export const revalidate = 3600
 // Anchors all relative metadata URLs (OG image, canonical) to the real origin.
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  robots: siteConfig.isIndexable
-    ? { index: true, follow: true }
-    : { index: false, follow: false },
+  robots: siteConfig.isIndexable ? { index: true, follow: true } : { index: false, follow: false },
 }
 
 export const viewport: Viewport = {
@@ -22,27 +20,27 @@ export const viewport: Viewport = {
 }
 
 const inter = Inter({
-  subsets : ['latin'],
-  display : 'swap',
+  subsets: ['latin'],
+  display: 'swap',
   variable: '--font-inter',
 })
 
 const spaceGrotesk = Space_Grotesk({
-  subsets : ['latin'],
-  weight  : ['500', '600', '700'],
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
   variable: '--font-display',
-  display : 'swap',
+  display: 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets : ['latin'],
+  subsets: ['latin'],
   // 500 & 600 are required because font-medium / font-semibold are applied to
   // `font-mono` copy in ~5 places (SectionLabel, Skills category, Contact tab,
   // WindowsTerminal skills header, Navigation wordmark); loading only 400/700
   // makes the browser synthesise a faux-bold, which looks smudged.
-  weight  : ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-mono',
-  display : 'swap',
+  display: 'swap',
 })
 
 export default async function RootLayout({
@@ -50,7 +48,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
   const resumeUrl = await getResumeUrl()
 
   return (
@@ -59,9 +56,7 @@ export default async function RootLayout({
         className={`${inter.className} ${inter.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable} bg-background text-foreground antialiased`}
       >
         <div className="min-h-screen">
-          <LayoutShell resumeUrl={resumeUrl}>
-            {children}
-          </LayoutShell>
+          <LayoutShell resumeUrl={resumeUrl}>{children}</LayoutShell>
         </div>
       </body>
     </html>

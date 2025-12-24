@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Projects — one document per project.
@@ -41,7 +41,7 @@ export const projectsSchema = defineType({
       title: 'Tech Stack',
       type: 'array',
       description: 'Technologies, frameworks, and tools used. Rendered as pill tags on the card.',
-      of: [{type: 'string'}],
+      of: [{ type: 'string' }],
       options: {
         layout: 'tags',
       },
@@ -84,7 +84,8 @@ export const projectsSchema = defineType({
       name: 'isHidden',
       title: 'Hide this entry',
       type: 'boolean',
-      description: 'Toggle on to suppress this project from the portfolio without deleting the record.',
+      description:
+        'Toggle on to suppress this project from the portfolio without deleting the record.',
       initialValue: false,
     }),
   ],
@@ -93,14 +94,14 @@ export const projectsSchema = defineType({
     {
       title: 'Display Order',
       name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
+      by: [{ field: 'order', direction: 'asc' }],
     },
     {
       title: 'Featured First',
       name: 'featuredFirst',
       by: [
-        {field: 'featured', direction: 'desc'},
-        {field: 'order', direction: 'asc'},
+        { field: 'featured', direction: 'desc' },
+        { field: 'order', direction: 'asc' },
       ],
     },
   ],
@@ -113,10 +114,8 @@ export const projectsSchema = defineType({
       hidden: 'isHidden',
       order: 'order',
     },
-    prepare({title, subtitle, featured, hidden, order}) {
-      const flags = [featured && '★ featured', hidden && 'hidden']
-        .filter(Boolean)
-        .join('  ·  ')
+    prepare({ title, subtitle, featured, hidden, order }) {
+      const flags = [featured && '★ featured', hidden && 'hidden'].filter(Boolean).join('  ·  ')
 
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,

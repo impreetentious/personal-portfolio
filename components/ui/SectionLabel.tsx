@@ -1,5 +1,5 @@
-import React from "react";
-import { DecryptText } from "./DecryptText";
+import React from 'react'
+import { DecryptText } from './DecryptText'
 
 export function SectionLabel({
   label,
@@ -7,10 +7,10 @@ export function SectionLabel({
   titleClassName,
   children,
 }: {
-  label: string;
-  devLabel?: string;
-  titleClassName?: string;
-  children?: React.ReactNode;
+  label: string
+  devLabel?: string
+  titleClassName?: string
+  children?: React.ReactNode
 }) {
   return (
     <div className="text-left">
@@ -25,7 +25,7 @@ export function SectionLabel({
             left the page with no level-2 headings for AT/SEO). */}
         <h2
           className={`font-display font-semibold text-[33px] tracking-tight text-white/[0.92] antialiased sm:text-4xl${
-            titleClassName ? ` ${titleClassName}` : ""
+            titleClassName ? ` ${titleClassName}` : ''
           }`}
         >
           <DecryptText text={label} />
@@ -34,5 +34,5 @@ export function SectionLabel({
         {children}
       </div>
     </div>
-  );
+  )
 }

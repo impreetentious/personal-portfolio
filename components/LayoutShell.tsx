@@ -1,21 +1,28 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { animate, motion, MotionConfig, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
-import type { ReactNode }  from 'react'
-import { Analytics }              from '@vercel/analytics/next'
-import { SpeedInsights }          from '@vercel/speed-insights/next'
-import { Navigation }             from '@/components/Navigation'
-import { CommandPalette }         from '@/components/CommandPalette'
-import { BootSequence }           from '@/components/BootSequence'
-import { SessionRestoredFlash }   from '@/components/SessionRestoredFlash'
-import { BootProvider }           from '@/components/BootContext'
-import { PaletteProvider }        from '@/components/PaletteContext'
-import { usePathname }            from 'next/navigation'
+import {
+  animate,
+  motion,
+  MotionConfig,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from 'framer-motion'
+import type { ReactNode } from 'react'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Navigation } from '@/components/Navigation'
+import { CommandPalette } from '@/components/CommandPalette'
+import { BootSequence } from '@/components/BootSequence'
+import { SessionRestoredFlash } from '@/components/SessionRestoredFlash'
+import { BootProvider } from '@/components/BootContext'
+import { PaletteProvider } from '@/components/PaletteContext'
+import { usePathname } from 'next/navigation'
 
 interface LayoutShellProps {
-  children   : ReactNode
-  resumeUrl? : string
+  children: ReactNode
+  resumeUrl?: string
 }
 
 // 'full'  → first visit in this browser tab session → play full boot sequence
@@ -26,8 +33,8 @@ const SESSION_VISITED_KEY = 'sps-session-visited'
 
 export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)
-  const [paletteQuery,  setPaletteQuery]  = useState('')
-  const [bootPhase,     setBootPhase]     = useState<BootPhase>('pending')
+  const [paletteQuery, setPaletteQuery] = useState('')
+  const [bootPhase, setBootPhase] = useState<BootPhase>('pending')
 
   const pathname = usePathname()
   const isStudio = pathname?.startsWith('/studio')
@@ -59,7 +66,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   }, [])
 
   // ── Palette handlers ──────────────────────────────────────────────────────
-  const openPalette  = useCallback((initialQuery = '') => {
+  const openPalette = useCallback((initialQuery = '') => {
     // Guard: callers wired as onClick={openPalette} pass a click event, not a
     // string — coerce anything non-string back to the blank idle prompt
     setPaletteQuery(typeof initialQuery === 'string' ? initialQuery : '')
@@ -73,8 +80,8 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
   useEffect(() => {
     // Disable command palette shortcuts while in Studio
-    if (isStudio) return 
-    
+    if (isStudio) return
+
     const handler = (e: KeyboardEvent) => {
       // Ctrl+K on any OS, plus ⌘K on Mac. Visual hints in the UI still show
       // "Ctrl+K" by owner decision — the Windows/terminal theme is deliberate;
@@ -106,8 +113,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // is restored instantly on unlock so smooth-scroll CSS can't animate it.
   useEffect(() => {
     if (isStudio) return
-    const shouldLock =
-      isPaletteOpen || bootPhase !== 'done'
+    const shouldLock = isPaletteOpen || bootPhase !== 'done'
     if (!shouldLock) return
     const scrollY = window.scrollY
     const { style } = document.body
@@ -132,11 +138,10 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // treating pending as blocking would leave <main aria-hidden inert> forever
   // (noscript only hides the visual cover). Brief pre-hydration tab access is
   // an accepted trade for no-JS readability.
-  const bootBlocking =
-    !isStudio && (bootPhase === 'full' || bootPhase === 'flash')
+  const bootBlocking = !isStudio && (bootPhase === 'full' || bootPhase === 'flash')
 
   // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
-  const mainInert = (isPaletteOpen || bootBlocking) ? ('' as unknown as true) : undefined
+  const mainInert = isPaletteOpen || bootBlocking ? ('' as unknown as true) : undefined
 
   // Palette-open push-back: blur + scale <main> down. Scale rides framer's
   // declarative `animate` prop (scale:1 resolves to `transform: none` at rest,
@@ -156,14 +161,20 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   useEffect(() => {
     if (wantsBlur) {
       hasOpenedRef.current = true
-      if (prefersReduced) { blurAmount.set(4); return }
+      if (prefersReduced) {
+        blurAmount.set(4)
+        return
+      }
       const controls = animate(blurAmount, 4, { duration: 0.3, ease: 'easeOut' })
       return () => controls.stop()
     }
     // Closing. Skip on the very first mount (nothing was ever blurred) so the
     // page doesn't flash a phantom un-blur on first paint.
     if (!hasOpenedRef.current) return
-    if (prefersReduced) { blurAmount.set(0); return }
+    if (prefersReduced) {
+      blurAmount.set(0)
+      return
+    }
     const controls = animate(blurAmount, 0, { duration: 0.3, ease: 'easeOut' })
     return () => controls.stop()
   }, [wantsBlur, prefersReduced, blurAmount])
@@ -197,10 +208,10 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
           aria-hidden="true"
           data-boot-cover=""
           style={{
-            position     : 'fixed',
-            inset        : 0,
-            zIndex       : 200,
-            background   : '#050505',
+            position: 'fixed',
+            inset: 0,
+            zIndex: 200,
+            background: '#050505',
             pointerEvents: 'none',
           }}
         />
@@ -208,9 +219,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
       {/* Full animated boot sequence — first tab-session load only. Visitors
           can skip via the button, Esc, or Space (see BootSequence). */}
-      {bootPhase === 'full' && !isStudio && (
-        <BootSequence onComplete={handleBootComplete} />
-      )}
+      {bootPhase === 'full' && !isStudio && <BootSequence onComplete={handleBootComplete} />}
 
       {/* Session-restored micro-flash — same-tab repeat load. Very brief, not
           a blank skip; conveys "we picked up where you were" and auto-fades. */}
@@ -230,32 +239,30 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       )}
 
       <motion.main
-        aria-hidden={(isPaletteOpen || bootBlocking) || undefined}
+        aria-hidden={isPaletteOpen || bootBlocking || undefined}
         inert={mainInert}
         initial={{ scale: 1 }}
         animate={{ scale: wantsBlur ? 0.98 : 1 }}
         transition={{ type: 'tween', ease: 'easeOut', duration: 0.3 }}
         className="min-h-screen pb-3 md:pb-4"
         style={{
-          filter          : mainFilter,
-          transformOrigin : '50% 30%',
-          pointerEvents   : isPaletteOpen ? 'none' : 'auto',
+          filter: mainFilter,
+          transformOrigin: '50% 30%',
+          pointerEvents: isPaletteOpen ? 'none' : 'auto',
         }}
       >
         <PaletteProvider value={paletteContextValue}>
-          <BootProvider value={bootPhase === 'done' || !!isStudio}>
-            {children}
-          </BootProvider>
+          <BootProvider value={bootPhase === 'done' || !!isStudio}>{children}</BootProvider>
         </PaletteProvider>
       </motion.main>
 
       {/* Exclude Command Palette from Studio */}
       {!isStudio && (
         <CommandPalette
-          isOpen       = {isPaletteOpen}
-          onClose      = {closePalette}
-          resumeUrl    = {resumeUrl}
-          initialQuery = {paletteQuery}
+          isOpen={isPaletteOpen}
+          onClose={closePalette}
+          resumeUrl={resumeUrl}
+          initialQuery={paletteQuery}
         />
       )}
 

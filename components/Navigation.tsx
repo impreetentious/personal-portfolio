@@ -16,21 +16,22 @@ import {
 import { siteConfig } from '@/lib/config'
 import { Magnetic } from '@/components/ui/Magnetic'
 
-
-const NAV_SECTIONS = [ 
-  { id: 'experience',   label: 'Experience', icon: Briefcase     },
-  { id: 'skills',       label: 'Skills',     icon: Sparkles      },
-  { id: 'metrics',      label: 'Metrics',    icon: BarChart      },
-  { id: 'achievements', label: 'Awards',     icon: Trophy        },
-  { id: 'education',    label: 'Education',  icon: GraduationCap },
-  ...(siteConfig.features.showWriting
-    ? [{ id: 'writing', label: 'Writing', icon: BookOpen }]
-    : []),
-  { id: 'contact',      label: 'Contact',    icon: Mail          },
+const NAV_SECTIONS = [
+  { id: 'experience', label: 'Experience', icon: Briefcase },
+  { id: 'skills', label: 'Skills', icon: Sparkles },
+  { id: 'metrics', label: 'Metrics', icon: BarChart },
+  { id: 'achievements', label: 'Awards', icon: Trophy },
+  { id: 'education', label: 'Education', icon: GraduationCap },
+  ...(siteConfig.features.showWriting ? [{ id: 'writing', label: 'Writing', icon: BookOpen }] : []),
+  { id: 'contact', label: 'Contact', icon: Mail },
 ]
 
-const navigationItems = NAV_SECTIONS.map(s => ({ label: s.label, href: `#${s.id}`, icon: s.icon })) 
-const OBSERVED_SECTIONS = ['home', ...NAV_SECTIONS.map(s => s.id)]
+const navigationItems = NAV_SECTIONS.map((s) => ({
+  label: s.label,
+  href: `#${s.id}`,
+  icon: s.icon,
+}))
+const OBSERVED_SECTIONS = ['home', ...NAV_SECTIONS.map((s) => s.id)]
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -40,7 +41,11 @@ interface NavigationProps {
   isBootBlocking?: boolean
 }
 
-export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlocking = false }: NavigationProps) {
+export function Navigation({
+  onOpenPalette,
+  isPaletteOpen = false,
+  isBootBlocking = false,
+}: NavigationProps) {
   const { scrollY, scrollYProgress } = useScroll()
   const [heroExit, setHeroExit] = useState(720)
   const heroExitRef = useRef(heroExit)
@@ -51,7 +56,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
   const directionRef = useRef<'up' | 'down' | null>(null)
   // Mirror the last value handed to each setter so the scroll handler only calls
   // setState when the value actually flips, not on every frame.
-  const hasPassedHeroRef  = useRef(false)
+  const hasPassedHeroRef = useRef(false)
   const mobileNavHiddenRef = useRef(false)
   // Gate hash-sync so a deep-link (including one pointing at a hidden section)
   // is preserved until the user actually scrolls — see the effect below.
@@ -75,12 +80,14 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
   }, [])
 
   // Sync heroExitRef so the motion value event handler never captures stale state
-  useEffect(() => { heroExitRef.current = heroExit }, [heroExit])
+  useEffect(() => {
+    heroExitRef.current = heroExit
+  }, [heroExit])
 
   // ── Mobile Hide-on-Scroll Logic (gated to nav-visible zone) ──
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const direction = latest > lastScrollY.current ? 'down' : 'up'
-    const delta     = Math.abs(latest - lastScrollY.current)
+    const delta = Math.abs(latest - lastScrollY.current)
     const threshold = heroExitRef.current
 
     const passedHero = latest >= threshold - 24
@@ -118,7 +125,7 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
       },
       { rootMargin: '-20% 0px -60% 0px' },
     )
-    
+
     OBSERVED_SECTIONS.forEach((id) => {
       const el = document.getElementById(id)
       if (el) observer.observe(el)
@@ -132,7 +139,9 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
   // the browser never fires a scroll. Waiting for the first real scroll before
   // rewriting the URL keeps that hash intact until the user chooses to leave.
   useEffect(() => {
-    const markScrolled = () => { hasScrolledRef.current = true }
+    const markScrolled = () => {
+      hasScrolledRef.current = true
+    }
     window.addEventListener('scroll', markScrolled, { passive: true, once: true })
     return () => window.removeEventListener('scroll', markScrolled)
   }, [])
@@ -150,8 +159,10 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
   }, [activeSection])
 
   // Mobile nav retains continuous scroll transform for fluid entry
-  const mobileNavOpacity    = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
-  const mobileNavVisibility = useTransform(scrollY, (y) => (y >= heroExit - 40 ? 'visible' : 'hidden'))
+  const mobileNavOpacity = useTransform(scrollY, [heroExit - 40, heroExit + 120], [0, 1])
+  const mobileNavVisibility = useTransform(scrollY, (y) =>
+    y >= heroExit - 40 ? 'visible' : 'hidden',
+  )
 
   const isOnHome = !hasPassedHero
 
@@ -166,13 +177,12 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
       // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
       inert={isSuppressed ? ('' as unknown as true) : undefined}
     >
-
       {/* ── Scroll progress bar ── */}
       <motion.div
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left pointer-events-none"
         style={{
-          scaleX    : scrollYProgress,
+          scaleX: scrollYProgress,
           background: 'linear-gradient(to right, #38BDF8, #f97316)',
         }}
       />
@@ -183,7 +193,11 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
           just transparent — same pattern as the side rail below. */}
       <motion.div
         initial={{ y: -20, opacity: 0, visibility: 'hidden' }}
-        animate={!isOnHome ? { y: 0, opacity: 1, visibility: 'visible' } : { y: -20, opacity: 0, visibility: 'hidden' }}
+        animate={
+          !isOnHome
+            ? { y: 0, opacity: 1, visibility: 'visible' }
+            : { y: -20, opacity: 0, visibility: 'hidden' }
+        }
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed top-7 left-9 z-50 hidden md:flex items-center gap-3"
       >
@@ -196,7 +210,8 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
             cd
           </span>
           <span className="text-foreground transition-colors duration-200 ease-out group-hover:text-foreground/75">
-            {' '}~
+            {' '}
+            ~
           </span>
         </a>
       </motion.div>
@@ -204,24 +219,31 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
       {/* ── Desktop Command Trigger (Bottom Left) ── */}
       <motion.div
         initial={{ y: 20, opacity: 0, visibility: 'hidden' }}
-        animate={!isOnHome ? { y: 0, opacity: 1, visibility: 'visible' } : { y: 20, opacity: 0, visibility: 'hidden' }}
+        animate={
+          !isOnHome
+            ? { y: 0, opacity: 1, visibility: 'visible' }
+            : { y: 20, opacity: 0, visibility: 'hidden' }
+        }
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="fixed bottom-7 left-9 z-50 hidden md:flex"
       >
         <Magnetic>
-        <button
-          onClick={() => onOpenPalette?.()}
-          aria-label="Open command palette (Ctrl+K)"
-          className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10 active:scale-95 active:bg-accent/15"
-        >
-          <Terminal className="h-4 w-4 text-foreground/50 transition-colors group-hover:text-accent" strokeWidth={2} />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 transition-colors group-hover:text-accent">
-            Cmd
-          </span>
-          <span className="ml-1 rounded-sm border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] text-foreground/40 transition-colors group-hover:border-accent/20 group-hover:text-accent/80">
-            Ctrl+K
-          </span>
-        </button>
+          <button
+            onClick={() => onOpenPalette?.()}
+            aria-label="Open command palette (Ctrl+K)"
+            className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10 active:scale-95 active:bg-accent/15"
+          >
+            <Terminal
+              className="h-4 w-4 text-foreground/50 transition-colors group-hover:text-accent"
+              strokeWidth={2}
+            />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 transition-colors group-hover:text-accent">
+              Cmd
+            </span>
+            <span className="ml-1 rounded-sm border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] text-foreground/40 transition-colors group-hover:border-accent/20 group-hover:text-accent/80">
+              Ctrl+K
+            </span>
+          </button>
         </Magnetic>
       </motion.div>
 
@@ -267,7 +289,11 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
       {/* ── Desktop side rail ── */}
       <motion.nav
         initial={{ opacity: 0, x: -32, visibility: 'hidden' }}
-        animate={!isOnHome ? { opacity: 1, x: 0, visibility: 'visible' } : { opacity: 0, x: -32, visibility: 'hidden' }}
+        animate={
+          !isOnHome
+            ? { opacity: 1, x: 0, visibility: 'visible' }
+            : { opacity: 0, x: -32, visibility: 'hidden' }
+        }
         transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
         className="pointer-events-none fixed left-0 top-0 h-full w-32 z-40 hidden md:flex md:flex-col md:items-center bg-transparent"
       >
@@ -313,7 +339,6 @@ export function Navigation({ onOpenPalette, isPaletteOpen = false, isBootBlockin
           </div>
         </div>
       </motion.nav>
-
     </div>
   )
 }

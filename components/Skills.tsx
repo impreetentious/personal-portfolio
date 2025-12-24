@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { SectionLabel } from "@/components/ui/SectionLabel";
-import { useCareerFallbacks } from "@/lib/config";
-import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
-import type { SkillItem, SkillsEntry } from "@/lib/queries";
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { SectionLabel } from '@/components/ui/SectionLabel'
+import { useCareerFallbacks } from '@/lib/config'
+import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import type { SkillItem, SkillsEntry } from '@/lib/queries'
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 
 const columnVariants = {
-  hidden: (direction: "left" | "right") => ({
+  hidden: (direction: 'left' | 'right') => ({
     opacity: 0,
-    x: direction === "left" ? -40 : 40,
+    x: direction === 'left' ? -40 : 40,
   }),
   visible: {
     opacity: 1,
     x: 0,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: 'easeOut',
       staggerChildren: 0.1, // Time between each pill appearing
-      delayChildren: 0.2,   // Wait slightly for the column to start moving before staggering pills
+      delayChildren: 0.2, // Wait slightly for the column to start moving before staggering pills
     },
   },
 }
@@ -31,7 +31,7 @@ const pillVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: 'easeOut' },
   },
 }
 
@@ -41,12 +41,8 @@ type SkillsProps = {
   data?: SkillsEntry[]
 }
 
-export function Skills({data}: SkillsProps) {
-  const skillEntries = resolveSectionData(
-    data,
-    [...careerFallbacks.skills],
-    useCareerFallbacks,
-  )
+export function Skills({ data }: SkillsProps) {
+  const skillEntries = resolveSectionData(data, [...careerFallbacks.skills], useCareerFallbacks)
 
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,
@@ -94,16 +90,13 @@ export function Skills({data}: SkillsProps) {
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       {/* ── Section header ── */}
-      <SectionLabel
-        label="Skills"
-        devLabel="import { skills } from './stack'"
-      />
+      <SectionLabel label="Skills" devLabel="import { skills } from './stack'" />
 
       {/* ── Grid ── */}
       <div className="mt-6 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
         {columns.map((entry, index) => {
           // If desktop, the second column comes from the right. If mobile, everything comes from the left.
-          const direction = index === 0 ? "left" : isDesktop ? "right" : "left";
+          const direction = index === 0 ? 'left' : isDesktop ? 'right' : 'left'
 
           return (
             // Individual column trigger ensures correct scroll-timing on mobile
@@ -113,7 +106,7 @@ export function Skills({data}: SkillsProps) {
               variants={columnVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
+              viewport={{ once: true, margin: '-60px' }}
               className="min-w-0 border-l border-accent/20 pl-5"
             >
               {/* Animated Category Title — real <h3> so category labels appear
@@ -135,12 +128,7 @@ export function Skills({data}: SkillsProps) {
                     : undefined
                   return (
                     // ── Tooltip wrapper & Animated Pill ──
-                    <motion.div
-                      key={item.name}
-                      variants={pillVariants}
-                      className="group relative"
-                    >
-
+                    <motion.div key={item.name} variants={pillVariants} className="group relative">
                       {/* Tooltip card — only renders when description is present.
                           Reveals on hover (mouse) or when focus lands inside the
                           group (keyboard Tab or touch tap-focus). */}

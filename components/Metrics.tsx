@@ -1,33 +1,27 @@
-"use client";
+'use client'
 
-import {
-  motion,
-  useInView,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
-import { useRef, type ReactNode } from "react";
-import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { SectionLabel } from "@/components/ui/SectionLabel";
-import { useCareerFallbacks } from "@/lib/config";
-import { careerFallbacks, resolveSectionData } from "@/lib/fallbackContent";
-import type { MetricItem } from "@/lib/queries";
+import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
+import { useRef, type ReactNode } from 'react'
+import { AnimatedCounter } from '@/components/AnimatedCounter'
+import { SectionLabel } from '@/components/ui/SectionLabel'
+import { useCareerFallbacks } from '@/lib/config'
+import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import type { MetricItem } from '@/lib/queries'
 
 // ─── Animation variants — unchanged from original ─────────────────────────────
 const cardVariants = {
-  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 28, filter: 'blur(6px)' },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
+    filter: 'blur(0px)',
     transition: {
       duration: 0.55,
       delay: i * 0.09,
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   }),
-};
+}
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 function getMetricDuration(value: number) {
@@ -83,7 +77,7 @@ function TiltCard({
       custom={index}
       variants={cardVariants}
       initial="hidden"
-      animate={inView ? "visible" : "hidden"}
+      animate={inView ? 'visible' : 'hidden'}
       onMouseMove={handleMouseMove}
       onMouseLeave={resetTilt}
       style={{ rotateX: springRotateX, rotateY: springRotateY }}
@@ -94,14 +88,10 @@ function TiltCard({
   )
 }
 
-export function Metrics({data}: MetricsProps) {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(gridRef, { once: true, margin: "-80px" });
-  const metrics = resolveSectionData(
-    data,
-    [...careerFallbacks.metrics],
-    useCareerFallbacks,
-  )
+export function Metrics({ data }: MetricsProps) {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(gridRef, { once: true, margin: '-80px' })
+  const metrics = resolveSectionData(data, [...careerFallbacks.metrics], useCareerFallbacks)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!metrics.length) return null
@@ -113,13 +103,9 @@ export function Metrics({data}: MetricsProps) {
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
       <div className="max-w-6xl mx-auto">
-
         {/* ── Header ── */}
         <div className="mb-6">
-          <SectionLabel
-            label="Metrics"
-            devLabel="const indicators = outcomes.filter(significant)"
-          >
+          <SectionLabel label="Metrics" devLabel="const indicators = outcomes.filter(significant)">
             <p className="text-xs font-mono text-muted-foreground hidden md:block whitespace-nowrap">
               {metrics.length}&nbsp;{metrics.length === 1 ? 'record' : 'records'} returned
             </p>
@@ -147,7 +133,8 @@ export function Metrics({data}: MetricsProps) {
                 aria-hidden="true"
                 className="absolute inset-x-0 top-0 h-px opacity-0 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none z-10"
                 style={{
-                  background: 'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #38BDF8 70%, transparent 100%)',
+                  background:
+                    'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #38BDF8 70%, transparent 100%)',
                 }}
               />
               {/* Scan beam — slides down on hover */}
@@ -158,7 +145,8 @@ export function Metrics({data}: MetricsProps) {
                 <div
                   className="scan-beam-inner absolute inset-x-0 -top-20 h-20"
                   style={{
-                    background: 'linear-gradient(180deg, transparent 0%, rgba(56,189,248,0.05) 50%, transparent 100%)',
+                    background:
+                      'linear-gradient(180deg, transparent 0%, rgba(56,189,248,0.05) 50%, transparent 100%)',
                   }}
                 />
               </div>
@@ -168,7 +156,7 @@ export function Metrics({data}: MetricsProps) {
                 aria-hidden="true"
                 className="absolute top-5 right-5 font-mono text-[10px] text-accent/20 select-none group-hover:text-accent/40 transition-colors duration-300"
               >
-                {String(i + 1).padStart(2, "0")}
+                {String(i + 1).padStart(2, '0')}
               </span>
 
               {/* ── Animated metric value ── */}
@@ -186,9 +174,7 @@ export function Metrics({data}: MetricsProps) {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/75">
                   {metric.label}
                 </p>
-                <p className="font-mono text-[11px] text-muted-foreground">
-                  {metric.sub ?? ""}
-                </p>
+                <p className="font-mono text-[11px] text-muted-foreground">{metric.sub ?? ''}</p>
               </div>
 
               {/* Bottom rule — animates on hover */}
@@ -196,8 +182,7 @@ export function Metrics({data}: MetricsProps) {
             </TiltCard>
           ))}
         </div>
-
       </div>
     </section>
-  );
+  )
 }

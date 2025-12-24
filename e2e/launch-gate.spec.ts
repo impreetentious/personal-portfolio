@@ -1,10 +1,10 @@
-import {expect, test} from '@playwright/test'
-import {dismissBoot} from './helpers'
+import { expect, test } from '@playwright/test'
+import { dismissBoot } from './helpers'
 
 const CANONICAL_DEFAULT = 'https://portfolio.sidakpreetsingh.com'
 
 test.describe('Launch-gate consumers', () => {
-  test('security headers are present on HTML responses', async ({request}) => {
+  test('security headers are present on HTML responses', async ({ request }) => {
     const res = await request.get('/')
     expect(res.ok()).toBeTruthy()
     const headers = res.headers()
@@ -15,9 +15,7 @@ test.describe('Launch-gate consumers', () => {
     expect(headers['strict-transport-security']).toContain('max-age=')
   })
 
-  test('robots.txt reflects the indexing flag (default: disallow all)', async ({
-    request,
-  }) => {
+  test('robots.txt reflects the indexing flag (default: disallow all)', async ({ request }) => {
     const res = await request.get('/robots.txt')
     expect(res.ok()).toBeTruthy()
     const body = await res.text()
@@ -31,9 +29,7 @@ test.describe('Launch-gate consumers', () => {
     }
   })
 
-  test('sitemap.xml is empty while indexing is off, populated when on', async ({
-    request,
-  }) => {
+  test('sitemap.xml is empty while indexing is off, populated when on', async ({ request }) => {
     const res = await request.get('/sitemap.xml')
     expect(res.ok()).toBeTruthy()
     const body = await res.text()
@@ -48,13 +44,11 @@ test.describe('Launch-gate consumers', () => {
     }
   })
 
-  test('canonical and OG metadata use the configured site URL', async ({page}) => {
+  test('canonical and OG metadata use the configured site URL', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
-    const expectedBase = (
-      process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_DEFAULT
-    ).replace(/\/+$/, '')
+    const expectedBase = (process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_DEFAULT).replace(/\/+$/, '')
 
     const canonical = page.locator('link[rel="canonical"]')
     await expect(canonical).toHaveAttribute('href', new RegExp(expectedBase))
@@ -68,17 +62,14 @@ test.describe('Launch-gate consumers', () => {
     await expect(ogTitle).toHaveAttribute('content', /Sidakpreet Singh/i)
   })
 
-  test('Open Graph image route responds', async ({request}) => {
+  test('Open Graph image route responds', async ({ request }) => {
     const res = await request.get('/opengraph-image')
     expect(res.ok()).toBeTruthy()
     const contentType = res.headers()['content-type'] ?? ''
     expect(contentType).toMatch(/image\//)
   })
 
-  test('Studio is either 404 (disabled) or noindex when enabled', async ({
-    page,
-    request,
-  }) => {
+  test('Studio is either 404 (disabled) or noindex when enabled', async ({ page, request }) => {
     // NEXT_PUBLIC_ENABLE_STUDIO is baked at build time; local .env.local may
     // enable it for authoring. Both outcomes are valid — assert the contract
     // for whichever the running build has.

@@ -30,7 +30,7 @@ function normalizeRoles(item: ExperienceItem): ExperienceRoleItem[] {
   return []
 }
 
-export function Experience({data}: ExperienceProps) {
+export function Experience({ data }: ExperienceProps) {
   const [activeIds, setActiveIds] = useState<string[]>([])
   const [isMobile, setIsMobile] = useState(false)
 
@@ -55,11 +55,7 @@ export function Experience({data}: ExperienceProps) {
     return () => mediaQuery.removeEventListener('change', updateIsMobile)
   }, [])
 
-  const visibleItems = resolveSectionData(
-    data,
-    [...careerFallbacks.experience],
-    useCareerFallbacks,
-  )
+  const visibleItems = resolveSectionData(data, [...careerFallbacks.experience], useCareerFallbacks)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!visibleItems.length) return null
@@ -70,10 +66,7 @@ export function Experience({data}: ExperienceProps) {
       aria-label="Experience"
       className="relative mx-auto w-full max-w-6xl px-6 md:pl-28 lg:pl-32 xl:px-8 py-12 sm:py-16"
     >
-      <SectionLabel
-        label="Experience"
-        devLabel="console.trace('career')"
-      />
+      <SectionLabel label="Experience" devLabel="console.trace('career')" />
 
       <div ref={timelineRef} className="relative mt-6 pl-8 sm:pl-12">
         <div className="absolute bottom-0 left-1 top-0 w-px bg-white/10 sm:left-2" />
@@ -85,7 +78,10 @@ export function Experience({data}: ExperienceProps) {
         {visibleItems.map((item, index) => {
           const isOpen = activeIds.includes(item.id)
           const roleEntries = normalizeRoles(item)
-          const totalBulletCount = roleEntries.reduce((count, roleEntry) => count + roleEntry.bulletPoints.length, 0)
+          const totalBulletCount = roleEntries.reduce(
+            (count, roleEntry) => count + roleEntry.bulletPoints.length,
+            0,
+          )
           const estimatedContentWeight = totalBulletCount + roleEntries.length * 1.35
           const primaryRole = roleEntries[0]?.role ?? item.role ?? ''
           const extraRoleCount = Math.max(roleEntries.length - 1, 0)
@@ -101,13 +97,13 @@ export function Experience({data}: ExperienceProps) {
             ? Math.min(2.8, 0.95 + estimatedContentWeight * 0.16)
             : Math.min(
                 1.45,
-                (0.62 + estimatedContentWeight * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9)
+                (0.62 + estimatedContentWeight * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9),
               )
           const openOpacityDuration = isMobile
             ? Math.min(1.05, 0.34 + roleEntries.length * 0.16)
             : Math.min(
                 0.62,
-                (0.28 + roleEntries.length * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9)
+                (0.28 + roleEntries.length * 0.08) * (roleEntries.length > 1 ? 0.95 : 0.9),
               )
           const closeHeightDuration = isMobile
             ? Math.min(0.72, 0.4 + roleEntries.length * 0.08)
@@ -116,18 +112,16 @@ export function Experience({data}: ExperienceProps) {
           return (
             <ScrollReveal key={item.id} delay={index * 0.2}>
               <div className="relative overflow-visible border-t border-white/10 last:border-b group">
-
                 {/* Top-edge glow — strong centre, tapers to nothing before reaching either edge */}
                 <div
                   aria-hidden="true"
                   style={{
-                    background: 'linear-gradient(90deg, transparent 1%, rgba(56,189,248,1) 50%, transparent 99%)',
+                    background:
+                      'linear-gradient(90deg, transparent 1%, rgba(56,189,248,1) 50%, transparent 99%)',
                   }}
                   className="pointer-events-none absolute left-0 right-0 top-0 h-px opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                 />
-                <span
-                  className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4"
-                >
+                <span className="absolute -left-[2.12rem] top-8 sm:-left-[2.84rem] -translate-x-[2px] -translate-y-[2px] h-4 w-4">
                   {/* Ping ring — visible + animating only while accordion is open */}
                   {isOpen && (
                     <span
@@ -146,10 +140,10 @@ export function Experience({data}: ExperienceProps) {
                     setActiveIds((current) =>
                       current.includes(item.id)
                         ? current.filter((id) => id !== item.id)
-                        : [...current, item.id]
+                        : [...current, item.id],
                     )
                   }
-                    className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
+                  className="flex w-full flex-col gap-4 px-3 py-6 text-left md:flex-row md:items-start md:justify-between"
                   aria-expanded={isOpen}
                   aria-controls={`${item.id}-details`}
                 >
@@ -186,100 +180,104 @@ export function Experience({data}: ExperienceProps) {
                     aria-controls points at, so screen readers see the expandable
                     relationship whether the row is open or collapsed. */}
                 <div id={`${item.id}-details`}>
-                <AnimatePresence initial={false}>
-                  {isOpen ? (
-                    <motion.div
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{
-                        height: 'auto',
-                        opacity: 1,
-                        transition: {
-                          height: { duration: openHeightDuration, ease: [0.16, 1, 0.3, 1] },
-                          opacity: { duration: openOpacityDuration, ease: 'easeOut' },
-                        },
-                      }}
-                      exit={{
-                        height: 0,
-                        opacity: 0,
-                        transition: {
-                          height: { duration: closeHeightDuration, ease: [0.4, 0, 0.2, 1] },
-                          opacity: { duration: 0.22, ease: 'easeOut' },
-                        },
-                      }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-accent/10 pb-8 pt-6">
-                        {item.location && (
-                          <div className="flex items-center gap-2 text-sm text-foreground/[0.72]">
-                            <MapPin className="h-4 w-4 text-accent" />
-                            <span>{item.location}</span>
-                          </div>
-                        )}
-
-                        <div className="mt-5 space-y-8">
-                          {roleEntries.map((roleEntry, roleIndex) => (
-                            <div
-                              key={`${item.id}-${roleEntry.role}-${roleEntry.dates}`}
-                              className={roleIndex > 0 ? 'border-t border-white/10 pt-6' : ''}
-                            >
-                              {(() => {
-                                const roleSkills = roleEntry.skillsUsed ?? []
-
-                                return (
-                                  <>
-                              {roleEntries.length > 1 && (
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-                                  <p className="pr-6 text-base font-semibold leading-relaxed text-success sm:pr-0 sm:text-[1.02rem]">
-                                    {roleEntry.role}
-                                  </p>
-                                  {roleEntry.dates && (
-                                    <p className="text-sm font-medium leading-relaxed text-foreground/[0.72]">
-                                      {roleEntry.dates}
-                                    </p>
-                                  )}
-                                </div>
-                              )}
-
-                              <ul className={roleEntries.length > 1 ? 'mt-5 space-y-3' : 'space-y-3'}>
-                                {roleEntry.bulletPoints.map((point) => (
-                                  <li
-                                    key={`${roleEntry.role}-${point}`}
-                                    className="flex items-start gap-3 text-sm leading-7 text-foreground/[0.86] sm:text-base"
-                                  >
-                                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-                                    <span className="min-w-0 flex-1">{point}</span>
-                                  </li>
-                                ))}
-                              </ul>
-
-                              {roleSkills.length > 0 && (
-                                <div className="mt-6">
-                                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
-                                    Skills Used
-                                  </p>
-                                  <div className="mt-3 flex flex-wrap gap-2">
-                                    {roleSkills.map((skill) => (
-                                      <span
-                                        key={skill}
-                                        className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
-                                      >
-                                        {skill}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                                  </>
-                                )
-                              })()}
+                  <AnimatePresence initial={false}>
+                    {isOpen ? (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{
+                          height: 'auto',
+                          opacity: 1,
+                          transition: {
+                            height: { duration: openHeightDuration, ease: [0.16, 1, 0.3, 1] },
+                            opacity: { duration: openOpacityDuration, ease: 'easeOut' },
+                          },
+                        }}
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                          transition: {
+                            height: { duration: closeHeightDuration, ease: [0.4, 0, 0.2, 1] },
+                            opacity: { duration: 0.22, ease: 'easeOut' },
+                          },
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-accent/10 pb-8 pt-6">
+                          {item.location && (
+                            <div className="flex items-center gap-2 text-sm text-foreground/[0.72]">
+                              <MapPin className="h-4 w-4 text-accent" />
+                              <span>{item.location}</span>
                             </div>
-                          ))}
+                          )}
+
+                          <div className="mt-5 space-y-8">
+                            {roleEntries.map((roleEntry, roleIndex) => (
+                              <div
+                                key={`${item.id}-${roleEntry.role}-${roleEntry.dates}`}
+                                className={roleIndex > 0 ? 'border-t border-white/10 pt-6' : ''}
+                              >
+                                {(() => {
+                                  const roleSkills = roleEntry.skillsUsed ?? []
+
+                                  return (
+                                    <>
+                                      {roleEntries.length > 1 && (
+                                        <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                                          <p className="pr-6 text-base font-semibold leading-relaxed text-success sm:pr-0 sm:text-[1.02rem]">
+                                            {roleEntry.role}
+                                          </p>
+                                          {roleEntry.dates && (
+                                            <p className="text-sm font-medium leading-relaxed text-foreground/[0.72]">
+                                              {roleEntry.dates}
+                                            </p>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      <ul
+                                        className={
+                                          roleEntries.length > 1 ? 'mt-5 space-y-3' : 'space-y-3'
+                                        }
+                                      >
+                                        {roleEntry.bulletPoints.map((point) => (
+                                          <li
+                                            key={`${roleEntry.role}-${point}`}
+                                            className="flex items-start gap-3 text-sm leading-7 text-foreground/[0.86] sm:text-base"
+                                          >
+                                            <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
+                                            <span className="min-w-0 flex-1">{point}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+
+                                      {roleSkills.length > 0 && (
+                                        <div className="mt-6">
+                                          <p className="text-sm font-medium uppercase tracking-[0.2em] text-success">
+                                            Skills Used
+                                          </p>
+                                          <div className="mt-3 flex flex-wrap gap-2">
+                                            {roleSkills.map((skill) => (
+                                              <span
+                                                key={skill}
+                                                className="hover-glow rounded-full border border-accent/30 px-3 py-1 text-xs font-medium text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 sm:text-sm"
+                                              >
+                                                {skill}
+                                              </span>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </>
+                                  )
+                                })()}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
               </div>
             </ScrollReveal>

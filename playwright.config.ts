@@ -1,4 +1,4 @@
-import {defineConfig, devices} from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test'
 
 const PORT = 3004
 const BASE_URL = `http://127.0.0.1:${PORT}`
@@ -11,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'github' : 'list',
   timeout: 60_000,
-  expect: {timeout: 10_000},
+  expect: { timeout: 10_000 },
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
@@ -24,7 +24,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: {...devices['Desktop Chrome']},
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
   webServer: {

@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
 
 const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#'
-const FRAME_MS       = 28
-const TOTAL_FRAMES   = 22
+const FRAME_MS = 28
+const TOTAL_FRAMES = 22
 
 type DecryptTextProps = {
   text: string
@@ -18,8 +18,8 @@ type DecryptTextProps = {
  * reduced motion. An invisible sizer keeps layout stable while scrambling.
  */
 export function DecryptText({ text, className }: DecryptTextProps) {
-  const ref            = useRef<HTMLSpanElement>(null)
-  const inView         = useInView(ref, { once: true, margin: '-60px' })
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
   const prefersReduced = useReducedMotion()
   const [display, setDisplay] = useState(text)
 
@@ -32,9 +32,8 @@ export function DecryptText({ text, className }: DecryptTextProps) {
       const resolved = Math.floor((frame / TOTAL_FRAMES) * text.length)
       let out = text.slice(0, resolved)
       for (let i = resolved; i < text.length; i++) {
-        out += text[i] === ' '
-          ? ' '
-          : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+        out +=
+          text[i] === ' ' ? ' ' : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
       }
       setDisplay(out)
       if (frame >= TOTAL_FRAMES) {
@@ -52,8 +51,12 @@ export function DecryptText({ text, className }: DecryptTextProps) {
     // aria-hidden (the sizer keeps layout; the overlay animates).
     <span ref={ref} className={`relative inline-block ${className ?? ''}`}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true" className="invisible">{text}</span>
-      <span aria-hidden="true" className="absolute inset-0 whitespace-nowrap">{display}</span>
+      <span aria-hidden="true" className="invisible">
+        {text}
+      </span>
+      <span aria-hidden="true" className="absolute inset-0 whitespace-nowrap">
+        {display}
+      </span>
     </span>
   )
 }

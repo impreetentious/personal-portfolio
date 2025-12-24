@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Skills — one document per category (Tools / Skills).
@@ -23,8 +23,8 @@ export const skillsSchema = defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Tools', value: 'Tools'},
-          {title: 'Skills', value: 'Skills'},
+          { title: 'Tools', value: 'Tools' },
+          { title: 'Skills', value: 'Skills' },
         ],
         layout: 'dropdown',
       },
@@ -54,8 +54,7 @@ export const skillsSchema = defineType({
               name: 'description',
               title: 'Description',
               type: 'string',
-              description:
-                'Optional tooltip text shown on hover. Keep it under 120 characters.',
+              description: 'Optional tooltip text shown on hover. Keep it under 120 characters.',
               validation: (Rule) => Rule.max(120),
             }),
           ],

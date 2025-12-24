@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 export const writingSchema = defineType({
   name: 'writing',
@@ -54,7 +54,7 @@ export const writingSchema = defineType({
     {
       title: 'Display Order',
       name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
+      by: [{ field: 'order', direction: 'asc' }],
     },
   ],
   preview: {
@@ -64,7 +64,7 @@ export const writingSchema = defineType({
       order: 'order',
       hidden: 'isHidden',
     },
-    prepare({title, subtitle, order, hidden}) {
+    prepare({ title, subtitle, order, hidden }) {
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,
         subtitle: `${subtitle ?? ''}${hidden ? '  ·  hidden' : ''}`,

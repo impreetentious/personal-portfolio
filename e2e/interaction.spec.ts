@@ -1,81 +1,73 @@
-import {expect, test} from '@playwright/test'
-import {dismissBoot, markSessionVisited, VIEWPORTS} from './helpers'
+import { expect, test } from '@playwright/test'
+import { dismissBoot, markSessionVisited, VIEWPORTS } from './helpers'
 
 test.describe('Production interaction QA matrix', () => {
   for (const [name, viewport] of Object.entries(VIEWPORTS)) {
-    test(`renders the hero composition at ${name} viewport`, async ({page}) => {
+    test(`renders the hero composition at ${name} viewport`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await page.goto('/')
       await dismissBoot(page)
-      await expect(page.getByRole('heading', {level: 1})).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       await expect(page.locator('#main-content')).toBeVisible()
     })
   }
 
-  test('skips first-boot with Escape and reaches interactive UI', async ({
-    page,
-  }) => {
-    await page.emulateMedia({reducedMotion: 'no-preference'})
+  test('skips first-boot with Escape and reaches interactive UI', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.goto('/')
     // Before dismiss, boot may cover; Esc clears it.
     await page.keyboard.press('Escape')
     await expect(page.locator('#main-content')).toBeVisible()
-    await expect(page.getByRole('heading', {level: 1})).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   })
 
-  test('repeat-session flash path still leaves content reachable', async ({
-    page,
-  }) => {
+  test('repeat-session flash path still leaves content reachable', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
     await markSessionVisited(page)
     await page.reload()
     // Flash auto-completes quickly; reducedMotion already short-circuits.
-    await expect(page.locator('#main-content')).toBeVisible({timeout: 8000})
-    await expect(page.getByRole('heading', {level: 1})).toBeVisible()
+    await expect(page.locator('#main-content')).toBeVisible({ timeout: 8000 })
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   })
 
-  test('reduced motion short-circuits boot without keyboard skip', async ({
-    page,
-  }) => {
-    await page.emulateMedia({reducedMotion: 'reduce'})
+  test('reduced motion short-circuits boot without keyboard skip', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
-    await expect(page.locator('#main-content')).toBeVisible({timeout: 5000})
-    await expect(page.getByRole('heading', {level: 1})).toBeVisible()
+    await expect(page.locator('#main-content')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   })
 
-  test('Ctrl+K opens and Escape closes the command palette', async ({page}) => {
+  test('Ctrl+K opens and Escape closes the command palette', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
     await page.keyboard.press('Control+k')
-    const search = page.getByRole('combobox', {name: /search commands/i})
+    const search = page.getByRole('combobox', { name: /search commands/i })
     await expect(search).toBeVisible()
 
     await page.keyboard.press('Escape')
     await expect(search).toHaveCount(0)
   })
 
-  test('keyboard can reach the skip link and land on main content', async ({
-    page,
-  }) => {
+  test('keyboard can reach the skip link and land on main content', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
     await page.keyboard.press('Tab')
-    const skip = page.getByRole('link', {name: /skip to content/i})
+    const skip = page.getByRole('link', { name: /skip to content/i })
     await expect(skip).toBeFocused()
     await page.keyboard.press('Enter')
     await expect(page.locator('#main-content')).toBeFocused()
   })
 
-  test('preserves an initial hash through mount', async ({page}) => {
+  test('preserves an initial hash through mount', async ({ page }) => {
     await page.goto('/#writing')
     await dismissBoot(page)
     await expect(page).toHaveURL(/#writing/)
   })
 
-  test('Experience accordion toggles via keyboard', async ({page}) => {
+  test('Experience accordion toggles via keyboard', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
@@ -100,9 +92,7 @@ test.describe('Production interaction QA matrix', () => {
     }
   })
 
-  test('Achievements accordion exposes a stable aria-controls target', async ({
-    page,
-  }) => {
+  test('Achievements accordion exposes a stable aria-controls target', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
@@ -120,9 +110,7 @@ test.describe('Production interaction QA matrix', () => {
     await expect(page.locator(`[id="${controls!}"]`)).toHaveCount(1)
   })
 
-  test('Skills tooltip can be dismissed with Escape when focused', async ({
-    page,
-  }) => {
+  test('Skills tooltip can be dismissed with Escape when focused', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
@@ -144,14 +132,14 @@ test.describe('Production interaction QA matrix', () => {
     await expect(skills).toBeVisible()
   })
 
-  test('Contact copy action updates a polite live region', async ({page, context}) => {
+  test('Contact copy action updates a polite live region', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto('/')
     await dismissBoot(page)
 
     const contact = page.locator('#contact')
     await contact.scrollIntoViewIfNeeded()
-    const copyButton = contact.getByRole('link', {name: /click to copy/i}).first()
+    const copyButton = contact.getByRole('link', { name: /click to copy/i }).first()
     if ((await copyButton.count()) === 0) {
       test.skip(true, 'No copy-to-clipboard contact channels')
       return
@@ -160,15 +148,13 @@ test.describe('Production interaction QA matrix', () => {
     await expect(contact.locator('[aria-live="polite"]')).toBeVisible()
   })
 
-  test('resume entry points are present when a resume URL is available', async ({
-    page,
-  }) => {
+  test('resume entry points are present when a resume URL is available', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
 
     // Hero terminal and/or palette expose resume. Presence is enough here —
     // the PDF binary itself is an owner CMS asset.
-    const resumeControls = page.getByRole('button', {name: /resume/i})
+    const resumeControls = page.getByRole('button', { name: /resume/i })
     const count = await resumeControls.count()
     // Smoke build without CMS may have zero resume buttons — that is accepted.
     if (count === 0) {
@@ -181,18 +167,16 @@ test.describe('Production interaction QA matrix', () => {
     await expect(resumeControls.first()).toBeVisible()
   })
 
-  test('404 page renders the themed not-found surface', async ({page}) => {
+  test('404 page renders the themed not-found surface', async ({ page }) => {
     await page.goto('/this-route-does-not-exist')
-    await expect(page.getByRole('link', {name: /cd \/home/i})).toBeVisible()
+    await expect(page.getByRole('link', { name: /cd \/home/i })).toBeVisible()
   })
 
-  test('palette dialog moves focus into the combobox while open', async ({
-    page,
-  }) => {
+  test('palette dialog moves focus into the combobox while open', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
     await page.keyboard.press('Control+k')
-    const search = page.getByRole('combobox', {name: /search commands/i})
+    const search = page.getByRole('combobox', { name: /search commands/i })
     await expect(search).toBeFocused()
   })
 })

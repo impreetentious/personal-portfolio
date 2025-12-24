@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Resume — singleton document.
@@ -18,14 +18,16 @@ export const resumeSchema = defineType({
       name: 'showDownloadButton',
       title: 'Show Resume Download Button',
       type: 'boolean',
-      description: 'Toggle off to hide the resume download button from the portfolio without deleting the PDF.',
+      description:
+        'Toggle off to hide the resume download button from the portfolio without deleting the PDF.',
       initialValue: true,
     }),
     defineField({
       name: 'file',
       title: 'Resume PDF',
       type: 'file',
-      description: 'Upload the latest resume here. Re-uploading replaces the previous version automatically.',
+      description:
+        'Upload the latest resume here. Re-uploading replaces the previous version automatically.',
       options: {
         accept: 'application/pdf',
       },

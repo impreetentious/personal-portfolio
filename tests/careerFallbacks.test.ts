@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import {describe, it} from 'node:test'
+import { describe, it } from 'node:test'
 import {
   careerFallbacks,
   resolveSectionData,
@@ -9,38 +9,23 @@ import {
 
 describe('shouldUseCareerFallbacks', () => {
   it('is on in development regardless of the production gate flag', () => {
-    assert.equal(
-      shouldUseCareerFallbacks({nodeEnv: 'development', envFlag: undefined}),
-      true,
-    )
-    assert.equal(
-      shouldUseCareerFallbacks({nodeEnv: 'development', envFlag: 'false'}),
-      true,
-    )
+    assert.equal(shouldUseCareerFallbacks({ nodeEnv: 'development', envFlag: undefined }), true)
+    assert.equal(shouldUseCareerFallbacks({ nodeEnv: 'development', envFlag: 'false' }), true)
   })
 
   it('is off in production until the owner flips the gate', () => {
-    assert.equal(
-      shouldUseCareerFallbacks({nodeEnv: 'production', envFlag: undefined}),
-      false,
-    )
-    assert.equal(
-      shouldUseCareerFallbacks({nodeEnv: 'production', envFlag: 'false'}),
-      false,
-    )
+    assert.equal(shouldUseCareerFallbacks({ nodeEnv: 'production', envFlag: undefined }), false)
+    assert.equal(shouldUseCareerFallbacks({ nodeEnv: 'production', envFlag: 'false' }), false)
   })
 
   it('is on in production when NEXT_PUBLIC_USE_CAREER_FALLBACKS=true', () => {
-    assert.equal(
-      shouldUseCareerFallbacks({nodeEnv: 'production', envFlag: 'true'}),
-      true,
-    )
+    assert.equal(shouldUseCareerFallbacks({ nodeEnv: 'production', envFlag: 'true' }), true)
   })
 })
 
 describe('resolveSectionData', () => {
-  const fallback = [{id: 'fb', label: 'Fallback'}]
-  const cms = [{id: 'cms', label: 'Live'}]
+  const fallback = [{ id: 'fb', label: 'Fallback' }]
+  const cms = [{ id: 'cms', label: 'Live' }]
 
   it('prefers non-empty CMS data', () => {
     assert.deepEqual(resolveSectionData(cms, fallback, false), cms)
@@ -100,7 +85,7 @@ describe('shouldRejectEmptyCmsResult', () => {
   it('does not reject non-empty or non-array results', () => {
     assert.equal(
       shouldRejectEmptyCmsResult({
-        result: [{id: 'x'}],
+        result: [{ id: 'x' }],
         nodeEnv: 'production',
         nextPhase: undefined,
       }),

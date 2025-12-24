@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Metrics — one document per animated counter stat.
@@ -64,8 +64,7 @@ export const metricsSchema = defineType({
       name: 'sub',
       title: 'Supporting Text',
       type: 'string',
-      description:
-        'Short secondary line rendered beneath the main label.',
+      description: 'Short secondary line rendered beneath the main label.',
       validation: (Rule) => Rule.max(120),
     }),
 
@@ -82,7 +81,7 @@ export const metricsSchema = defineType({
     {
       title: 'Display Order',
       name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
+      by: [{ field: 'order', direction: 'asc' }],
     },
   ],
 
@@ -94,11 +93,8 @@ export const metricsSchema = defineType({
       suffix: 'suffix',
       order: 'order',
     },
-    prepare({title, value, prefix, suffix, order}) {
-      const formatted =
-        value != null
-          ? `${prefix ?? ''}${value}${suffix ?? ''}`
-          : ''
+    prepare({ title, value, prefix, suffix, order }) {
+      const formatted = value != null ? `${prefix ?? ''}${value}${suffix ?? ''}` : ''
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,
         subtitle: formatted,

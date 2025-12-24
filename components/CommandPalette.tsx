@@ -35,84 +35,84 @@ import { useResumeDownload, type DownloadState } from '@/components/ui/useResume
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface PaletteAction {
-  id                : string
-  shortLabel        : string
-  icon?             : LucideIcon
-  description?      : string
-  href?             : string
-  isDownload?       : boolean
-  isTerminalOutput? : boolean
-  colorMode?        : 'hi' | 'ok' | 'warn' | 'dim' | 'default'
-  textLine?         : string | React.ReactNode
+  id: string
+  shortLabel: string
+  icon?: LucideIcon
+  description?: string
+  href?: string
+  isDownload?: boolean
+  isTerminalOutput?: boolean
+  colorMode?: 'hi' | 'ok' | 'warn' | 'dim' | 'default'
+  textLine?: string | React.ReactNode
 }
 
 // ─── Navigation Action Definitions ───────────────────────────────────────────
 
 const NAV_ACTIONS: PaletteAction[] = [
   {
-    id          : 'experience',
-    shortLabel  : 'Experience',
-    icon        : Briefcase,
-    description : 'Work history & roles',
-    href        : '#experience',
+    id: 'experience',
+    shortLabel: 'Experience',
+    icon: Briefcase,
+    description: 'Work history & roles',
+    href: '#experience',
   },
   {
-    id          : 'skills',
-    shortLabel  : 'Skills',
-    icon        : Sparkles,
-    description : 'Tech stack & tools',
-    href        : '#skills',
+    id: 'skills',
+    shortLabel: 'Skills',
+    icon: Sparkles,
+    description: 'Tech stack & tools',
+    href: '#skills',
   },
   {
-    id          : 'metrics',
-    shortLabel  : 'Metrics',
-    icon        : BarChart,
-    description : 'Impact numbers',
-    href        : '#metrics',
+    id: 'metrics',
+    shortLabel: 'Metrics',
+    icon: BarChart,
+    description: 'Impact numbers',
+    href: '#metrics',
   },
   {
-    id          : 'awards',
-    shortLabel  : 'Awards',
-    icon        : Trophy,
-    description : 'Results & recognitions',
-    href        : '#achievements',
+    id: 'awards',
+    shortLabel: 'Awards',
+    icon: Trophy,
+    description: 'Results & recognitions',
+    href: '#achievements',
   },
   {
-    id          : 'education',
-    shortLabel  : 'Education',
-    icon        : GraduationCap,
-    description : 'Academic background',
-    href        : '#education',
+    id: 'education',
+    shortLabel: 'Education',
+    icon: GraduationCap,
+    description: 'Academic background',
+    href: '#education',
   },
-  
+
   // ── Feature Flag Toggle ──
   ...(siteConfig.features.showWriting
     ? [
         {
-          id          : 'writing',
-          shortLabel  : 'Writing',
-          icon        : BookOpen,
-          description : 'Articles & Publications',
-          href        : '#writing',
+          id: 'writing',
+          shortLabel: 'Writing',
+          icon: BookOpen,
+          description: 'Articles & Publications',
+          href: '#writing',
         },
       ]
     : []),
-    
+
   {
-    id          : 'contact',
-    shortLabel  : 'Contact',
-    icon        : Mail,
-    description : 'Get in touch',
-    href        : '#contact',
+    id: 'contact',
+    shortLabel: 'Contact',
+    icon: Mail,
+    description: 'Get in touch',
+    href: '#contact',
   },
 ]
 
 const RESUME_ACTION: PaletteAction = {
-  id          : 'resume',
-  shortLabel  : 'Download Resume',
-  icon        : Download,
-  description : 'Compile & export resume.pdf',
-  isDownload  : true,
+  id: 'resume',
+  shortLabel: 'Download Resume',
+  icon: Download,
+  description: 'Compile & export resume.pdf',
+  isDownload: true,
 }
 
 // ─── Terminal Engine Dictionaries ─────────────────────────────────────────────
@@ -122,103 +122,287 @@ const RESUME_ACTION: PaletteAction = {
 // already routes there through nav. The 3 Windows-native replacements below
 // (winfetch/winget/tasklist) keep the terminal theme without shadowing nav.
 const HELP_ACTIONS: PaletteAction[] = [
-  { id: 'cmd-who',      shortLabel: '> who',      icon: User,      description: 'about me' },
-  { id: 'cmd-ping',     shortLabel: '> ping',     icon: Wifi,      description: 'connection test' },
-  { id: 'cmd-status',   shortLabel: '> status',   icon: Activity,  description: 'system report' },
-  { id: 'cmd-winfetch', shortLabel: '> winfetch', icon: Cpu,       description: 'system info card' },
-  { id: 'cmd-winget',   shortLabel: '> winget',   icon: Package,   description: 'install sidakpreet' },
-  { id: 'cmd-tasklist', shortLabel: '> tasklist', icon: ListTodo,  description: 'running processes' },
+  { id: 'cmd-who', shortLabel: '> who', icon: User, description: 'about me' },
+  { id: 'cmd-ping', shortLabel: '> ping', icon: Wifi, description: 'connection test' },
+  { id: 'cmd-status', shortLabel: '> status', icon: Activity, description: 'system report' },
+  { id: 'cmd-winfetch', shortLabel: '> winfetch', icon: Cpu, description: 'system info card' },
+  { id: 'cmd-winget', shortLabel: '> winget', icon: Package, description: 'install sidakpreet' },
+  {
+    id: 'cmd-tasklist',
+    shortLabel: '> tasklist',
+    icon: ListTodo,
+    description: 'running processes',
+  },
 ]
 
 const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
-  'who': [
-    { id: 'w1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Sidakpreet Singh — Product Strategy & GTM professional.' },
-    { id: 'w2', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  IIM Indore MBA · HCLSoftware · ex-Bain' },
-    { id: 'w3', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  Building things that didn\'t exist before.' },
+  who: [
+    {
+      id: 'w1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: '  Sidakpreet Singh — Product Strategy & GTM professional.',
+    },
+    {
+      id: 'w2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: '  IIM Indore MBA · HCLSoftware · ex-Bain',
+    },
+    {
+      id: 'w3',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: "  Building things that didn't exist before.",
+    },
   ],
-  'ping': [
-    { id: 'p1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Ping sidakpreetsingh.com: 32 bytes of data' },
-    { id: 'p2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  64 bytes from edge-01: seq=0 ttl=69 time=0.69ms' },
-    { id: 'p3', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  pong. ✓' },
+  ping: [
+    {
+      id: 'p1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '  Ping sidakpreetsingh.com: 32 bytes of data',
+    },
+    {
+      id: 'p2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  64 bytes from edge-01: seq=0 ttl=69 time=0.69ms',
+    },
+    { id: 'p3', shortLabel: '', isTerminalOutput: true, colorMode: 'hi', textLine: '  pong. ✓' },
   ],
-  'status': [
-    { id: 's1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  system.status → all green' },
-    { id: 's2', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  domain      live ✓' },
-    { id: 's3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  portfolio   deployed & active ✓' },
-    { id: 's4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  ambition    unbounded' },
+  status: [
+    {
+      id: 's1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: '  system.status → all green',
+    },
+    {
+      id: 's2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  domain      live ✓',
+    },
+    {
+      id: 's3',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  portfolio   deployed & active ✓',
+    },
+    {
+      id: 's4',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  ambition    unbounded',
+    },
   ],
-  'winfetch': [
-    { id: 'wf1', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '        Sidakpreet Singh @ sidakpreet-os' },
-    { id: 'wf2', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '        ─────────────────────────────────' },
-    { id: 'wf3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: `        OS       sidakpreet-os v${OS_VERSION}` },
-    { id: 'wf4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Shell    PowerShell 7.4' },
-    { id: 'wf5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: "        Host     IIM Indore MBA '25" },
-    { id: 'wf6', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Kernel   ex-Bain · HCLSoftware' },
-    { id: 'wf7', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        GPU      gaming-grade' },
-    { id: 'wf8', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '        Uptime   always-on' },
+  winfetch: [
+    {
+      id: 'wf1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: '        Sidakpreet Singh @ sidakpreet-os',
+    },
+    {
+      id: 'wf2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '        ─────────────────────────────────',
+    },
+    {
+      id: 'wf3',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: `        OS       sidakpreet-os v${OS_VERSION}`,
+    },
+    {
+      id: 'wf4',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '        Shell    PowerShell 7.4',
+    },
+    {
+      id: 'wf5',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: "        Host     IIM Indore MBA '25",
+    },
+    {
+      id: 'wf6',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '        Kernel   ex-Bain · HCLSoftware',
+    },
+    {
+      id: 'wf7',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '        GPU      gaming-grade',
+    },
+    {
+      id: 'wf8',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '        Uptime   always-on',
+    },
   ],
-  'winget': [
-    { id: 'wi1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  > winget install sidakpreet' },
-    { id: 'wi2', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: `  Found Sidakpreet Singh [Portfolio v${OS_VERSION}]` },
-    { id: 'wi3', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Downloading package.....' },
-    { id: 'wi4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  [████████████████████] 100%' },
-    { id: 'wi5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  Successfully installed. Try ‘winfetch’ next.' },
+  winget: [
+    {
+      id: 'wi1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '  > winget install sidakpreet',
+    },
+    {
+      id: 'wi2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: `  Found Sidakpreet Singh [Portfolio v${OS_VERSION}]`,
+    },
+    {
+      id: 'wi3',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '  Downloading package.....',
+    },
+    {
+      id: 'wi4',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  [████████████████████] 100%',
+    },
+    {
+      id: 'wi5',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  Successfully installed. Try ‘winfetch’ next.',
+    },
   ],
-  'tasklist': [
-    { id: 'tl1', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  Image Name        PID    Priority' },
-    { id: 'tl2', shortLabel: '', isTerminalOutput: true, colorMode: 'default', textLine: '  ────────────────  ────   ──────────────' },
-    { id: 'tl3', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  strategy.exe      0001   High' },
-    { id: 'tl4', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  systems.exe       0002   Realtime' },
-    { id: 'tl5', shortLabel: '', isTerminalOutput: true, colorMode: 'ok',      textLine: '  product.exe       0003   High' },
-    { id: 'tl6', shortLabel: '', isTerminalOutput: true, colorMode: 'hi',      textLine: '  gaming.exe        0069   Above Normal' },
-    { id: 'tl7', shortLabel: '', isTerminalOutput: true, colorMode: 'warn',    textLine: '  sleep.exe         0420   Not Responding' },
+  tasklist: [
+    {
+      id: 'tl1',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '  Image Name        PID    Priority',
+    },
+    {
+      id: 'tl2',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'default',
+      textLine: '  ────────────────  ────   ──────────────',
+    },
+    {
+      id: 'tl3',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  strategy.exe      0001   High',
+    },
+    {
+      id: 'tl4',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  systems.exe       0002   Realtime',
+    },
+    {
+      id: 'tl5',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'ok',
+      textLine: '  product.exe       0003   High',
+    },
+    {
+      id: 'tl6',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'hi',
+      textLine: '  gaming.exe        0069   Above Normal',
+    },
+    {
+      id: 'tl7',
+      shortLabel: '',
+      isTerminalOutput: true,
+      colorMode: 'warn',
+      textLine: '  sleep.exe         0420   Not Responding',
+    },
   ],
 }
 
 // ─── Download Label / Colour Maps ─────────────────────────────────────────────
 
 const DOWNLOAD_LABEL: Record<DownloadState, string> = {
-  idle      : 'Download Resume',
-  compiling : '[COMPILING...]',
-  ready     : '[READY]',
-  error     : '[FAILED]',
+  idle: 'Download Resume',
+  compiling: '[COMPILING...]',
+  ready: '[READY]',
+  error: '[FAILED]',
 }
 
 const DOWNLOAD_COLOR_CLASS: Record<DownloadState, string> = {
-  idle      : '',
-  compiling : 'text-amber-300/90',
-  ready     : 'text-green-300/90',
-  error     : 'text-red-400/90',
+  idle: '',
+  compiling: 'text-amber-300/90',
+  ready: 'text-green-300/90',
+  error: 'text-red-400/90',
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
-  isOpen       : boolean
-  onClose      : () => void
-  resumeUrl?   : string
+  isOpen: boolean
+  onClose: () => void
+  resumeUrl?: string
   initialQuery?: string
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }: CommandPaletteProps) {
-  const [query,       setQuery      ] = useState('')
+export function CommandPalette({
+  isOpen,
+  onClose,
+  resumeUrl,
+  initialQuery = '',
+}: CommandPaletteProps) {
+  const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
 
   const {
-    state : downloadState,
-    start : handleDownload,
+    state: downloadState,
+    start: handleDownload,
     cancel: cancelDownload,
   } = useResumeDownload(resumeUrl, {
-    fileName    : 'Sidakpreet_Singh_Resume.pdf',
+    fileName: 'Sidakpreet_Singh_Resume.pdf',
     readyDelayMs: 600,
-    onComplete  : onClose, // auto-close the palette once the download completes
+    onComplete: onClose, // auto-close the palette once the download completes
   })
 
-  const inputRef             = useRef<HTMLInputElement>(null)
-  const overlayRef           = useRef<HTMLDivElement>(null)
-  const modalRef             = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
   const allActions = useMemo<PaletteAction[]>(
@@ -245,10 +429,10 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
     //    win over substring so "exp" → Experience surfaces before any
     //    incidental substring match. NAV_ACTIONS order is preserved within
     //    each bucket so results feel stable.
-    const prefixHits    : PaletteAction[] = []
-    const substringHits : PaletteAction[] = []
+    const prefixHits: PaletteAction[] = []
+    const substringHits: PaletteAction[] = []
     for (const action of allActions) {
-      const id    = action.id.toLowerCase()
+      const id = action.id.toLowerCase()
       const label = action.shortLabel.toLowerCase()
       if (id.startsWith(q) || label.startsWith(q)) {
         prefixHits.push(action)
@@ -301,7 +485,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
       ).filter((el) => !el.hasAttribute('disabled'))
       if (focusable.length === 0) return
       const first = focusable[0]
-      const last  = focusable[focusable.length - 1]
+      const last = focusable[focusable.length - 1]
 
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault()
@@ -347,23 +531,22 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
     [handleDownload, onClose],
   )
 
-
-  const filteredRef      = useRef(filtered)
-  const activeIndexRef   = useRef(activeIndex)
+  const filteredRef = useRef(filtered)
+  const activeIndexRef = useRef(activeIndex)
   const executeActionRef = useRef(executeAction)
-  const queryRef         = useRef(query)
+  const queryRef = useRef(query)
 
-  filteredRef.current      = filtered
-  activeIndexRef.current   = activeIndex
+  filteredRef.current = filtered
+  activeIndexRef.current = activeIndex
   executeActionRef.current = executeAction
-  queryRef.current         = query
+  queryRef.current = query
 
   useEffect(() => {
     if (!isOpen) return
     const handler = (e: KeyboardEvent) => {
-      const currentFiltered    = filteredRef.current
+      const currentFiltered = filteredRef.current
       const currentActiveIndex = activeIndexRef.current
-      const currentQuery       = queryRef.current.toLowerCase().trim()
+      const currentQuery = queryRef.current.toLowerCase().trim()
 
       if (e.key === 'ArrowDown') {
         e.preventDefault()
@@ -401,7 +584,7 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
         }
       }
     }
-    
+
     window.addEventListener('keydown', handler, { capture: true })
     return () => window.removeEventListener('keydown', handler, { capture: true })
   }, [isOpen, onClose])
@@ -441,9 +624,9 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
 
           {/* ── Palette modal ── */}
           <motion.div
-            initial={{ opacity: 0, y: -20, x: "-50%", scale: 0.97 }}
-            animate={{ opacity: 1, y: 0,   x: "-50%", scale: 1     }}
-            exit  ={{ opacity: 0, y: -14,  x: "-50%", scale: 0.97  }}
+            initial={{ opacity: 0, y: -20, x: '-50%', scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, x: '-50%', scale: 1 }}
+            exit={{ opacity: 0, y: -14, x: '-50%', scale: 0.97 }}
             transition={{ type: 'tween', ease: 'easeOut', duration: 0.22 }}
             className="fixed top-[12vh] left-1/2 z-[90] w-full max-w-xl px-4 sm:px-0"
           >
@@ -457,7 +640,6 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
               aria-label="Command palette"
               className="relative overflow-hidden rounded-xl border border-white/[0.12] bg-[#0A0A0E] shadow-[0_32px_80px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]"
             >
-
               {/* ── Terminal Scan Beam ── */}
               <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden rounded-xl">
                 <motion.div
@@ -543,29 +725,40 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                   {filtered.length === 0 && !query ? (
                     // IDLE STATE: 1pt larger, brighter colors
                     <div className="px-5 py-6 text-left font-mono text-[12px] leading-relaxed text-foreground/60">
-                      <span className="text-[#00E5FF]/80">#</span> system.idle<br/>
+                      <span className="text-[#00E5FF]/80">#</span> system.idle
+                      <br />
                       <span className="pl-[14px]">awaiting command input...</span>
                     </div>
                   ) : filtered.length === 0 && query ? (
                     // NO MATCH STATE: True terminal error format
                     <div className="px-5 py-8 text-left font-mono text-[12px] text-foreground/50">
-                      <span className="text-[#ff5f57]">command not found:</span> {query}<br/>
-                      <span className="text-foreground/40 mt-1 block">try typing &apos;help&apos; or &apos;navigate&apos;</span>
+                      <span className="text-[#ff5f57]">command not found:</span> {query}
+                      <br />
+                      <span className="text-foreground/40 mt-1 block">
+                        try typing &apos;help&apos; or &apos;navigate&apos;
+                      </span>
                     </div>
                   ) : (
                     filtered.map((action, i) => {
-                      
                       // Render Terminal Output Lines (Read-Only)
                       if (action.isTerminalOutput) {
-                        const colorClass = 
-                          action.colorMode === 'hi' ? 'text-[#00E5FF]' : 
-                          action.colorMode === 'ok' ? 'text-[#4ec94e]' : 
-                          action.colorMode === 'warn' ? 'text-[#c88040]' : 
-                          'text-foreground/60'
+                        const colorClass =
+                          action.colorMode === 'hi'
+                            ? 'text-[#00E5FF]'
+                            : action.colorMode === 'ok'
+                              ? 'text-[#4ec94e]'
+                              : action.colorMode === 'warn'
+                                ? 'text-[#c88040]'
+                                : 'text-foreground/60'
 
                         return (
-                          <div key={action.id} className="flex w-full items-center px-5 py-2 text-left">
-                            <span className={`font-mono text-xs leading-relaxed tracking-tight whitespace-pre ${colorClass}`}>
+                          <div
+                            key={action.id}
+                            className="flex w-full items-center px-5 py-2 text-left"
+                          >
+                            <span
+                              className={`font-mono text-xs leading-relaxed tracking-tight whitespace-pre ${colorClass}`}
+                            >
                               {action.textLine}
                             </span>
                           </div>
@@ -573,8 +766,8 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                       }
 
                       // Render Standard Clickable Navigation Items
-                      const Icon      = action.icon || Terminal
-                      const isActive  = i === activeIndex
+                      const Icon = action.icon || Terminal
+                      const isActive = i === activeIndex
                       const isRunning = action.isDownload && downloadState !== 'idle'
 
                       return (
@@ -665,21 +858,20 @@ export function CommandPalette({ isOpen, onClose, resumeUrl, initialQuery = '' }
                         SYS.ONLINE
                       </span>
                     </div>
-                    
+
                     <div className="h-3 w-px bg-white/10" />
-                    
+
                     <span className="select-none font-mono text-[10px] text-foreground/30">
                       node: <span className="text-foreground/50">edge-01</span>
                     </span>
-                    
+
                     <div className="h-3 w-px bg-white/10" />
-                    
+
                     <span className="select-none font-mono text-[10px] text-foreground/30">
                       loc: <span className="text-foreground/50">IN</span>
                     </span>
                   </div>
                 </div>
-
               </div>
             </div>
           </motion.div>

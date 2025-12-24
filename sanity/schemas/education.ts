@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 export const educationSchema = defineType({
   name: 'education',
@@ -48,7 +48,7 @@ export const educationSchema = defineType({
     {
       title: 'Display Order',
       name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
+      by: [{ field: 'order', direction: 'asc' }],
     },
   ],
   preview: {
@@ -58,7 +58,7 @@ export const educationSchema = defineType({
       order: 'order',
       hidden: 'isHidden',
     },
-    prepare({title, subtitle, order, hidden}) {
+    prepare({ title, subtitle, order, hidden }) {
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,
         subtitle: `${subtitle ?? ''}${hidden ? '  ·  hidden' : ''}`,

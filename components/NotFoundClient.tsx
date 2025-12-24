@@ -25,8 +25,24 @@ function MaximizeIcon() {
 function CloseXIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-      <line x1="0.5" y1="0.5" x2="9.5" y2="9.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
-      <line x1="9.5" y1="0.5" x2="0.5" y2="9.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
+      <line
+        x1="0.5"
+        y1="0.5"
+        x2="9.5"
+        y2="9.5"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="square"
+      />
+      <line
+        x1="9.5"
+        y1="0.5"
+        x2="0.5"
+        y2="9.5"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="square"
+      />
     </svg>
   )
 }
@@ -34,16 +50,25 @@ function CloseXIcon() {
 function GitBranchIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-      <circle cx="2.5" cy="2"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
-      <circle cx="8.5" cy="9"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
-      <circle cx="8.5" cy="2"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <circle cx="2.5" cy="2" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <circle cx="8.5" cy="9" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <circle cx="8.5" cy="2" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
       <path
         d="M2.5 3.3V7a1.5 1.5 0 0 0 1.5 1.5h3"
-        stroke="white" strokeWidth="0.85" strokeOpacity="0.80" strokeLinecap="round"
+        stroke="white"
+        strokeWidth="0.85"
+        strokeOpacity="0.80"
+        strokeLinecap="round"
       />
       <line
-        x1="8.5" y1="3.3" x2="8.5" y2="7.7"
-        stroke="white" strokeWidth="0.85" strokeOpacity="0.80" strokeLinecap="round"
+        x1="8.5"
+        y1="3.3"
+        x2="8.5"
+        y2="7.7"
+        stroke="white"
+        strokeWidth="0.85"
+        strokeOpacity="0.80"
+        strokeLinecap="round"
       />
     </svg>
   )
@@ -52,26 +77,18 @@ function GitBranchIcon() {
 // ─── Syntax token colours (VS Code Dark+) ─────────────────────────────────────
 
 const T = {
-  kw  : '#569CD6',   // keyword: function, return, type
-  imp : '#C586C0',   // import / from / export default
-  typ : '#4EC9B0',   // type identifiers
-  str : '#CE9178',   // string literals
-  fn  : '#DCDCAA',   // function names
-  cmt : '#6A9955',   // comments
-  pun : '#ABB2BF',   // punctuation / default text
+  kw: '#569CD6', // keyword: function, return, type
+  imp: '#C586C0', // import / from / export default
+  typ: '#4EC9B0', // type identifiers
+  str: '#CE9178', // string literals
+  fn: '#DCDCAA', // function names
+  cmt: '#6A9955', // comments
+  pun: '#ABB2BF', // punctuation / default text
 } as const
 
 // ─── Code line ────────────────────────────────────────────────────────────────
 
-function Ln({
-  n,
-  children,
-  err = false,
-}: {
-  n: number
-  children: React.ReactNode
-  err?: boolean
-}) {
+function Ln({ n, children, err = false }: { n: number; children: React.ReactNode; err?: boolean }) {
   return (
     <div
       className={`flex items-baseline font-mono text-[12.5px] sm:text-[13px] leading-[28px] ${
@@ -97,11 +114,11 @@ function Squiggle({ children }: { children: string }) {
   return (
     <span
       style={{
-        textDecorationLine   : 'underline',
-        textDecorationStyle  : 'wavy',
-        textDecorationColor  : '#f44747',
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'wavy',
+        textDecorationColor: '#f44747',
         textDecorationSkipInk: 'none',
-        textUnderlineOffset  : '2px',
+        textUnderlineOffset: '2px',
       }}
     >
       {children}
@@ -112,12 +129,12 @@ function Squiggle({ children }: { children: string }) {
 // ─── Animation variants ───────────────────────────────────────────────────────
 
 const stagger = {
-  hidden : {},
+  hidden: {},
   visible: { transition: { staggerChildren: 0.065, delayChildren: 0.24 } },
 }
 
 const lineIn = {
-  hidden : { opacity: 0, x: -14 },
+  hidden: { opacity: 0, x: -14 },
   visible: {
     opacity: 1,
     x: 0,
@@ -134,8 +151,11 @@ export function NotFoundClient() {
   const [tipVisible, setTipVisible] = useState(false)
 
   return (
-    <div id="main-content" tabIndex={-1} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16 outline-none">
-
+    <div
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16 outline-none"
+    >
       {/* Ambient red fog — deliberately low opacity so it doesn't fight the dark bg */}
       <div
         aria-hidden="true"
@@ -147,7 +167,6 @@ export function NotFoundClient() {
       />
 
       <div className="relative z-10 w-full max-w-2xl">
-
         {/* Pre-window error badge */}
         <motion.p
           initial={{ opacity: 0, x: -12 }}
@@ -165,7 +184,6 @@ export function NotFoundClient() {
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.48, delay: 0.06 }}
           className="rounded-xl overflow-hidden border border-white/[0.08] shadow-panel"
         >
-
           {/* ── Title bar ── */}
           <div className="flex items-center h-9 bg-[#0c0d14] border-b border-white/[0.05]">
             {/* Active editor tab */}
@@ -207,7 +225,6 @@ export function NotFoundClient() {
           {/* ── Code editor area ── */}
           <div className="bg-[#1e1e2e] pt-5 pb-5 overflow-x-auto">
             <motion.div variants={stagger} initial="hidden" animate="visible">
-
               {/* 1 │ import type { NextPage } from 'next' */}
               <motion.div variants={lineIn}>
                 <Ln n={1}>
@@ -272,7 +289,9 @@ export function NotFoundClient() {
 
               {/* 3 │ (blank) */}
               <motion.div variants={lineIn}>
-                <Ln n={3}><span /></Ln>
+                <Ln n={3}>
+                  <span />
+                </Ln>
               </motion.div>
 
               {/* 4 │ // router: resolving /this-page... */}
@@ -291,7 +310,9 @@ export function NotFoundClient() {
 
               {/* 6 │ (blank) */}
               <motion.div variants={lineIn}>
-                <Ln n={6}><span /></Ln>
+                <Ln n={6}>
+                  <span />
+                </Ln>
               </motion.div>
 
               {/* 7 │ export default function Page(): NextPage { */}
@@ -322,7 +343,6 @@ export function NotFoundClient() {
                   <span style={{ color: T.pun }}>{'}'}</span>
                 </Ln>
               </motion.div>
-
             </motion.div>
           </div>
 
@@ -337,10 +357,7 @@ export function NotFoundClient() {
             <div className="flex items-end h-[38px] bg-[#0f1017] border-b border-white/[0.05]">
               {/* Active: PROBLEMS */}
               <div className="flex items-center gap-2 px-4 h-full bg-[#181825] border-t border-x border-white/[0.07] font-mono text-[10.5px] tracking-widest text-white/60 select-none -mb-px">
-                <span
-                  className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"
-                  aria-hidden="true"
-                />
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
                 PROBLEMS
               </div>
               {/* Inactive tabs */}
@@ -373,7 +390,9 @@ export function NotFoundClient() {
                   <span className="text-white/30 text-[10px] sm:text-[11px]">
                     app/not-found.tsx
                   </span>
-                  <span className="text-white/15 text-[10px]" aria-hidden="true">·</span>
+                  <span className="text-white/15 text-[10px]" aria-hidden="true">
+                    ·
+                  </span>
                   <span className="text-white/[0.22] text-[10px] tabular-nums">2:25</span>
                 </div>
               </div>
@@ -416,17 +435,20 @@ export function NotFoundClient() {
             </div>
             <div className="flex items-center gap-2.5">
               <span className="font-mono text-xs text-white/90 leading-none">✕&nbsp;1 error</span>
-              <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">|</span>
+              <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">
+                |
+              </span>
               <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
                 TypeScript
               </span>
-              <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">|</span>
+              <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">
+                |
+              </span>
               <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
                 Ln 2, Col 25
               </span>
             </div>
           </div>
-
         </motion.div>
         {/* ╚═══════════════════════════════════════════════════════════════════╝ */}
 
@@ -439,7 +461,6 @@ export function NotFoundClient() {
         >
           The page you requested does not exist in this registry.
         </motion.p>
-
       </div>
     </div>
   )

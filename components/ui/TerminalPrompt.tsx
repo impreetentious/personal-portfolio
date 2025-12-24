@@ -16,12 +16,12 @@ type TerminalPromptProps = {
 }
 
 const TONE_CLASS: Record<Tone, string> = {
-  plain:  'text-foreground/70',
-  ok:     'text-green-400/90',
-  err:    'text-[#f48771]',
+  plain: 'text-foreground/70',
+  ok: 'text-green-400/90',
+  err: 'text-[#f48771]',
   accent: 'text-accent',
-  dim:    'text-foreground/40',
-  warn:   'text-amber-300/90',
+  dim: 'text-foreground/40',
+  warn: 'text-amber-300/90',
 }
 
 const MAX_ENTRIES = 8
@@ -30,13 +30,13 @@ export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
   const { openPalette } = usePalette()
 
   const [history, setHistory] = useState<HistoryEntry[]>([])
-  const [value, setValue]     = useState('')
+  const [value, setValue] = useState('')
   const [cmdCursor, setCmdCursor] = useState(-1)
 
-  const inputRef  = useRef<HTMLInputElement>(null)
-  const wrapRef   = useRef<HTMLDivElement>(null)
-  const idRef     = useRef(0)
-  const pastCmds  = useRef<string[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const idRef = useRef(0)
+  const pastCmds = useRef<string[]>([])
 
   const scrollPanelToBottom = () => {
     requestAnimationFrame(() => {
@@ -68,7 +68,10 @@ export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
 
       // tree — draw the tagline as a directory tree
       case 'tree': {
-        const parts = tagline.split(/[·•|,/]/).map((s) => s.trim()).filter(Boolean)
+        const parts = tagline
+          .split(/[·•|,/]/)
+          .map((s) => s.trim())
+          .filter(Boolean)
         const lines: Line[] = [{ text: 'C:\\Portfolio', tone: 'accent' }]
         parts.forEach((part, i) => {
           const branch = i === parts.length - 1 ? '└──' : '├──'
@@ -109,7 +112,10 @@ export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
     }
 
     idRef.current += 1
-    setHistory((prev) => [...prev.slice(-(MAX_ENTRIES - 1)), { id: idRef.current, cmd, output: result }])
+    setHistory((prev) => [
+      ...prev.slice(-(MAX_ENTRIES - 1)),
+      { id: idRef.current, cmd, output: result },
+    ])
     scrollPanelToBottom()
   }
 
@@ -144,7 +150,11 @@ export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
   }
 
   return (
-    <div ref={wrapRef} className="mt-5 sm:mt-4 cursor-text" onClick={() => inputRef.current?.focus()}>
+    <div
+      ref={wrapRef}
+      className="mt-5 sm:mt-4 cursor-text"
+      onClick={() => inputRef.current?.focus()}
+    >
       {/* Executed commands + output */}
       <div role="log" aria-live="polite" className="space-y-1">
         {history.map((entry) => (

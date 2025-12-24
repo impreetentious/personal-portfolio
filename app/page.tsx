@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-import { Hero }         from "@/components/Hero";
-import { Experience }   from "@/components/Experience";
-import { Skills }       from "@/components/Skills";
-import { Metrics }      from "@/components/Metrics";
-import { Achievements } from "@/components/Achievements";
-import { Education }    from "@/components/Education";
-import { Writing }      from "@/components/Writing";
-import { Contact }      from "@/components/Contact";
-import { Footer }       from "@/components/Footer";
+import type { Metadata } from 'next'
+import { Hero } from '@/components/Hero'
+import { Experience } from '@/components/Experience'
+import { Skills } from '@/components/Skills'
+import { Metrics } from '@/components/Metrics'
+import { Achievements } from '@/components/Achievements'
+import { Education } from '@/components/Education'
+import { Writing } from '@/components/Writing'
+import { Contact } from '@/components/Contact'
+import { Footer } from '@/components/Footer'
 
-import { siteConfig }   from "@/lib/config";
+import { siteConfig } from '@/lib/config'
 import {
   achievementsQuery,
   educationQuery,
@@ -25,8 +25,8 @@ import {
   type MetricItem,
   type SkillsEntry,
   type WritingItem,
-} from "@/lib/queries";
-import { getResumeUrl, sanityFetch } from "@/lib/sanity";
+} from '@/lib/queries'
+import { getResumeUrl, sanityFetch } from '@/lib/sanity'
 
 // ISR: statically render and revalidate hourly instead of rendering per request.
 export const revalidate = 3600
@@ -35,24 +35,24 @@ export const revalidate = 3600
 // so the tab title, OG card, and Twitter card stay in lockstep with the JSON-LD
 // block below and never drift when the name/description change.
 export const metadata: Metadata = {
-  title      : siteConfig.title,
+  title: siteConfig.title,
   description: siteConfig.description,
-  alternates : {
+  alternates: {
     canonical: '/',
   },
-  openGraph  : {
-    title      : siteConfig.title,
+  openGraph: {
+    title: siteConfig.title,
     description: siteConfig.description,
-    type       : 'website',
-    url        : siteConfig.url,
-    siteName   : siteConfig.name,
+    type: 'website',
+    url: siteConfig.url,
+    siteName: siteConfig.name,
   },
-  twitter    : {
-    card       : 'summary_large_image',
-    title      : siteConfig.title,
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
     description: siteConfig.description,
   },
-};
+}
 
 export default async function Home() {
   const [
@@ -88,33 +88,33 @@ export default async function Home() {
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@graph'  : [
+    '@graph': [
       {
-        '@type'    : 'WebSite',
-        '@id'      : `${siteUrl}/#website`,
-        url        : `${siteUrl}/`,
-        name       : siteConfig.title,
+        '@type': 'WebSite',
+        '@id': `${siteUrl}/#website`,
+        url: `${siteUrl}/`,
+        name: siteConfig.title,
         description: siteConfig.description,
-        publisher  : { '@id': `${siteUrl}/#person` },
+        publisher: { '@id': `${siteUrl}/#person` },
       },
       {
-        '@type'    : 'ProfilePage',
-        '@id'      : `${siteUrl}/#webpage`,
-        url        : `${siteUrl}/`,
-        name       : siteConfig.title,
+        '@type': 'ProfilePage',
+        '@id': `${siteUrl}/#webpage`,
+        url: `${siteUrl}/`,
+        name: siteConfig.title,
         description: siteConfig.description,
-        isPartOf   : { '@id': `${siteUrl}/#website` },
-        mainEntity : { '@id': `${siteUrl}/#person` },
+        isPartOf: { '@id': `${siteUrl}/#website` },
+        mainEntity: { '@id': `${siteUrl}/#person` },
       },
       {
-        '@type'    : 'Person',
-        '@id'      : `${siteUrl}/#person`,
-        name       : siteConfig.name,
-        url        : `${siteUrl}/`,
-        image      : `${siteUrl}/opengraph-image`,
-        email      : email,
+        '@type': 'Person',
+        '@id': `${siteUrl}/#person`,
+        name: siteConfig.name,
+        url: `${siteUrl}/`,
+        image: `${siteUrl}/opengraph-image`,
+        email: email,
         description: heroData?.bio || siteConfig.description,
-        knowsAbout : ['Product Strategy', 'Technology', 'Systems'],
+        knowsAbout: ['Product Strategy', 'Technology', 'Systems'],
         ...(profileUrls.length ? { sameAs: profileUrls } : {}),
       },
     ],
@@ -138,12 +138,12 @@ export default async function Home() {
       <Metrics data={metricItems ?? undefined} />
       <Achievements data={achievementItems ?? undefined} />
       <Education data={educationItems ?? undefined} />
-      
+
       {/* ── Feature Flag Toggle ── */}
       {siteConfig.features.showWriting && <Writing data={writingItems ?? undefined} />}
-      
+
       <Contact socialLinks={heroData?.socialLinks} />
       <Footer />
     </div>
-  );
+  )
 }

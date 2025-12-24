@@ -1,6 +1,6 @@
-import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {schemaTypes} from '@/sanity/schemas'
+import { defineConfig } from 'sanity'
+import { structureTool } from 'sanity/structure'
+import { schemaTypes } from '@/sanity/schemas'
 
 // Hero and Resume are singletons by contract (one document each — see their
 // schema docblocks), and the frontend reads `[0]`, so a duplicate would
@@ -18,9 +18,7 @@ export default defineConfig({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production',
 
-  plugins: [
-    structureTool(),
-  ],
+  plugins: [structureTool()],
 
   schema: {
     types: schemaTypes,
@@ -34,7 +32,7 @@ export default defineConfig({
     // ...and drop their per-document Duplicate action.
     actions: (prev, context) =>
       singletonTypes.has(context.schemaType)
-        ? prev.filter(({action}) => action !== 'duplicate')
+        ? prev.filter(({ action }) => action !== 'duplicate')
         : prev,
   },
 })

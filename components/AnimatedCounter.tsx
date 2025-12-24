@@ -1,7 +1,14 @@
 'use client'
 
-import {useEffect, useRef} from 'react'
-import {animate, motion, useInView, useMotionValue, useReducedMotion, useTransform} from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from 'framer-motion'
 
 type AnimatedCounterProps = {
   to: number
@@ -15,11 +22,10 @@ export function AnimatedCounter({
   prefix = '',
   suffix = '',
   duration = 1.5,
-  
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
 
-  const isInView = useInView(ref, {once: true, margin: '-10% 0px'})
+  const isInView = useInView(ref, { once: true, margin: '-10% 0px' })
   const prefersReduced = useReducedMotion()
 
   const motionValue = useMotionValue(0)

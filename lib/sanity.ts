@@ -1,10 +1,7 @@
-import {createClient, type QueryParams} from '@sanity/client'
-import {cache} from 'react'
-import {
-  EmptyCmsResultError,
-  shouldRejectEmptyCmsResult,
-} from './careerFallbacks'
-import {resumeQuery} from './queries'
+import { createClient, type QueryParams } from '@sanity/client'
+import { cache } from 'react'
+import { EmptyCmsResultError, shouldRejectEmptyCmsResult } from './careerFallbacks'
+import { resumeQuery } from './queries'
 
 type SanityEnv = {
   projectId?: string
@@ -43,7 +40,7 @@ let sanityClient: ReturnType<typeof createClient> | null = null
 
 function getSanityClient() {
   if (!sanityClient) {
-    const {projectId, dataset, token} = getSanityEnv()
+    const { projectId, dataset, token } = getSanityEnv()
     sanityClient = createClient({
       projectId: projectId ?? '',
       dataset,
@@ -60,7 +57,7 @@ export async function sanityFetch<T>(
   params: QueryParams = {},
   revalidate: number = DEFAULT_REVALIDATE_SECONDS,
 ): Promise<T | null> {
-  const {projectId} = getSanityEnv()
+  const { projectId } = getSanityEnv()
 
   if (!projectId) {
     console.warn('sanityFetch: NEXT_PUBLIC_SANITY_PROJECT_ID is not set.')
@@ -78,7 +75,7 @@ export async function sanityFetch<T>(
   // render statically and refresh on the ISR window rather than per request.
   try {
     const result = await withTimeout(
-      client.fetch<T>(query, params, {next: {revalidate}}),
+      client.fetch<T>(query, params, { next: { revalidate } }),
       FETCH_TIMEOUT_MS,
     )
     // An hourly ISR revalidation that *succeeds* with [] would otherwise replace
@@ -120,10 +117,7 @@ export async function sanityFetch<T>(
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   let timerId: ReturnType<typeof setTimeout>
   const timeout = new Promise<never>((_, reject) => {
-    timerId = setTimeout(
-      () => reject(new Error(`Sanity fetch timed out after ${ms}ms`)),
-      ms,
-    )
+    timerId = setTimeout(() => reject(new Error(`Sanity fetch timed out after ${ms}ms`)), ms)
   })
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timerId!))
 }
@@ -132,9 +126,7 @@ export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 // (RootLayout + Home) share one fetch per request instead of hitting Sanity —
 // and re-reading the env — twice. sanityFetch already guards errors/timeouts.
 export const getResumeUrl = cache(async (): Promise<string | undefined> => {
-  const resumeData = await sanityFetch<{url?: string; showDownloadButton?: boolean}>(
-    resumeQuery,
-  )
+  const resumeData = await sanityFetch<{ url?: string; showDownloadButton?: boolean }>(resumeQuery)
   if (resumeData?.showDownloadButton === false) return undefined
   return resumeData?.url
 })

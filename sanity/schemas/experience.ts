@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Experience supports two authoring modes:
@@ -26,9 +26,7 @@ export const experienceSchema = defineType({
         Array.isArray(doc.bulletPoints) &&
         doc.bulletPoints.length > 0
 
-      const hasMultiRoleArray =
-        Array.isArray(doc.roles) &&
-        doc.roles.length > 0
+      const hasMultiRoleArray = Array.isArray(doc.roles) && doc.roles.length > 0
 
       if (hasLegacySingleRole || hasMultiRoleArray) return true
 
@@ -54,7 +52,8 @@ export const experienceSchema = defineType({
       name: 'role',
       title: 'Job Title',
       type: 'string',
-      description: 'Use this for a single-role company entry. Leave blank if you are using the Roles array below.',
+      description:
+        'Use this for a single-role company entry. Leave blank if you are using the Roles array below.',
     }),
 
     defineField({
@@ -75,8 +74,9 @@ export const experienceSchema = defineType({
       name: 'bulletPoints',
       title: 'Bullet Points',
       type: 'array',
-      description: 'Impact highlights shown when the accordion card is expanded for a single-role entry.',
-      of: [{type: 'string'}],
+      description:
+        'Impact highlights shown when the accordion card is expanded for a single-role entry.',
+      of: [{ type: 'string' }],
     }),
 
     defineField({
@@ -84,7 +84,7 @@ export const experienceSchema = defineType({
       title: 'Skills Used',
       type: 'array',
       description: 'Tags rendered as pills inside the expanded card.',
-      of: [{type: 'string'}],
+      of: [{ type: 'string' }],
       options: {
         layout: 'tags',
       },
@@ -94,7 +94,8 @@ export const experienceSchema = defineType({
       name: 'displayDates',
       title: 'Company Summary Dates',
       type: 'string',
-      description: 'Optional summary shown on the collapsed row for a multi-role company, for example "2021 - Present".',
+      description:
+        'Optional summary shown on the collapsed row for a multi-role company, for example "2021 - Present".',
     }),
 
     defineField({
@@ -125,20 +126,21 @@ export const experienceSchema = defineType({
               name: 'dates',
               title: 'Duration',
               type: 'string',
-              description: 'Optional sub-duration for this role. Leave blank if the company-level summary dates are enough.',
+              description:
+                'Optional sub-duration for this role. Leave blank if the company-level summary dates are enough.',
             }),
             defineField({
               name: 'bulletPoints',
               title: 'Bullet Points',
               type: 'array',
-              of: [{type: 'string'}],
+              of: [{ type: 'string' }],
               validation: (Rule) => Rule.required().min(1),
             }),
             defineField({
               name: 'skillsUsed',
               title: 'Skills Used',
               type: 'array',
-              of: [{type: 'string'}],
+              of: [{ type: 'string' }],
               options: {
                 layout: 'tags',
               },
@@ -158,7 +160,8 @@ export const experienceSchema = defineType({
       name: 'isHidden',
       title: 'Hide this entry',
       type: 'boolean',
-      description: 'Toggle on to suppress this role from the portfolio without deleting the record.',
+      description:
+        'Toggle on to suppress this role from the portfolio without deleting the record.',
       initialValue: false,
     }),
   ],
@@ -167,7 +170,7 @@ export const experienceSchema = defineType({
     {
       title: 'Display Order',
       name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
+      by: [{ field: 'order', direction: 'asc' }],
     },
   ],
 
@@ -179,12 +182,10 @@ export const experienceSchema = defineType({
       hidden: 'isHidden',
       order: 'order',
     },
-    prepare({title, subtitle, roles, hidden, order}) {
+    prepare({ title, subtitle, roles, hidden, order }) {
       const roleCount = Array.isArray(roles) ? roles.length : 0
       const modeLabel =
-        roleCount > 0
-          ? `${roleCount} role${roleCount === 1 ? '' : 's'}`
-          : (subtitle ?? '')
+        roleCount > 0 ? `${roleCount} role${roleCount === 1 ? '' : 's'}` : (subtitle ?? '')
 
       return {
         title: `${order != null ? `${order}. ` : ''}${title ?? 'Untitled'}`,

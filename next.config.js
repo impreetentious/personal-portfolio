@@ -14,7 +14,10 @@ const securityHeaders = [
   // Trim the referrer sent cross-origin to just the origin.
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   // Opt out of powerful features the portfolio never uses.
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()' },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+  },
   // Only meaningful over HTTPS; ignored on plain http (e.g. localhost).
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
 ]

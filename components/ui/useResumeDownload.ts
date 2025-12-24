@@ -34,8 +34,8 @@ export function useResumeDownload(
 ) {
   const [state, setState] = useState<DownloadState>('idle')
 
-  const sessionRef   = useRef(0)
-  const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sessionRef = useRef(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const objectUrlRef = useRef<string | null>(null)
 
   // Keep the latest onComplete without re-creating `start`/`cancel` every render.
@@ -66,10 +66,13 @@ export function useResumeDownload(
   }, [clearTimer, revokeUrl])
 
   // Release the object URL + timer if the component unmounts mid-flight.
-  useEffect(() => () => {
-    clearTimer()
-    revokeUrl()
-  }, [clearTimer, revokeUrl])
+  useEffect(
+    () => () => {
+      clearTimer()
+      revokeUrl()
+    },
+    [clearTimer, revokeUrl],
+  )
 
   const start = useCallback(async () => {
     if (!resumeUrl || state !== 'idle') return
@@ -90,8 +93,8 @@ export function useResumeDownload(
       objectUrlRef.current = objectUrl
       setState('ready')
 
-      const link    = document.createElement('a')
-      link.href     = objectUrl
+      const link = document.createElement('a')
+      link.href = objectUrl
       link.download = fileName
       document.body.appendChild(link)
       link.click()

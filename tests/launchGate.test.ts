@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import {describe, it} from 'node:test'
+import { describe, it } from 'node:test'
 
 /**
  * Launch-gate pure logic mirrors app/robots.ts + app/sitemap.ts + lib/config.ts
@@ -17,7 +17,7 @@ function isIndexable(flag: string | undefined): boolean {
 function robotsRules(indexable: boolean, siteUrl: string) {
   if (!indexable) {
     return {
-      rules: {userAgent: '*', disallow: '/'},
+      rules: { userAgent: '*', disallow: '/' },
     }
   }
   return {
@@ -73,7 +73,7 @@ describe('launch gate — indexing flag', () => {
 describe('launch gate — robots', () => {
   it('disallows everything when not indexable', () => {
     assert.deepEqual(robotsRules(false, CANONICAL_DEFAULT), {
-      rules: {userAgent: '*', disallow: '/'},
+      rules: { userAgent: '*', disallow: '/' },
     })
   })
 

@@ -21,23 +21,23 @@ type WindowsTerminalProps = {
 }
 
 const BASE_TYPE_DELAY = 22
-const MIN_TYPE_DELAY  = 4
-const MAX_VELOCITY    = 8
+const MIN_TYPE_DELAY = 4
+const MAX_VELOCITY = 8
 
 const SHOW_WORKING_STATUS = false
 
 const DOWNLOAD_LABEL: Record<DownloadState, string> = {
-  idle:      '↓ resume.pdf',
+  idle: '↓ resume.pdf',
   compiling: '[COMPILING...]',
-  ready:     '[READY]',
-  error:     '[FAILED]',
+  ready: '[READY]',
+  error: '[FAILED]',
 }
 
 const DOWNLOAD_COLOR: Record<DownloadState, string> = {
-  idle:      'text-white',
+  idle: 'text-white',
   compiling: 'text-amber-300/90',
-  ready:     'text-green-300/90',
-  error:     'text-red-300/90',
+  ready: 'text-green-300/90',
+  error: 'text-red-300/90',
 }
 
 // Isolated clock so the once-a-second tick only re-renders this leaf, not the
@@ -61,7 +61,15 @@ function ISTClock({ className, ariaLabel = false }: { className?: string; ariaLa
   )
 }
 
-const PropertyRow = memo(function PropertyRow({ propKey, value, href }: { propKey: string; value: string; href?: string }) {
+const PropertyRow = memo(function PropertyRow({
+  propKey,
+  value,
+  href,
+}: {
+  propKey: string
+  value: string
+  href?: string
+}) {
   const valueNode = href ? (
     <a
       href={href}
@@ -83,7 +91,8 @@ const PropertyRow = memo(function PropertyRow({ propKey, value, href }: { propKe
         className="flex-1 mx-2 min-w-[8px] self-center"
         style={{
           height: '1px',
-          background: 'repeating-linear-gradient(90deg, #2c2c2c 0, #2c2c2c 3px, transparent 3px, transparent 9px)',
+          background:
+            'repeating-linear-gradient(90deg, #2c2c2c 0, #2c2c2c 3px, transparent 3px, transparent 9px)',
         }}
       />
       <span className="text-foreground/[0.24] shrink-0">:</span>
@@ -129,8 +138,24 @@ function MaximizeIcon() {
 function CloseXIcon({ size = 10 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 10 10" aria-hidden="true">
-      <line x1="0.5" y1="0.5" x2="9.5" y2="9.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
-      <line x1="9.5" y1="0.5" x2="0.5" y2="9.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="square" />
+      <line
+        x1="0.5"
+        y1="0.5"
+        x2="9.5"
+        y2="9.5"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="square"
+      />
+      <line
+        x1="9.5"
+        y1="0.5"
+        x2="0.5"
+        y2="9.5"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="square"
+      />
     </svg>
   )
 }
@@ -140,7 +165,10 @@ function TrashIcon() {
     <svg width="11" height="12" viewBox="0 0 11 12" fill="none" aria-hidden="true">
       <path
         d="M1 3.5h9M3.5 3.5V2a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v1.5M2.5 3.5l.6 7h5.8l.6-7"
-        stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )
@@ -148,12 +176,30 @@ function TrashIcon() {
 
 function PSIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" className="shrink-0">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 13 13"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0"
+    >
       <polyline
         points="1.5,4 5.5,6.5 1.5,9"
-        stroke="#61AFEF" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
+        stroke="#61AFEF"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <line x1="7" y1="9" x2="11.5" y2="9" stroke="#61AFEF" strokeWidth="1.4" strokeLinecap="round" />
+      <line
+        x1="7"
+        y1="9"
+        x2="11.5"
+        y2="9"
+        stroke="#61AFEF"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }
@@ -173,11 +219,26 @@ function WorkingStatus() {
 function GitBranchIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-      <circle cx="2.5" cy="2"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
-      <circle cx="8.5" cy="9"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
-      <circle cx="8.5" cy="2"  r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
-      <path d="M2.5 3.3V7a1.5 1.5 0 0 0 1.5 1.5h3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" strokeLinecap="round" />
-      <line x1="8.5" y1="3.3" x2="8.5" y2="7.7" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" strokeLinecap="round" />
+      <circle cx="2.5" cy="2" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <circle cx="8.5" cy="9" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <circle cx="8.5" cy="2" r="1.3" stroke="white" strokeWidth="0.85" strokeOpacity="0.80" />
+      <path
+        d="M2.5 3.3V7a1.5 1.5 0 0 0 1.5 1.5h3"
+        stroke="white"
+        strokeWidth="0.85"
+        strokeOpacity="0.80"
+        strokeLinecap="round"
+      />
+      <line
+        x1="8.5"
+        y1="3.3"
+        x2="8.5"
+        y2="7.7"
+        stroke="white"
+        strokeWidth="0.85"
+        strokeOpacity="0.80"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }
@@ -194,20 +255,22 @@ export function WindowsTerminal({
   const { openPalette } = usePalette()
 
   const [displayedChars, setDisplayedChars] = useState(0)
-  const [isIdle, setIsIdle]                 = useState(false)
+  const [isIdle, setIsIdle] = useState(false)
 
   const { state: downloadState, start: handleDownload } = useResumeDownload(resumeUrl, {
-    fileName    : 'Sidakpreet_Singh_Resume.pdf',
+    fileName: 'Sidakpreet_Singh_Resume.pdf',
     readyDelayMs: 400,
   })
 
-  const idleTimerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const typeDelayRef     = useRef(BASE_TYPE_DELAY)
-  const lastPointerRef   = useRef<{ x: number; y: number; t: number } | null>(null)
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const typeDelayRef = useRef(BASE_TYPE_DELAY)
+  const lastPointerRef = useRef<{ x: number; y: number; t: number } | null>(null)
   const velocityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const rafIdRef         = useRef<number | null>(null)
+  const rafIdRef = useRef<number | null>(null)
 
-  useEffect(() => { setDisplayedChars(0) }, [bio])
+  useEffect(() => {
+    setDisplayedChars(0)
+  }, [bio])
 
   useEffect(() => {
     if (!startTyping) return
@@ -231,11 +294,11 @@ export function WindowsTerminal({
     idleTimerRef.current = setTimeout(() => setIsIdle(true), 4000)
 
     window.addEventListener('mousemove', reset, { passive: true })
-    window.addEventListener('scroll',    reset, { passive: true })
+    window.addEventListener('scroll', reset, { passive: true })
 
     return () => {
       window.removeEventListener('mousemove', reset)
-      window.removeEventListener('scroll',    reset)
+      window.removeEventListener('scroll', reset)
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
     }
   }, [])
@@ -265,9 +328,9 @@ export function WindowsTerminal({
         const dt = now - lastPointerRef.current.t
 
         if (dt > 0) {
-          const speed           = Math.sqrt(dx * dx + dy * dy) / dt
+          const speed = Math.sqrt(dx * dx + dy * dy) / dt
           const normalizedSpeed = Math.min(speed / MAX_VELOCITY, 1)
-          typeDelayRef.current  = Math.round(
+          typeDelayRef.current = Math.round(
             BASE_TYPE_DELAY - normalizedSpeed * (BASE_TYPE_DELAY - MIN_TYPE_DELAY),
           )
         }
@@ -277,15 +340,15 @@ export function WindowsTerminal({
 
       if (velocityTimerRef.current) clearTimeout(velocityTimerRef.current)
       velocityTimerRef.current = setTimeout(() => {
-        typeDelayRef.current   = BASE_TYPE_DELAY
+        typeDelayRef.current = BASE_TYPE_DELAY
         lastPointerRef.current = null
       }, 280)
     })
   }
 
-  const displayedBio   = bio.slice(0, displayedChars)
+  const displayedBio = bio.slice(0, displayedChars)
   const displayedLines = displayedBio.split('\n')
-  const bioLines       = bio.split('\n')
+  const bioLines = bio.split('\n')
   const resolvedProfileFields = profileFields?.length ? profileFields : FALLBACK_PROFILE_FIELDS
   const leftColumnProps = resolvedProfileFields.filter((entry) => entry.column !== 'right')
   const rightColumnProps = resolvedProfileFields.filter((entry) => entry.column === 'right')
@@ -387,11 +450,11 @@ export function WindowsTerminal({
                   ],
                 }}
                 transition={{
-                  delay   : 2.8,
+                  delay: 2.8,
                   duration: 2.6,
-                  repeat  : Infinity,
-                  ease    : 'easeInOut',
-                  type    : 'tween',
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  type: 'tween',
                 }}
               >
                 Ctrl+K
@@ -467,12 +530,22 @@ export function WindowsTerminal({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-3">
             <div className="space-y-3 min-w-0">
               {leftColumnProps.map((entry) => (
-                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
+                <PropertyRow
+                  key={entry.key}
+                  propKey={entry.key}
+                  value={entry.value}
+                  href={entry.url}
+                />
               ))}
             </div>
             <div className="space-y-3 min-w-0">
               {rightColumnProps.map((entry) => (
-                <PropertyRow key={entry.key} propKey={entry.key} value={entry.value} href={entry.url} />
+                <PropertyRow
+                  key={entry.key}
+                  propKey={entry.key}
+                  value={entry.value}
+                  href={entry.url}
+                />
               ))}
             </div>
           </div>
@@ -486,13 +559,25 @@ export function WindowsTerminal({
               </div>
             </div>
             <div className="flex items-center h-full pr-0.5">
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none">
+              <button
+                aria-hidden="true"
+                tabIndex={-1}
+                className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100 text-[15px] leading-none"
+              >
                 +
               </button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100">
+              <button
+                aria-hidden="true"
+                tabIndex={-1}
+                className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100"
+              >
                 <TrashIcon />
               </button>
-              <button aria-hidden="true" tabIndex={-1} className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100">
+              <button
+                aria-hidden="true"
+                tabIndex={-1}
+                className="flex items-center justify-center w-7 sm:w-8 h-full cursor-default select-none text-foreground/[0.22] hover:text-foreground/[0.52] hover:bg-white/[0.05] transition-colors duration-100"
+              >
                 <CloseXIcon size={9} />
               </button>
             </div>
@@ -523,12 +608,17 @@ export function WindowsTerminal({
             <GitBranchIcon />
             <span className="font-mono text-xs text-white/85 leading-none">main</span>
           </div>
-          <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">✓ 0 errors</span>
+          <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
+            ✓ 0 errors
+          </span>
           <ISTClock className="sm:hidden font-mono text-xs text-white/85 leading-none tabular-nums" />
         </div>
 
         <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center pointer-events-none">
-          <ISTClock className="font-mono text-xs text-white/90 leading-none tabular-nums" ariaLabel />
+          <ISTClock
+            className="font-mono text-xs text-white/90 leading-none tabular-nums"
+            ariaLabel
+          />
         </div>
 
         <div className="hidden sm:flex items-center gap-3 sm:gap-4 ml-auto">
@@ -537,7 +627,9 @@ export function WindowsTerminal({
           <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
           {resumeUrl && (
             <>
-              <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">·</span>
+              <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">
+                ·
+              </span>
               <motion.button
                 onClick={handleDownload}
                 disabled={downloadState !== 'idle'}
@@ -545,7 +637,13 @@ export function WindowsTerminal({
                 initial={{ color: 'rgba(255,255,255,0.85)' }}
                 animate={
                   downloadState === 'idle'
-                    ? { color: ['rgba(255,255,255,0.85)', 'rgba(255,255,255,1)', 'rgba(255,255,255,0.85)'] }
+                    ? {
+                        color: [
+                          'rgba(255,255,255,0.85)',
+                          'rgba(255,255,255,1)',
+                          'rgba(255,255,255,0.85)',
+                        ],
+                      }
                     : { color: 'rgba(255,255,255,0.9)' }
                 }
                 transition={
@@ -571,9 +669,7 @@ export function WindowsTerminal({
             </>
           )}
         </div>
-        <div className="sm:hidden ml-auto shrink-0">
-          {SHOW_WORKING_STATUS && <WorkingStatus />}
-        </div>
+        <div className="sm:hidden ml-auto shrink-0">{SHOW_WORKING_STATUS && <WorkingStatus />}</div>
       </div>
     </motion.div>
   )

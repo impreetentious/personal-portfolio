@@ -33,8 +33,7 @@ export default function GlobalError({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily:
-            'ui-monospace, SFMono-Regular, Menlo, Monaco, "Cascadia Code", monospace',
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, "Cascadia Code", monospace',
         }}
       >
         <div style={{ maxWidth: 480, padding: '0 24px', textAlign: 'center' }}>

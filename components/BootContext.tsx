@@ -3,13 +3,7 @@
 import { createContext, useContext, type ReactNode } from 'react'
 const BootContext = createContext(true)
 
-export function BootProvider({
-  value,
-  children,
-}: {
-  value: boolean
-  children: ReactNode
-}) {
+export function BootProvider({ value, children }: { value: boolean; children: ReactNode }) {
   return <BootContext.Provider value={value}>{children}</BootContext.Provider>
 }
 

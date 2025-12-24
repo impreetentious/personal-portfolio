@@ -41,7 +41,7 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.10);
+  background-color: rgba(255, 255, 255, 0.1);
   border: 2px solid transparent;
   background-clip: padding-box;
   border-radius: 10px;
@@ -64,10 +64,19 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px),
-    radial-gradient(ellipse 110% 45% at 50% -5%, rgba(56,189,248,0.05) 0%, transparent 65%),
-    radial-gradient(circle, rgba(255,255,255,0.030) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 36px 36px;
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.06) 3px,
+      rgba(0, 0, 0, 0.06) 4px
+    ),
+    radial-gradient(ellipse 110% 45% at 50% -5%, rgba(56, 189, 248, 0.05) 0%, transparent 65%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    36px 36px;
   /* Promote to its own compositor layer so scrolling doesn't repaint this fixed backdrop */
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -88,8 +97,6 @@ body::after {
   backface-visibility: hidden;
 }
 
-
-
 @layer base {
   * {
     @apply border-white/10;
@@ -97,7 +104,7 @@ body::after {
   }
 
   ::selection {
-    background: rgba(56, 189, 248, 0.20);
+    background: rgba(56, 189, 248, 0.2);
     color: #f8fafc;
   }
 }
@@ -107,7 +114,11 @@ body::after {
     background-color: theme('colors.surface');
     border: 1px solid theme('colors.hairline');
     /* Top-edge sheen — reads as light hitting glass */
-    background-image: linear-gradient(180deg, rgba(255,255,255,0.028), rgba(255,255,255,0) 42%);
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.028),
+      rgba(255, 255, 255, 0) 42%
+    );
   }
 
   .surface-2 {
@@ -126,7 +137,7 @@ body::after {
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 28px rgba(56, 189, 248, 0.10);
+    box-shadow: 0 0 28px rgba(56, 189, 248, 0.1);
   }
 
   .animate-cursor-blink {
@@ -139,18 +150,33 @@ body::after {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes scan-down {
-  0%   { transform: translateY(-100%); opacity: 1; }
-  100% { transform: translateY(200%);  opacity: 0.3; }
+  0% {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200%);
+    opacity: 0.3;
+  }
 }
 
 @keyframes boot-fade-out {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Reduced-motion safety net for CSS-driven animation (Framer Motion is handled

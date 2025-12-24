@@ -1,13 +1,13 @@
-import type {Metadata} from 'next'
-import type {ReactNode} from 'react'
+import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 
 // The Studio is an authoring tool, not indexable content — keep search engines
 // out of it (mirrors the disallow rule in app/robots.ts). The title fills the
 // browser tab during the ~8s Studio JS load; Sanity replaces it dynamically as
 // the editor navigates.
 export const metadata: Metadata = {
-  title  : 'Studio · Sidakpreet Singh',
-  robots : {index: false, follow: false},
+  title: 'Studio · Sidakpreet Singh',
+  robots: { index: false, follow: false },
 }
 
 /**
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
  * This layout only applies to routes under /studio — all other pages are
  * completely unaffected.
  */
-export default function StudioLayout({children}: {children: ReactNode}) {
+export default function StudioLayout({ children }: { children: ReactNode }) {
   return (
     <div
       style={{

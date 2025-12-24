@@ -20,8 +20,11 @@ export default function Error({
   }, [error])
 
   return (
-    <div id="main-content" tabIndex={-1} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16 outline-none">
-
+    <div
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16 outline-none"
+    >
       {/* Ambient red fog — matches the 404 error state */}
       <div
         aria-hidden="true"
@@ -33,7 +36,6 @@ export default function Error({
       />
 
       <div className="relative z-10 w-full max-w-2xl">
-
         {/* Pre-window error badge */}
         <motion.p
           initial={{ opacity: 0, x: -12 }}
@@ -51,11 +53,13 @@ export default function Error({
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.48, delay: 0.06 }}
           className="rounded-xl overflow-hidden border border-white/[0.08] shadow-panel"
         >
-
           {/* ── Title bar ── */}
           <div className="flex items-center h-9 bg-[#0c0d14] border-b border-white/[0.05]">
             <div className="flex items-center gap-2 pl-3 pr-2.5 h-full bg-[#13161c] border-r border-white/[0.07] min-w-0 max-w-[60vw] sm:max-w-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500/80 shrink-0" aria-hidden="true" />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-red-500/80 shrink-0"
+                aria-hidden="true"
+              />
               <span className="font-mono text-[10.5px] sm:text-xs text-white/50 truncate select-none flex-1">
                 error.tsx
               </span>
@@ -77,12 +81,9 @@ export default function Error({
             <p className="text-white/30 mt-2">▲ Next.js — rendering route /</p>
             <p className="text-red-300/85 mt-3">✕ Unhandled Runtime Error</p>
             <p className="text-red-300/70 pl-4 break-words whitespace-pre-wrap">
-              {error?.message ||
-                'An unexpected error occurred while rendering this page.'}
+              {error?.message || 'An unexpected error occurred while rendering this page.'}
             </p>
-            {error?.digest && (
-              <p className="text-white/25 pl-4 mt-1">digest: {error.digest}</p>
-            )}
+            {error?.digest && <p className="text-white/25 pl-4 mt-1">digest: {error.digest}</p>}
             <p className="text-[#6A9955] mt-3">
               {'// logged to the console — retry the render, or head home.'}
             </p>
@@ -112,7 +113,6 @@ export default function Error({
             <span className="font-mono text-xs text-white/85 leading-none">main</span>
             <span className="font-mono text-xs text-white/90 leading-none">✕&nbsp;1 error</span>
           </div>
-
         </motion.div>
         {/* ╚═══════════════════════════════════════════════════════════════════╝ */}
 
@@ -125,7 +125,6 @@ export default function Error({
         >
           Something threw while rendering. It&apos;s not you — it&apos;s the server.
         </motion.p>
-
       </div>
     </div>
   )

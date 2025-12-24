@@ -6,12 +6,12 @@ A single scrolling page with a first-visit boot sequence, a hero terminal, secti
 
 ## Tech Stack
 
-* Next.js 16 (App Router)
-* Tailwind CSS
-* Framer Motion
-* TypeScript
-* Sanity CMS (`next-sanity`)
-* Fonts via `next/font/google`: Inter, JetBrains Mono, Space Grotesk
+- Next.js 16 (App Router)
+- Tailwind CSS
+- Framer Motion
+- TypeScript
+- Sanity CMS (`next-sanity`)
+- Fonts via `next/font/google`: Inter, JetBrains Mono, Space Grotesk
 
 ## Run locally
 
@@ -72,11 +72,11 @@ personal-portfolio/
 
 ## Content models
 
-* **Experience:** `company`, optional `location`/`displayDates`, legacy single-role fields or nested `roles[]`; hide with `isHidden`
-* **Skills:** Grouped by `category` ('Tools' | 'Skills') with `name` and optional `description`
-* **Metrics:** `value`, optional `prefix`/`suffix`, `label`, optional `sub`
-* **Achievements:** `event`, `organizer`, `date`, `notes`, optional `description`
-* **Education:** `institution`, `degree`, `years`, optional `gpa`
+- **Experience:** `company`, optional `location`/`displayDates`, legacy single-role fields or nested `roles[]`; hide with `isHidden`
+- **Skills:** Grouped by `category` ('Tools' | 'Skills') with `name` and optional `description`
+- **Metrics:** `value`, optional `prefix`/`suffix`, `label`, optional `sub`
+- **Achievements:** `event`, `organizer`, `date`, `notes`, optional `description`
+- **Education:** `institution`, `degree`, `years`, optional `gpa`
 
 ## Sanity setup
 
@@ -96,4 +96,4 @@ MIT © Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.13.0
+**Version:** v3.14.0
