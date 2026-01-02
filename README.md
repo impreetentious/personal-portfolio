@@ -37,6 +37,7 @@ Dev/preview listens on **port 3004**.
 
 ```bash
 npm run lint
+npm run format:check
 npm run build
 npm run test
 npm run test:e2e
@@ -96,4 +97,4 @@ MIT © Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.14.0
+**Version:** v3.14.1
