@@ -15,7 +15,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          # Pin to package.json engines / .nvmrc (Node 22.12+ for Sanity 5).
+          # Pin to package.json engines / .nvmrc (Node 22.20+; the lockfile's
+          # transitive `skills` package requires it).
           node-version-file: '.nvmrc'
           cache: npm
       - run: npm ci
