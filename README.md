@@ -24,7 +24,7 @@ A single scrolling page with a first-visit boot sequence, a hero terminal, secti
 NEXT_PUBLIC_ENABLE_STUDIO=true
 ```
 
-Requires Node **22.12+** (see `.nvmrc` and `package.json` `engines`).
+Requires Node **22.20+** (see `.nvmrc` and `package.json` `engines`).
 
 ```bash
 npm ci
@@ -97,4 +97,4 @@ MIT © Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.14.3
+**Version:** v3.14.4

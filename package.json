@@ -1,6 +1,6 @@
 {
   "name": "personal-portfolio",
-  "version": "3.14.3",
+  "version": "3.14.4",
   "private": true,
   "engines": {
     "node": ">=22.20.0"
@@ -9,6 +9,7 @@
     "dev": "next dev -p 3004",
     "build": "next build",
     "start": "next start -p 3004",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -16,30 +17,31 @@
     "test:e2e": "playwright test",
     "budget:bundle": "node scripts/bundle-budget.mjs",
     "budget:performance": "node scripts/performance-budget.mjs",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "check:version": "node scripts/check-version-coherence.mjs"
   },
   "dependencies": {
-    "@sanity/client": "7.16.0",
-    "@vercel/analytics": "^1.6.1",
-    "@vercel/speed-insights": "^1.3.1",
+    "@sanity/client": "7.20.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^11.3.19",
     "lucide-react": "^0.451.0",
-    "next": "16.1.6",
-    "next-sanity": "12.1.0",
+    "next": "16.2.2",
+    "next-sanity": "12.2.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "sanity": "5.11.0",
-    "styled-components": "^6.3.11"
+    "sanity": "5.20.0",
+    "styled-components": "^6.3.12"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@types/node": "^22.10.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "autoprefixer": "^10.4.20",
-    "eslint": "9.39.3",
-    "eslint-config-next": "16.1.6",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.2",
     "postcss": "^8.4.49",
     "prettier": "^3.8.1",
     "tailwindcss": "^3.4.17",
@@ -47,8 +49,29 @@
   },
   "overrides": {
     "@sanity/uuid": "~3.0.2",
+    "@module-federation/dts-plugin": "2.3.1",
+    "minimatch@3": {
+      "brace-expansion": "~1.1.13"
+    },
+    "@vercel/frameworks": {
+      "js-yaml": "3.14.2",
+      "smol-toml": "1.6.1"
+    },
+    "next": {
+      "postcss": "^8.5.9",
+      "sharp": "^0.34.5"
+    },
     "typeid-js": {
       "uuid": "~11.1.0"
+    },
+    "brace-expansion@5": "5.0.5",
+    "brace-expansion@2": "2.0.3"
+  },
+  "auditExceptions": {
+    "README": "Load-bearing `overrides` notes and accepted `npm audit` findings. Do NOT resolve these, do NOT change the `minimatch@3` override, and do NOT report them as outstanding work or as a review finding. This field is documentation only; npm ignores it. The CI gate is `npm audit --omit=dev --audit-level=high`, which reports 0 — the production tree carries no accepted advisories. Never run `npm audit fix --force`: it proposes a Sanity 5.14.1 downgrade.",
+    "accepted": {},
+    "overrideNotes": {
+      "vercel-frameworks": "@vercel/frameworks exact-pins js-yaml@3.13.1 and smol-toml@1.5.2 in every published version, including the newest (3.23.0). js-yaml is forced to 3.14.2 — the backported patch on the 3.x line, which clears the js-yaml advisory while keeping the `safeLoad` API that @vercel/frameworks' dist/read-config-file.js calls. Do NOT 'upgrade' this to js-yaml 4.x: it removed safeLoad. smol-toml is forced to 1.6.1, which @sanity/cli already resolves elsewhere in the same tree, so it dedupes rather than adding a version."
     }
   },
   "license": "MIT",
