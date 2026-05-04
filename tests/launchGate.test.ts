@@ -110,6 +110,7 @@ describe('launch gate — security headers contract', () => {
   // Mirrors next.config.js securityHeaders — assert the contract the e2e suite
   // also checks against live responses so a silent deletion fails unit tests too.
   const expected = [
+    'Content-Security-Policy',
     'X-Content-Type-Options',
     'X-Frame-Options',
     'Referrer-Policy',
@@ -119,6 +120,7 @@ describe('launch gate — security headers contract', () => {
 
   it('lists the conservative site-wide header set', () => {
     assert.deepEqual(expected, [
+      'Content-Security-Policy',
       'X-Content-Type-Options',
       'X-Frame-Options',
       'Referrer-Policy',

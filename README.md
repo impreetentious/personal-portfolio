@@ -53,7 +53,7 @@ At runtime, an empty-but-successful CMS response is refused, so a revalidation c
 
 ## Studio access
 
-`/studio` is **disabled by default**. It returns 404 unless `NEXT_PUBLIC_ENABLE_STUDIO=true`. Do not enable that flag on a public production origin; use Sanity's hosted Studio and project ACLs for editing instead.
+`/studio` is **disabled by default**. It returns 404 unless `NEXT_PUBLIC_ENABLE_STUDIO=true`. The owner may enable the embedded editing path in production; Sanity authentication protects the Studio, and the route receives a dedicated CSP for its documented Sanity service origins.
 
 Search indexing is controlled by `NEXT_PUBLIC_ALLOW_INDEXING` (default false in `.env.example`).
 
@@ -89,7 +89,7 @@ If you already created documents with older shapes for achievements/education/me
 
 ## Deploy
 
-The production path is GitHub `main` → Vercel. Set `NEXT_PUBLIC_SANITY_PROJECT_ID` in the Vercel project environment; without it the production build fails. Leave `NEXT_PUBLIC_ENABLE_STUDIO` unset in production, and flip `NEXT_PUBLIC_ALLOW_INDEXING` on only when the deployment is meant to be indexed.
+The production path is GitHub `main` → Vercel. Set `NEXT_PUBLIC_SANITY_PROJECT_ID` in the Vercel project environment; without it the production build fails. `NEXT_PUBLIC_ENABLE_STUDIO` is owner-controlled, and `NEXT_PUBLIC_ALLOW_INDEXING` should be flipped on only when the deployment is meant to be indexed.
 
 ## License
 
@@ -97,4 +97,4 @@ MIT © Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.16.0
+**Version:** v3.17.0
