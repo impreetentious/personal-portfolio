@@ -1,6 +1,6 @@
 {
   "name": "personal-portfolio",
-  "version": "3.14.4",
+  "version": "3.15.0",
   "private": true,
   "engines": {
     "node": ">=22.20.0"
@@ -26,12 +26,12 @@
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^11.3.19",
     "lucide-react": "^0.451.0",
-    "next": "16.2.2",
+    "next": "16.2.3",
     "next-sanity": "12.2.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "sanity": "5.20.0",
-    "styled-components": "^6.3.12"
+    "styled-components": "^6.4.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
@@ -41,9 +41,9 @@
     "@types/react-dom": "19.2.3",
     "autoprefixer": "^10.4.20",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "16.2.3",
     "postcss": "^8.4.49",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.3"
   },
@@ -51,7 +51,7 @@
     "@sanity/uuid": "~3.0.2",
     "@module-federation/dts-plugin": "2.3.1",
     "minimatch@3": {
-      "brace-expansion": "~1.1.13"
+      "brace-expansion": "~1.1.14"
     },
     "@vercel/frameworks": {
       "js-yaml": "3.14.2",
@@ -65,13 +65,13 @@
       "uuid": "~11.1.0"
     },
     "brace-expansion@5": "5.0.5",
-    "brace-expansion@2": "2.0.3"
+    "brace-expansion@2": "2.1.0"
   },
   "auditExceptions": {
     "README": "Load-bearing `overrides` notes and accepted `npm audit` findings. Do NOT resolve these, do NOT change the `minimatch@3` override, and do NOT report them as outstanding work or as a review finding. This field is documentation only; npm ignores it. The CI gate is `npm audit --omit=dev --audit-level=high`, which reports 0 — the production tree carries no accepted advisories. Never run `npm audit fix --force`: it proposes a Sanity 5.14.1 downgrade.",
     "accepted": {},
     "overrideNotes": {
-      "vercel-frameworks": "@vercel/frameworks exact-pins js-yaml@3.13.1 and smol-toml@1.5.2 in every published version, including the newest (3.23.0). js-yaml is forced to 3.14.2 — the backported patch on the 3.x line, which clears the js-yaml advisory while keeping the `safeLoad` API that @vercel/frameworks' dist/read-config-file.js calls. Do NOT 'upgrade' this to js-yaml 4.x: it removed safeLoad. smol-toml is forced to 1.6.1, which @sanity/cli already resolves elsewhere in the same tree, so it dedupes rather than adding a version."
+      "vercel-frameworks": "@vercel/frameworks exact-pins js-yaml@3.13.1 and smol-toml@1.5.2 in every published version, including the newest (3.24.0). js-yaml is forced to 3.14.2 — the backported patch on the 3.x line, which clears the js-yaml advisory while keeping the `safeLoad` API that @vercel/frameworks' dist/read-config-file.js calls. Do NOT 'upgrade' this to js-yaml 4.x: it removed safeLoad. smol-toml is forced to 1.6.1, which @sanity/cli already resolves elsewhere in the same tree, so it dedupes rather than adding a version."
     }
   },
   "license": "MIT",
