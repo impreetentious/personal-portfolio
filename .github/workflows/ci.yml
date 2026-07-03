@@ -20,35 +20,28 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
       - run: npm ci
-      # Scoped to production dependencies: the shipped bundle must stay advisory-free.
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm audit --audit-level=high
       - run: npm run check:version
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run format:check
       - run: npm run test
 
-      # CI has no CMS credentials, so it cannot run the real production build.
-      # Assert the guard that stands in for it: an unconfigured production build
-      # must fail, and fail for this reason. Without this step the smoke build
-      # below would keep passing even if the guard were deleted.
+      # CI has no CMS credentials. First verify that an unconfigured production
+      # build fails for the intended guard, then compile with neutral demo data.
       - name: CMS guard refuses an unconfigured production build
         run: |
-          if npm run build > guard-build.log 2>&1; then
+          if npm run build > "$RUNNER_TEMP/guard-build.log" 2>&1; then
             echo "::error::Production build succeeded with no NEXT_PUBLIC_SANITY_PROJECT_ID — the next.config.js guard has regressed."
             exit 1
           fi
-          if ! grep -q 'NEXT_PUBLIC_SANITY_PROJECT_ID is not set for a production build' guard-build.log; then
+          if ! grep -q 'NEXT_PUBLIC_SANITY_PROJECT_ID is not set for a production build' "$RUNNER_TEMP/guard-build.log"; then
             echo "::error::Build failed, but not with the expected CMS guard message:"
-            cat guard-build.log
+            cat "$RUNNER_TEMP/guard-build.log"
             exit 1
           fi
 
-      # Deliberate content-empty smoke build. This proves the app compiles and
-      # renders without CMS content; it does not prove the deployed build.
-      - run: npm run build
-        env:
-          ALLOW_BUILD_WITHOUT_SANITY: 'true'
+      - run: npm run build:smoke
       - run: npm run budget:bundle
       - run: npm run budget:performance
 

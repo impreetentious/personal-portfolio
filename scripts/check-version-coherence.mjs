@@ -20,6 +20,10 @@ function markerVersion(file) {
   return source.match(/\*\*Version:\*\*\s*`?v?([0-9]+\.[0-9]+\.[0-9]+)[^`\n]*/)?.[1]
 }
 
+function applicationVersion(file) {
+  return read(file).match(/APP_VERSION\s*=\s*['"]([0-9]+\.[0-9]+\.[0-9]+)['"]/)?.[1]
+}
+
 if (!version) errors.push('package.json missing version')
 
 if (existsSync(path.join(root, 'package-lock.json'))) {
@@ -37,14 +41,17 @@ if (existsSync(path.join(root, 'package-lock.json'))) {
   errors.push('missing package-lock.json or pnpm-lock.yaml')
 }
 
-// README.md, package.json, and the lockfile root are the release-version surfaces.
-// Nothing else is gated: the build-time handover log is disposable by design, so no gate
-// may ever require its presence.
+// README.md, package.json, the lockfile root, and the in-app constant are the
+// release-version surfaces.
 for (const file of ['README.md']) {
   const found = markerVersion(file)
   if (!found) errors.push(`${file} missing **Version:** vX.Y.Z marker`)
   else if (found !== version) errors.push(`${file} version ${found} != package.json ${version}`)
 }
+
+const appVersion = applicationVersion('lib/version.ts')
+if (!appVersion) errors.push('lib/version.ts missing APP_VERSION')
+else if (appVersion !== version) errors.push(`lib/version.ts version ${appVersion} != ${version}`)
 
 const nvm = read('.nvmrc').trim()
 if (nvm !== EXPECTED.nvmrc) errors.push(`.nvmrc ${nvm} != ${EXPECTED.nvmrc}`)

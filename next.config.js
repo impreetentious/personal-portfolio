@@ -86,11 +86,8 @@ const nextConfig = {
 }
 
 // A production build without a Sanity project id would ship a page whose
-// content sections are all empty — career fallbacks stay off in production
-// until NEXT_PUBLIC_USE_CAREER_FALLBACKS=true (see lib/config.ts). Fail the
-// build loudly instead of deploying that silently. Scoped to the build phase
-// so `next dev` and `next start` are unaffected.
-// Intentional CMS-less smoke build: ALLOW_BUILD_WITHOUT_SANITY=true npm run build
+// content sections are all empty. Fail loudly instead of deploying that
+// silently. The build:smoke script is the explicit CMS-less exception.
 module.exports = (phase) => {
   if (
     phase === PHASE_PRODUCTION_BUILD &&
@@ -99,10 +96,8 @@ module.exports = (phase) => {
   ) {
     throw new Error(
       'NEXT_PUBLIC_SANITY_PROJECT_ID is not set for a production build — content ' +
-        'sections would render empty (career fallbacks stay off until ' +
-        'NEXT_PUBLIC_USE_CAREER_FALLBACKS=true). Set the variable (see ' +
-        '.env.example), or set ALLOW_BUILD_WITHOUT_SANITY=true to build without ' +
-        'CMS content anyway.',
+        'sections would render empty. Set the variable (see .env.example), or use ' +
+        '`npm run build:smoke` for an intentional CMS-less build.',
     )
   }
   return nextConfig
