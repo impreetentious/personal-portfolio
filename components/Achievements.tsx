@@ -4,8 +4,9 @@ import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { ChevronDown, Award } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { AchievementItem } from '@/lib/queries'
 
 const tbodyVariants = {
@@ -38,11 +39,7 @@ export function Achievements({ data }: AchievementsProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const inView = useInView(wrapperRef, { once: true, margin: '-60px' })
   const [activeId, setActiveId] = useState<string | null>(null)
-  const achievements = resolveSectionData(
-    data,
-    [...careerFallbacks.achievements],
-    useCareerFallbacks,
-  )
+  const achievements = resolveSectionData(data, [...demoContent.achievements], useDemoContent)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!achievements.length) return null
@@ -173,7 +170,7 @@ export function Achievements({ data }: AchievementsProps) {
                               ease: 'easeOut',
                               type: 'tween',
                             }}
-                            className="text-accent/40 group-hover:text-accent transition-colors duration-200 shrink-0"
+                            className="text-accent/70 group-hover:text-accent transition-colors duration-200 shrink-0"
                           >
                             <ChevronDown className="h-3.5 w-3.5" />
                           </motion.span>
@@ -201,7 +198,7 @@ export function Achievements({ data }: AchievementsProps) {
 
                   <tr key={`${item.id}-exp`}>
                     <td colSpan={4} className="p-0">
-                      {/* FIX E: intermediate block wrapper so motion.div is not a direct child of td, fixing Safari/Firefox height collapse.
+                      {/* The intermediate block keeps motion.div from becoming a direct child of td, avoiding Safari/Firefox height collapse.
                           id here is the aria-controls target for the sr-only toggle above; keeping it on the always-mounted
                           wrapper means the reference is stable whether the content is expanded or collapsed. */}
                       <div id={`${item.id}-details`}>

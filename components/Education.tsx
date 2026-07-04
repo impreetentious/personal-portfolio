@@ -3,13 +3,12 @@
 import { motion } from 'framer-motion'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { EducationItem } from '@/lib/queries'
 
 // ─── Configuration ────────────────────────────────────────────────────────────
-
-const SHOW_GPA = true // Toggle this to false to hide GPAs globally
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -18,11 +17,7 @@ type EducationProps = {
 }
 
 export function Education({ data }: EducationProps) {
-  const educationItems = resolveSectionData(
-    data,
-    [...careerFallbacks.education],
-    useCareerFallbacks,
-  )
+  const educationItems = resolveSectionData(data, [...demoContent.education], useDemoContent)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!educationItems.length) return null
@@ -70,13 +65,13 @@ export function Education({ data }: EducationProps) {
                   {item.degree}
                 </motion.p>
 
-                {SHOW_GPA && item.gpa && (
+                {item.gpa && (
                   <motion.p
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true, margin: '-30px' }}
                     transition={{ duration: 0.4, ease: 'easeOut', type: 'tween', delay: 0.3 }}
-                    className="mt-1 md:mt-0 md:col-start-2 md:row-start-2 md:text-right font-mono text-[11px] tracking-wide text-foreground/40"
+                    className="mt-1 md:mt-0 md:col-start-2 md:row-start-2 md:text-right font-mono text-[11px] tracking-wide text-foreground/70"
                   >
                     {item.gpa}
                   </motion.p>

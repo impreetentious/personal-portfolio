@@ -4,11 +4,12 @@ import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from '
 import { useRef, type ReactNode } from 'react'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { MetricItem } from '@/lib/queries'
 
-// ─── Animation variants — unchanged from original ─────────────────────────────
+// ─── Animation variants ───────────────────────────────────────────────────────
 const cardVariants = {
   hidden: { opacity: 0, y: 28, filter: 'blur(6px)' },
   visible: (i: number) => ({
@@ -91,7 +92,7 @@ function TiltCard({
 export function Metrics({ data }: MetricsProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const inView = useInView(gridRef, { once: true, margin: '-80px' })
-  const metrics = resolveSectionData(data, [...careerFallbacks.metrics], useCareerFallbacks)
+  const metrics = resolveSectionData(data, [...demoContent.metrics], useDemoContent)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!metrics.length) return null

@@ -5,8 +5,9 @@ import { ChevronDown, MapPin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { ExperienceItem, ExperienceRoleItem } from '@/lib/queries'
 
 type ExperienceProps = {
@@ -55,9 +56,9 @@ export function Experience({ data }: ExperienceProps) {
     return () => mediaQuery.removeEventListener('change', updateIsMobile)
   }, [])
 
-  const visibleItems = resolveSectionData(data, [...careerFallbacks.experience], useCareerFallbacks)
+  const visibleItems = resolveSectionData(data, [...demoContent.experience], useDemoContent)
 
-  // Production with no CMS data and gate off: hide rather than show placeholders.
+  // Production with no CMS data and demo mode off: hide the section.
   if (!visibleItems.length) return null
 
   return (

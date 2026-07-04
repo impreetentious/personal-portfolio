@@ -1,5 +1,5 @@
 import { identity } from './identity'
-import { shouldUseCareerFallbacks } from './careerFallbacks'
+import { shouldUseDemoContent } from './content'
 
 // Canonical origin for the deployed portfolio. Override per-environment with
 // NEXT_PUBLIC_SITE_URL (e.g. a Vercel preview URL); the trailing slash is
@@ -16,21 +16,17 @@ export const siteConfig = {
   title: `${identity.name} | Portfolio`,
   description: 'Product strategy, tech & systems — an interactive terminal-themed portfolio.',
   email: identity.email,
+  tagline: identity.tagline,
+  location: identity.location,
   isIndexable,
   features: {
     showWriting: true,
   },
 }
 
-// P8 production gate. Career-section fallbacks (Experience/Skills/Metrics/
-// Achievements/Education/Writing) stay development-only until the owner vets
-// real copy in lib/careerFallbacks.ts and sets
-// NEXT_PUBLIC_USE_CAREER_FALLBACKS=true. Hero/Contact identity fallbacks are
-// always production-safe and are unaffected by this switch.
-export const useCareerFallbacks = shouldUseCareerFallbacks({
+// Neutral demo records keep local layouts and smoke tests useful without a CMS.
+// Production uses them only when the explicit demo flag is enabled.
+export const useDemoContent = shouldUseDemoContent({
   nodeEnv: process.env.NODE_ENV,
-  envFlag: process.env.NEXT_PUBLIC_USE_CAREER_FALLBACKS,
+  envFlag: process.env.NEXT_PUBLIC_USE_DEMO_CONTENT,
 })
-
-/** @deprecated Prefer useCareerFallbacks — kept as a thin alias for readability. */
-export const showDevFallbacks = useCareerFallbacks

@@ -4,8 +4,9 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { WritingItem } from '@/lib/queries'
 
 type WritingProps = {
@@ -13,7 +14,7 @@ type WritingProps = {
 }
 
 export function Writing({ data }: WritingProps) {
-  const writingItems = resolveSectionData(data, [...careerFallbacks.writing], useCareerFallbacks)
+  const writingItems = resolveSectionData(data, [...demoContent.writing], useDemoContent)
 
   // Production with no CMS data and gate off: hide rather than show placeholders.
   if (!writingItems.length) return null

@@ -1,10 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import { useCareerFallbacks } from '@/lib/config'
-import { careerFallbacks, resolveSectionData } from '@/lib/fallbackContent'
+import { useDemoContent } from '@/lib/config'
+import { resolveSectionData } from '@/lib/content'
+import { demoContent } from '@/lib/demoContent'
 import type { SkillItem, SkillsEntry } from '@/lib/queries'
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ type SkillsProps = {
 }
 
 export function Skills({ data }: SkillsProps) {
-  const skillEntries = resolveSectionData(data, [...careerFallbacks.skills], useCareerFallbacks)
+  const skillEntries = resolveSectionData(data, [...demoContent.skills], useDemoContent)
 
   const tools = skillEntries.find((entry) => entry.category === 'Tools') ?? {
     category: 'Tools' as const,
@@ -57,27 +57,6 @@ export function Skills({ data }: SkillsProps) {
   // with an empty items list (or entirely absent) would otherwise leave a bare
   // "TOOLS"/"SKILLS" heading with nothing under it.
   const columns = [tools, skills].filter((entry) => entry.items.length > 0)
-
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    setIsDesktop(window.innerWidth >= 1024)
-
-    let debounceTimer: ReturnType<typeof setTimeout>
-
-    const handleResize = () => {
-      clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => {
-        setIsDesktop(window.innerWidth >= 1024)
-      }, 150)
-    }
-
-    window.addEventListener('resize', handleResize, { passive: true })
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      clearTimeout(debounceTimer)
-    }
-  }, [])
 
   // Production with no CMS data (or only empty categories): hide the section
   // rather than show placeholders. Placed after hooks so hook order stays stable.
@@ -95,8 +74,7 @@ export function Skills({ data }: SkillsProps) {
       {/* ── Grid ── */}
       <div className="mt-6 grid gap-10 border-t border-white/10 pt-8 lg:grid-cols-2">
         {columns.map((entry, index) => {
-          // If desktop, the second column comes from the right. If mobile, everything comes from the left.
-          const direction = index === 0 ? 'left' : isDesktop ? 'right' : 'left'
+          const direction = index === 0 ? 'left' : 'right'
 
           return (
             // Individual column trigger ensures correct scroll-timing on mobile
@@ -120,15 +98,22 @@ export function Skills({ data }: SkillsProps) {
               </motion.h3>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                {entry.items.map((item) => {
+                {entry.items.map((item, itemIndex) => {
                   // Deterministic tooltip id so aria-describedby wires the pill
                   // to it (spaces/punctuation stripped for a valid HTML id).
                   const tooltipId = item.description
-                    ? `skill-tip-${entry.category}-${item.name}`.replace(/[^\w-]/g, '-')
+                    ? `skill-tip-${entry.category}-${item.name}-${itemIndex}`.replace(
+                        /[^\w-]/g,
+                        '-',
+                      )
                     : undefined
                   return (
                     // ── Tooltip wrapper & Animated Pill ──
-                    <motion.div key={item.name} variants={pillVariants} className="group relative">
+                    <motion.div
+                      key={`${item.name}-${itemIndex}`}
+                      variants={pillVariants}
+                      className="group relative"
+                    >
                       {/* Tooltip card — only renders when description is present.
                           Reveals on hover (mouse) or when focus lands inside the
                           group (keyboard Tab or touch tap-focus). */}
