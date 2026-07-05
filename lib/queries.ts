@@ -101,36 +101,6 @@ export const experienceQuery = `
   }
 `
 
-export type ProjectItem = {
-  title: string
-  summary: string
-  techStack: string[]
-  liveUrl?: string
-  githubUrl?: string
-  featured: boolean
-}
-
-export const projectsQuery = `
-  *[_type == "projects" && isHidden != true] | order(order asc) {
-    title,
-    summary,
-    techStack,
-    liveUrl,
-    githubUrl,
-    featured
-  }
-`
-
-export const featuredProjectsQuery = `
-  *[_type == "projects" && isHidden != true && featured == true] | order(order asc) {
-    title,
-    summary,
-    techStack,
-    liveUrl,
-    githubUrl
-  }
-`
-
 export type SkillItem = {
   name: string
   description?: string

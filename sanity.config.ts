@@ -2,12 +2,8 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { schemaTypes } from '@/sanity/schemas'
 
-// Hero and Resume are singletons by contract (one document each — see their
-// schema docblocks), and the frontend reads `[0]`, so a duplicate would
-// silently swap live content. Block every way the Studio can mint a second
-// copy; Delete stays available so an accidental extra can still be cleaned up.
-// (On a brand-new empty dataset, create the first hero/resume via the CLI or
-// temporarily lift these guards.)
+// Hero and Resume use stable document IDs so the Studio can create them on a
+// new dataset without also exposing duplicate-document paths.
 const singletonTypes = new Set(['hero', 'resume'])
 
 export default defineConfig({
@@ -18,18 +14,35 @@ export default defineConfig({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production',
 
-  plugins: [structureTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            S.listItem()
+              .id('hero')
+              .title('Hero')
+              .child(S.document().schemaType('hero').documentId('hero')),
+            S.listItem()
+              .id('resume')
+              .title('Resume')
+              .child(S.document().schemaType('resume').documentId('resume')),
+            S.divider(),
+            ...S.documentTypeListItems().filter((item) => !singletonTypes.has(item.getId() ?? '')),
+          ]),
+    }),
+  ],
 
   schema: {
     types: schemaTypes,
   },
 
   document: {
-    // Remove hero/resume from every "create new document" entry point
-    // (global create menu and the structure pane's + button alike).
+    // Fixed singleton panes above are the only creation paths for these types.
     newDocumentOptions: (prev) =>
       prev.filter((template) => !singletonTypes.has(template.templateId)),
-    // ...and drop their per-document Duplicate action.
+    // A singleton can be edited or deleted, but never duplicated.
     actions: (prev, context) =>
       singletonTypes.has(context.schemaType)
         ? prev.filter(({ action }) => action !== 'duplicate')

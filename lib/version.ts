@@ -1,2 +1,2 @@
 /** Public application version. Kept in sync by `npm run check:version`. */
-export const APP_VERSION = '3.17.2'
+export const APP_VERSION = '3.17.3'

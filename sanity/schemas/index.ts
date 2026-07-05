@@ -8,7 +8,6 @@
 import { heroSchema } from './hero'
 import { resumeSchema } from './resume'
 import { experienceSchema } from './experience'
-import { projectsSchema } from './projects'
 import { metricsSchema } from './metrics'
 import { educationSchema } from './education'
 import { skillsSchema } from './skills'
@@ -22,7 +21,6 @@ export const schemaTypes = [
 
   // Ordered collections
   experienceSchema,
-  projectsSchema,
   metricsSchema,
 
   // Supporting sections
