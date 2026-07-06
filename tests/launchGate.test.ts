@@ -3,7 +3,7 @@ import { describe, it } from 'node:test'
 
 /**
  * Launch-gate pure logic mirrors app/robots.ts + app/sitemap.ts + lib/config.ts
- * URL normalisation so the owner's env flags are test-covered without booting Next.
+ * URL normalisation so environment flags are test-covered without booting Next.
  */
 
 function normaliseSiteUrl(raw: string | undefined, fallback: string): string {

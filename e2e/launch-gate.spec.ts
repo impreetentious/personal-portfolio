@@ -85,13 +85,13 @@ test.describe('Launch-gate consumers', () => {
   })
 
   test('default canonical domain matches the recorded portfolio host', async () => {
-    // Config default (lib/config.ts) must stay aligned with the owner's domain
+    // Config default (lib/config.ts) must stay aligned with the canonical domain
     // unless NEXT_PUBLIC_SITE_URL overrides it. This guards silent drift.
     const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '')
     if (!configured) {
       expect(CANONICAL_DEFAULT).toBe('https://portfolio.sidakpreetsingh.com')
     } else {
-      // Owner override is authoritative when set — just assert it is absolute https.
+      // An environment override is authoritative when set; require absolute HTTPS.
       expect(configured.startsWith('https://')).toBeTruthy()
     }
   })

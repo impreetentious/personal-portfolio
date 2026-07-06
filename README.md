@@ -1,100 +1,90 @@
 # Personal Portfolio
 
-Interactive, terminal-inspired personal portfolio with Sanity-backed content, Framer Motion, and a dark UI system.
+Terminal-inspired portfolio built with Next.js and Sanity. The single-page interface includes a first-visit boot sequence, section navigation, a command palette, résumé downloads, accessible error states, structured data, dynamic Open Graph artwork, and an optional embedded Sanity Studio.
 
-A single scrolling page with a first-visit boot sequence, a hero terminal, section navigation, a command palette, résumé download entry points, themed error states, JSON-LD, sitemap, robots, dynamic Open Graph art, and a dynamic favicon. Career content is fetched from Sanity server-side with hourly revalidation and an eight-second per-query timeout.
+## Stack
 
-## Tech Stack
+- Next.js 16 with the App Router
+- React 19 and TypeScript
+- Tailwind CSS and Framer Motion
+- Sanity CMS with hourly revalidation
+- Playwright and axe-core for interaction and accessibility tests
 
-- Next.js 16 (App Router)
-- Tailwind CSS
-- Framer Motion
-- TypeScript
-- Sanity CMS (`next-sanity`)
-- Fonts via `next/font/google`: Inter, JetBrains Mono, Space Grotesk
+## Local development
 
-## Run locally
-
-1. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SANITY_PROJECT_ID`.
-2. Optionally set `SANITY_API_READ_TOKEN` for authenticated reads.
-3. Enable the embedded Studio only when you need it locally:
+The project requires Node 22.20 or newer; `.nvmrc` pins the exact CI version.
 
 ```bash
-# in .env.local
-NEXT_PUBLIC_ENABLE_STUDIO=true
-```
-
-Requires Node **22.20+** (see `.nvmrc` and `package.json` `engines`).
-
-```bash
+nvm use
 npm ci
+cp .env.example .env.local
 npm run dev
 ```
 
-Dev/preview listens on **port 3004**.
+Set `NEXT_PUBLIC_SANITY_PROJECT_ID` in `.env.local` to use a Sanity project. `SANITY_API_READ_TOKEN` is optional for authenticated reads. Development mode uses neutral demo records when CMS-backed sections have no data.
 
-## Verify
+## Configuration
 
-```bash
-npm run lint
-npm run format:check
-npm run build
-npm run test
-npm run test:e2e
-```
+| Variable                        | Purpose                                                        | Default                                 |
+| ------------------------------- | -------------------------------------------------------------- | --------------------------------------- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project used for portfolio content                      | Required for production builds          |
+| `NEXT_PUBLIC_SANITY_DATASET`    | Sanity dataset                                                 | `production`                            |
+| `SANITY_API_READ_TOKEN`         | Optional authenticated server-side reads                       | Unset                                   |
+| `NEXT_PUBLIC_SITE_URL`          | Canonical site origin                                          | `https://portfolio.sidakpreetsingh.com` |
+| `NEXT_PUBLIC_ALLOW_INDEXING`    | Enables indexing, sitemap entries, and permissive robots rules | `false`                                 |
+| `NEXT_PUBLIC_ENABLE_STUDIO`     | Enables the embedded `/studio` route                           | `false`                                 |
+| `NEXT_PUBLIC_USE_DEMO_CONTENT`  | Uses neutral fixtures in production-mode smoke builds          | `false`                                 |
+| `ALLOW_BUILD_WITHOUT_SANITY`    | Allows an intentional CMS-less production build                | `false`                                 |
 
-`npm run build` fails without `NEXT_PUBLIC_SANITY_PROJECT_ID` unless you set `ALLOW_BUILD_WITHOUT_SANITY=true` (used in CI smoke builds). A project ID that is set but unreachable also fails the build, by design. Run `ALLOW_BUILD_WITHOUT_SANITY=true npm run build` before `npm run test:e2e` so Playwright can start the production server.
+`/studio` returns 404 unless explicitly enabled. When enabled, Sanity authentication protects the editor and a route-specific Content Security Policy permits its required service origins.
 
 ## Content behavior
 
-CMS-backed career sections are **hidden** in production when their fetch returns no data, rather than rendering an empty shell. Set `NEXT_PUBLIC_USE_CAREER_FALLBACKS=true` to render the committed fallback copy in `lib/careerFallbacks.ts` instead — review that copy before enabling it. Hero and contact identity fallbacks are always on.
+The hero and contact areas have committed identity fallbacks. Experience, skills, metrics, achievements, education, and writing prefer CMS records and are hidden in production when no records exist. Neutral fixtures in `lib/demoContent.ts` are reserved for development, smoke builds, and UI tests.
 
-At runtime, an empty-but-successful CMS response is refused, so a revalidation cannot replace a good page with blanks.
+CMS requests time out after eight seconds. Failed requests abort configured production builds, while runtime revalidation failures propagate to Next.js so it can retain the previously generated page. Successful empty collections are treated as intentional and hide the corresponding section.
 
-## Studio access
+Supported Sanity document types are `hero`, `resume`, `experience`, `skills`, `metrics`, `achievements`, `education`, and `writing`. Hero and résumé are fixed-ID singleton documents in Studio.
 
-`/studio` is **disabled by default**. It returns 404 unless `NEXT_PUBLIC_ENABLE_STUDIO=true`. The owner may enable the embedded editing path in production; Sanity authentication protects the Studio, and the route receives a dedicated CSP for its documented Sanity service origins.
+## Verification
 
-Search indexing is controlled by `NEXT_PUBLIC_ALLOW_INDEXING` (default false in `.env.example`).
+Run the static and unit-test suite:
 
-## Architecture
-
-```text
-personal-portfolio/
-├── app/                  # routes, metadata, robots, sitemap, studio
-├── components/           # UI sections + ui/ primitives
-├── e2e/                  # Playwright interaction + axe suite
-├── lib/                  # config, identity, Sanity client, content fallbacks, queries
-├── tests/                # Node unit tests
-├── sanity/schemas/       # CMS schemas
-├── tailwind.config.ts
-└── next.config.js
+```bash
+npm run verify
 ```
 
-## Content models
+Verify a production-mode build without CMS credentials, then run budgets and browser tests:
 
-- **Experience:** `company`, optional `location`/`displayDates`, legacy single-role fields or nested `roles[]`; hide with `isHidden`
-- **Skills:** Grouped by `category` ('Tools' | 'Skills') with `name` and optional `description`
-- **Metrics:** `value`, optional `prefix`/`suffix`, `label`, optional `sub`
-- **Achievements:** `event`, `organizer`, `date`, `notes`, optional `description`
-- **Education:** `institution`, `degree`, `years`, optional `gpa`
+```bash
+npm run build:smoke
+npm run budget:bundle
+npm run budget:performance
+npm run test:e2e
+```
 
-## Sanity setup
+`npm run build` intentionally fails without `NEXT_PUBLIC_SANITY_PROJECT_ID`. The smoke build is not a substitute for a deployment build against the configured production dataset.
 
-Supported document types: `hero`, `resume`, `experience`, `skills`, `metrics`, `achievements`, `education`, `writing`.
+## Project structure
 
-If you already created documents with older shapes for achievements/education/metrics, update those records in Studio before relying on live content.
+```text
+app/                  Routes, metadata, robots, sitemap, and Studio
+components/           Portfolio sections and UI primitives
+e2e/                  Playwright interaction and accessibility tests
+lib/                  Configuration, content policy, queries, and Sanity client
+sanity/schemas/        CMS document schemas
+scripts/               Version and performance gates
+tests/                 Node unit tests
+```
 
-`sanity.cli.ts` is included so Sanity CLI commands resolve the same project and dataset as the embedded Studio.
+## Deployment
 
-## Deploy
-
-The production path is GitHub `main` → Vercel. Set `NEXT_PUBLIC_SANITY_PROJECT_ID` in the Vercel project environment; without it the production build fails. `NEXT_PUBLIC_ENABLE_STUDIO` is owner-controlled, and `NEXT_PUBLIC_ALLOW_INDEXING` should be flipped on only when the deployment is meant to be indexed.
+Deploy with Node 22 and set the Sanity project, dataset, and canonical site URL in the hosting environment. Leave indexing disabled for preview deployments; enable it only on the canonical public deployment. The repository includes a GitHub Actions workflow that runs dependency, static-analysis, build, budget, unit, browser, and accessibility gates.
 
 ## License
 
-MIT © Sidakpreet Singh — see [LICENSE](LICENSE).
+MIT © Sidakpreet Singh. See [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.17.5
+**Version:** v3.17.6

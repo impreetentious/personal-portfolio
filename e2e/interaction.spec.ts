@@ -72,11 +72,7 @@ test.describe('Production interaction QA matrix', () => {
     await dismissBoot(page)
 
     const experience = page.locator('#experience')
-    if ((await experience.count()) === 0) {
-      test.skip(true, 'Experience section hidden (no CMS / gate off)')
-      return
-    }
-
+    await expect(experience).toHaveCount(1)
     await experience.scrollIntoViewIfNeeded()
     const toggle = experience.getByRole('button').first()
     await expect(toggle).toBeVisible()
@@ -97,11 +93,7 @@ test.describe('Production interaction QA matrix', () => {
     await dismissBoot(page)
 
     const section = page.locator('#achievements')
-    if ((await section.count()) === 0) {
-      test.skip(true, 'Achievements section hidden (no CMS / gate off)')
-      return
-    }
-
+    await expect(section).toHaveCount(1)
     await section.scrollIntoViewIfNeeded()
     const toggle = section.locator('button[aria-controls]').first()
     await expect(toggle).toBeVisible()
@@ -115,17 +107,10 @@ test.describe('Production interaction QA matrix', () => {
     await dismissBoot(page)
 
     const skills = page.locator('#skills')
-    if ((await skills.count()) === 0) {
-      test.skip(true, 'Skills section hidden (no CMS / gate off)')
-      return
-    }
-
+    await expect(skills).toHaveCount(1)
     await skills.scrollIntoViewIfNeeded()
     const pill = skills.locator('button, [tabindex="0"]').first()
-    if ((await pill.count()) === 0) {
-      test.skip(true, 'No focusable skill pills')
-      return
-    }
+    await expect(pill).toHaveCount(1)
     await pill.focus()
     await page.keyboard.press('Escape')
     // Dismissal is a no-throw smoke — tooltip may already be closed.
@@ -140,10 +125,7 @@ test.describe('Production interaction QA matrix', () => {
     const contact = page.locator('#contact')
     await contact.scrollIntoViewIfNeeded()
     const copyButton = contact.getByRole('link', { name: /click to copy/i }).first()
-    if ((await copyButton.count()) === 0) {
-      test.skip(true, 'No copy-to-clipboard contact channels')
-      return
-    }
+    await expect(copyButton).toHaveCount(1)
     await copyButton.click()
     await expect(contact.locator('[aria-live="polite"]')).toBeVisible()
   })
@@ -153,7 +135,7 @@ test.describe('Production interaction QA matrix', () => {
     await dismissBoot(page)
 
     // Hero terminal and/or palette expose resume. Presence is enough here —
-    // the PDF binary itself is an owner CMS asset.
+    // the PDF binary itself is a CMS asset.
     const resumeControls = page.getByRole('button', { name: /resume/i })
     const count = await resumeControls.count()
     // Smoke build without CMS may have zero resume buttons — that is accepted.

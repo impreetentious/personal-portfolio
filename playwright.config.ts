@@ -36,6 +36,7 @@ export default defineConfig({
       ...process.env,
       PORT: String(PORT),
       ALLOW_BUILD_WITHOUT_SANITY: process.env.ALLOW_BUILD_WITHOUT_SANITY ?? 'true',
+      NEXT_PUBLIC_USE_DEMO_CONTENT: process.env.NEXT_PUBLIC_USE_DEMO_CONTENT ?? 'true',
     },
   },
 })
