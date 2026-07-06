@@ -24,13 +24,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 // ── Import the master config ──
 import { siteConfig } from '@/lib/config'
-
-// Fictional "sidakpreet-os" build number shown in the winfetch/winget easter
-// eggs. Deliberately a fixed, thematic value (mirrors the BIOS v1.4.7 in the
-// boot sequence) — NOT the repo/portfolio version, so it never needs bumping and
-// should not be "corrected" to the package version by a future audit.
-const OS_VERSION = '1.4.7'
+import { APP_VERSION } from '@/lib/version'
 import { useResumeDownload, type DownloadState } from '@/components/ui/useResumeDownload'
+
+const SITE_HOST = new URL(siteConfig.url).hostname
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -117,10 +114,6 @@ const RESUME_ACTION: PaletteAction = {
 
 // ─── Terminal Engine Dictionaries ─────────────────────────────────────────────
 
-// Roster note: `stack` and `hire` were retired here because they duplicated
-// the Skills and Contact navigation destinations respectively — the palette
-// already routes there through nav. The 3 Windows-native replacements below
-// (winfetch/winget/tasklist) keep the terminal theme without shadowing nav.
 const HELP_ACTIONS: PaletteAction[] = [
   { id: 'cmd-who', shortLabel: '> who', icon: User, description: 'about me' },
   { id: 'cmd-ping', shortLabel: '> ping', icon: Wifi, description: 'connection test' },
@@ -142,14 +135,14 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'hi',
-      textLine: '  Sidakpreet Singh — Product Strategy & GTM professional.',
+      textLine: `  ${siteConfig.name} — ${siteConfig.description}`,
     },
     {
       id: 'w2',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'hi',
-      textLine: '  IIM Indore MBA · HCLSoftware · ex-Bain',
+      textLine: `  ${siteConfig.tagline}`,
     },
     {
       id: 'w3',
@@ -165,14 +158,14 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'default',
-      textLine: '  Ping sidakpreetsingh.com: 32 bytes of data',
+      textLine: `  Ping ${SITE_HOST}: 32 bytes of data`,
     },
     {
       id: 'p2',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: '  64 bytes from edge-01: seq=0 ttl=69 time=0.69ms',
+      textLine: '  Navigation shell available',
     },
     { id: 'p3', shortLabel: '', isTerminalOutput: true, colorMode: 'hi', textLine: '  pong. ✓' },
   ],
@@ -182,28 +175,28 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'hi',
-      textLine: '  system.status → all green',
+      textLine: '  interface.status → ready',
     },
     {
       id: 's2',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: '  domain      live ✓',
+      textLine: `  version     v${APP_VERSION}`,
     },
     {
       id: 's3',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: '  portfolio   deployed & active ✓',
+      textLine: '  content     Sanity CMS',
     },
     {
       id: 's4',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: '  ambition    unbounded',
+      textLine: '  rendering   Next.js',
     },
   ],
   winfetch: [
@@ -226,7 +219,7 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: `        OS       sidakpreet-os v${OS_VERSION}`,
+      textLine: `        App      portfolio v${APP_VERSION}`,
     },
     {
       id: 'wf4',
@@ -240,28 +233,14 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: "        Host     IIM Indore MBA '25",
+      textLine: `        Host     ${siteConfig.location}`,
     },
     {
       id: 'wf6',
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'ok',
-      textLine: '        Kernel   ex-Bain · HCLSoftware',
-    },
-    {
-      id: 'wf7',
-      shortLabel: '',
-      isTerminalOutput: true,
-      colorMode: 'ok',
-      textLine: '        GPU      gaming-grade',
-    },
-    {
-      id: 'wf8',
-      shortLabel: '',
-      isTerminalOutput: true,
-      colorMode: 'ok',
-      textLine: '        Uptime   always-on',
+      textLine: '        Stack    Next.js · React · Sanity',
     },
   ],
   winget: [
@@ -277,7 +256,7 @@ const TERMINAL_OUTPUTS: Record<string, PaletteAction[]> = {
       shortLabel: '',
       isTerminalOutput: true,
       colorMode: 'hi',
-      textLine: `  Found Sidakpreet Singh [Portfolio v${OS_VERSION}]`,
+      textLine: `  Found ${siteConfig.name} [Portfolio v${APP_VERSION}]`,
     },
     {
       id: 'wi3',
@@ -387,8 +366,10 @@ export function CommandPalette({
   resumeUrl,
   initialQuery = '',
 }: CommandPaletteProps) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialQuery)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [opening, setOpening] = useState({ isOpen, initialQuery })
+  const [availableHrefs, setAvailableHrefs] = useState<Set<string> | null>(null)
 
   const {
     state: downloadState,
@@ -405,10 +386,12 @@ export function CommandPalette({
   const modalRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
-  const allActions = useMemo<PaletteAction[]>(
-    () => (resumeUrl ? [...NAV_ACTIONS, RESUME_ACTION] : NAV_ACTIONS),
-    [resumeUrl],
-  )
+  const allActions = useMemo<PaletteAction[]>(() => {
+    const navigationActions = availableHrefs
+      ? NAV_ACTIONS.filter(({ href }) => href && availableHrefs.has(href))
+      : NAV_ACTIONS
+    return resumeUrl ? [...navigationActions, RESUME_ACTION] : navigationActions
+  }, [availableHrefs, resumeUrl])
 
   // ── Terminal Engine ───────────────────────────────────────────────────────
   // Easter-egg commands (help/nav/who/ping/…) remain strict exact-match to keep
@@ -443,6 +426,15 @@ export function CommandPalette({
     return [...prefixHits, ...substringHits]
   }, [allActions, query])
 
+  // Reset before the input is committed; a deferred reset can erase typed text.
+  if (opening.isOpen !== isOpen || opening.initialQuery !== initialQuery) {
+    setOpening({ isOpen, initialQuery })
+    if (isOpen) {
+      setQuery(initialQuery)
+      setActiveIndex(0)
+    }
+  }
+
   useEffect(() => {
     // Closing (or unmounting) mid-download: cancel it so a fetch that resolves
     // after the palette is gone can't fire a save dialog or leak its blob URL.
@@ -450,8 +442,6 @@ export function CommandPalette({
       cancelDownload()
       return
     }
-    setQuery(initialQuery)
-    setActiveIndex(0)
     const timer = setTimeout(() => {
       // Touch devices: don't auto-focus. Focusing the field pops the soft
       // keyboard instantly and buries the idle prompt — on mobile the palette
@@ -461,8 +451,21 @@ export function CommandPalette({
       if (window.matchMedia('(pointer: coarse)').matches) return
       inputRef.current?.focus()
     }, 60)
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [isOpen, initialQuery, cancelDownload])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const timer = setTimeout(() => {
+      const hrefs = NAV_ACTIONS.flatMap(({ href }) =>
+        href && document.querySelector(href) ? [href] : [],
+      )
+      setAvailableHrefs(new Set(hrefs))
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [isOpen])
 
   useEffect(() => {
     if (!isOpen) return
@@ -499,11 +502,6 @@ export function CommandPalette({
     return () => window.removeEventListener('keydown', handleTab)
   }, [isOpen, filtered.length])
 
-  // ── Clamp active index when filtered list shrinks ─────────────────────────
-  useEffect(() => {
-    setActiveIndex((i) => Math.min(i, Math.max(0, filtered.length - 1)))
-  }, [filtered.length])
-
   // ── Execute action ────────────────────────────────────────────────────────
   const executeAction = useCallback(
     (action: PaletteAction) => {
@@ -536,10 +534,12 @@ export function CommandPalette({
   const executeActionRef = useRef(executeAction)
   const queryRef = useRef(query)
 
-  filteredRef.current = filtered
-  activeIndexRef.current = activeIndex
-  executeActionRef.current = executeAction
-  queryRef.current = query
+  useEffect(() => {
+    filteredRef.current = filtered
+    activeIndexRef.current = activeIndex
+    executeActionRef.current = executeAction
+    queryRef.current = query
+  }, [filtered, activeIndex, executeAction, query])
 
   useEffect(() => {
     if (!isOpen) return
@@ -847,7 +847,7 @@ export function CommandPalette({
                     </span>
                   </div>
 
-                  {/* Live Telemetry System */}
+                  {/* Connection status */}
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1.5">
                       <span className="relative flex h-2 w-2">
@@ -858,18 +858,6 @@ export function CommandPalette({
                         SYS.ONLINE
                       </span>
                     </div>
-
-                    <div className="h-3 w-px bg-white/10" />
-
-                    <span className="select-none font-mono text-[10px] text-foreground/30">
-                      node: <span className="text-foreground/50">edge-01</span>
-                    </span>
-
-                    <div className="h-3 w-px bg-white/10" />
-
-                    <span className="select-none font-mono text-[10px] text-foreground/30">
-                      loc: <span className="text-foreground/50">IN</span>
-                    </span>
                   </div>
                 </div>
               </div>

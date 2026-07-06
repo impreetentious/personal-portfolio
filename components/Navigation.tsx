@@ -50,6 +50,7 @@ export function Navigation({
   const [heroExit, setHeroExit] = useState(720)
   const heroExitRef = useRef(heroExit)
   const [activeSection, setActiveSection] = useState<string>('home')
+  const [availableSectionIds, setAvailableSectionIds] = useState<Set<string> | null>(null)
   const [hasPassedHero, setHasPassedHero] = useState(false)
   const [mobileNavHidden, setMobileNavHidden] = useState(false)
   const lastScrollY = useRef(0)
@@ -63,7 +64,23 @@ export function Navigation({
   const hasScrolledRef = useRef(false)
 
   useEffect(() => {
-    const updateHeroExit = () => setHeroExit(window.innerHeight * 0.82)
+    const frame = requestAnimationFrame(() => {
+      const sectionIds = NAV_SECTIONS.map(({ id }) => id).filter((id) =>
+        document.getElementById(id),
+      )
+      setAvailableSectionIds(new Set(sectionIds))
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
+  useEffect(() => {
+    const updateHeroExit = () => {
+      setHeroExit(window.innerHeight * 0.82)
+      if (window.innerWidth >= 768 && mobileNavHiddenRef.current) {
+        mobileNavHiddenRef.current = false
+        setMobileNavHidden(false)
+      }
+    }
     updateHeroExit()
 
     let debounceId: ReturnType<typeof setTimeout> | null = null
@@ -108,7 +125,7 @@ export function Navigation({
       setHidden(false)
       directionRef.current = null
     } else if (delta > 10 && direction !== directionRef.current) {
-      setHidden(direction === 'down')
+      setHidden(window.innerWidth < 768 && direction === 'down')
       directionRef.current = direction
     }
 
@@ -165,6 +182,9 @@ export function Navigation({
   )
 
   const isOnHome = !hasPassedHero
+  const visibleNavigationItems = availableSectionIds
+    ? navigationItems.filter(({ href }) => availableSectionIds.has(href.slice(1)))
+    : navigationItems
 
   // The boot overlay covers the nav visually but doesn't block Tab focus into
   // it — without inert, an invisible control could still open the palette
@@ -174,7 +194,7 @@ export function Navigation({
   return (
     <div
       aria-hidden={isSuppressed || undefined}
-      // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
+      // Use the empty-string form so `inert` is emitted as a native HTML attribute.
       inert={isSuppressed ? ('' as unknown as true) : undefined}
     >
       {/* ── Scroll progress bar ── */}
@@ -234,97 +254,55 @@ export function Navigation({
             className="group flex items-center gap-2.5 border border-white/10 bg-[#050505]/80 px-3 py-2 backdrop-blur-md transition-all duration-200 ease-out hover:border-accent/30 hover:bg-accent/10 active:scale-95 active:bg-accent/15"
           >
             <Terminal
-              className="h-4 w-4 text-foreground/50 transition-colors group-hover:text-accent"
+              className="h-4 w-4 text-foreground/70 transition-colors group-hover:text-accent"
               strokeWidth={2}
             />
-            <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 transition-colors group-hover:text-accent">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/70 transition-colors group-hover:text-accent">
               Cmd
             </span>
-            <span className="ml-1 rounded-sm border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] text-foreground/40 transition-colors group-hover:border-accent/20 group-hover:text-accent/80">
+            <span className="ml-1 rounded-sm border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] text-foreground/70 transition-colors group-hover:border-accent/20 group-hover:text-accent">
               Ctrl+K
             </span>
           </button>
         </Magnetic>
       </motion.div>
 
-      {/* ── Mobile bottom nav ── */}
+      {/* One responsive navigation tree: bottom bar on small screens, side rail
+          on desktop. Keeping a single set of links avoids shipping duplicate
+          destinations and SVGs in the initial HTML. */}
       <motion.nav
         style={{ opacity: mobileNavOpacity, visibility: mobileNavVisibility }}
         initial={{ y: '0%' }}
         animate={{ y: mobileNavHidden ? '100%' : '0%' }}
         transition={{ type: 'tween', ease: 'easeInOut', duration: 0.3 }}
-        className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-[#050505]/80 backdrop-blur-md border-t border-white/10"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#050505]/80 backdrop-blur-md md:pointer-events-none md:inset-x-auto md:bottom-auto md:left-0 md:top-0 md:flex md:h-full md:w-32 md:flex-col md:items-center md:border-0 md:bg-transparent md:backdrop-blur-none"
       >
-        <div className="mx-auto flex h-16 max-w-4xl items-center justify-evenly px-2 sm:px-4">
-          {navigationItems.map(({ label, href, icon: Icon }) => {
-            const isActive = activeSection === href.slice(1)
-            return (
-              <a
-                key={label}
-                href={href}
-                className="group flex flex-1 min-w-0 flex-col items-center justify-center gap-1 py-1 text-[9px] sm:text-[10px] font-medium transition-transform duration-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
-              >
-                <span
-                  className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
-                    isActive
-                      ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)]'
-                      : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)]'
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5" strokeWidth={2} />
-                </span>
-                <span
-                  className={`block w-full truncate text-center transition-colors duration-200 ease-out ${
-                    isActive ? 'text-accent' : 'text-white/75 group-hover:text-accent'
-                  }`}
-                >
-                  {label}
-                </span>
-              </a>
-            )
-          })}
-        </div>
-      </motion.nav>
-
-      {/* ── Desktop side rail ── */}
-      <motion.nav
-        initial={{ opacity: 0, x: -32, visibility: 'hidden' }}
-        animate={
-          !isOnHome
-            ? { opacity: 1, x: 0, visibility: 'visible' }
-            : { opacity: 0, x: -32, visibility: 'hidden' }
-        }
-        transition={{ type: 'tween', ease: 'easeOut', duration: isOnHome ? 0.18 : 0.38 }}
-        className="pointer-events-none fixed left-0 top-0 h-full w-32 z-40 hidden md:flex md:flex-col md:items-center bg-transparent"
-      >
-        <div className="pointer-events-auto flex flex-1 flex-col items-center justify-center py-6">
-          <div className="relative flex flex-col items-center gap-6">
-            {navigationItems.map(({ label, href, icon: Icon }) => {
+        <div className="mx-auto flex h-16 max-w-4xl items-center justify-evenly px-2 sm:px-4 md:pointer-events-auto md:h-full md:flex-1 md:flex-col md:justify-center md:py-6">
+          <div className="contents md:relative md:flex md:flex-col md:items-center md:gap-6">
+            {visibleNavigationItems.map(({ label, href, icon: Icon }) => {
               const isActive = activeSection === href.slice(1)
               return (
                 <a
                   key={label}
                   href={href}
-                  className="relative z-10 group flex w-24 min-w-0 flex-col items-center gap-2 px-3 py-2 text-[11px] font-medium transition-transform duration-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                  className="group relative z-10 flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-1 text-[9px] font-medium transition-transform duration-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:text-[10px] md:w-24 md:flex-none md:gap-2 md:px-3 md:py-2 md:text-[11px]"
                 >
-                  {/* Left hook — slides out from left on hover/active, fades in sync with other states */}
                   <span
                     aria-hidden="true"
-                    className={`pointer-events-none absolute left-0 top-[30px] h-px w-5 bg-accent origin-left transition-[opacity,transform] duration-200 ease-out ${
+                    className={`pointer-events-none absolute left-0 top-[30px] hidden h-px w-5 origin-left bg-accent transition-[opacity,transform] duration-200 ease-out md:block ${
                       isActive
-                        ? 'opacity-70 scale-x-100'
-                        : 'opacity-0 scale-x-50 group-hover:opacity-35 group-hover:scale-x-100'
+                        ? 'scale-x-100 opacity-70'
+                        : 'scale-x-50 opacity-0 group-hover:scale-x-100 group-hover:opacity-35'
                     }`}
                   />
-                  {/* I5: Desktop rail icon badge — dual-layer shadow, bumped bg/border */}
                   <span
-                    className={`flex h-11 w-11 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out ${
+                    className={`flex h-8 w-8 items-center justify-center border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out sm:h-9 sm:w-9 md:h-11 md:w-11 ${
                       isActive
-                        ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(56,189,248,0.20),0_0_22px_rgba(56,189,248,0.50)]'
-                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.14),0_0_18px_rgba(56,189,248,0.38)]'
+                        ? 'border-accent/40 bg-accent/[0.14] text-accent shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)] md:shadow-[0_0_0_1px_rgba(56,189,248,0.20),0_0_22px_rgba(56,189,248,0.50)]'
+                        : 'border-white/20 bg-background/35 text-white/75 group-hover:border-accent/40 group-hover:bg-accent/[0.14] group-hover:text-accent group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.45)] md:group-hover:shadow-[0_0_0_1px_rgba(56,189,248,0.14),0_0_18px_rgba(56,189,248,0.38)]'
                     }`}
                   >
-                    <Icon className="h-4 w-4" strokeWidth={2} />
+                    <Icon className="h-3.5 w-3.5 md:h-4 md:w-4" strokeWidth={2} />
                   </span>
                   <span
                     className={`block w-full truncate text-center transition-colors duration-200 ease-out ${

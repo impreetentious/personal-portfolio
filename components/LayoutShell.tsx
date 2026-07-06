@@ -38,23 +38,26 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
   const pathname = usePathname()
   const isStudio = pathname?.startsWith('/studio')
+  const isPortfolio = pathname === '/'
 
   useEffect(() => {
-    // Escape hatch for the Sanity Studio
-    if (isStudio) {
-      setBootPhase('done')
-      return
-    }
-    // Same tab session → skip full boot for a brief flash. sessionStorage is
-    // cleared when the tab closes, so a fresh tab still gets the full sequence.
-    let hasVisited = false
-    try {
-      hasVisited = sessionStorage.getItem(SESSION_VISITED_KEY) === '1'
-    } catch {
-      // Private-mode Safari or blocked storage — fall through to full boot.
-    }
-    setBootPhase(hasVisited ? 'flash' : 'full')
-  }, [isStudio])
+    const frame = requestAnimationFrame(() => {
+      if (!isPortfolio) {
+        setBootPhase('done')
+        return
+      }
+      // Same tab session → skip full boot for a brief flash. sessionStorage is
+      // cleared when the tab closes, so a fresh tab still gets the full sequence.
+      let hasVisited = false
+      try {
+        hasVisited = sessionStorage.getItem(SESSION_VISITED_KEY) === '1'
+      } catch {
+        // Private-mode Safari or blocked storage — fall through to full boot.
+      }
+      setBootPhase(hasVisited ? 'flash' : 'full')
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [isPortfolio])
 
   const handleBootComplete = useCallback(() => {
     try {
@@ -80,11 +83,11 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
   useEffect(() => {
     // Disable command palette shortcuts while in Studio
-    if (isStudio) return
+    if (!isPortfolio) return
 
     const handler = (e: KeyboardEvent) => {
       // Ctrl+K on any OS, plus ⌘K on Mac. Visual hints in the UI still show
-      // "Ctrl+K" by owner decision — the Windows/terminal theme is deliberate;
+      // "Ctrl+K" stays visible to match the Windows/terminal theme;
       // the extra Cmd binding is a functional courtesy, not a visual one.
       if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault()
@@ -101,10 +104,10 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isStudio, bootPhase])
+  }, [isPortfolio, bootPhase])
 
   // ── Body scroll lock ──────────────────────────────────────────────────────
-  // Single owner for the body lock: the boot overlay and the palette both want
+  // One effect owns the body lock: the boot overlay and the palette both want
   // to lock scroll, so deriving one boolean (instead of two effects that each
   // save/restore) avoids the case where one effect's cleanup restored a stale
   // value the other still needed, permanently locking the page.
@@ -138,9 +141,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // treating pending as blocking would leave <main aria-hidden inert> forever
   // (noscript only hides the visual cover). Brief pre-hydration tab access is
   // an accepted trade for no-JS readability.
-  const bootBlocking = !isStudio && (bootPhase === 'full' || bootPhase === 'flash')
+  const bootBlocking = isPortfolio && (bootPhase === 'full' || bootPhase === 'flash')
 
-  // React 18 drops boolean `inert`; the empty-string form actually reaches the DOM
+  // Use the empty-string form so `inert` is emitted as a native HTML attribute.
   const mainInert = isPaletteOpen || bootBlocking ? ('' as unknown as true) : undefined
 
   // Palette-open push-back: blur + scale <main> down. Scale rides framer's
@@ -185,7 +188,7 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     // Writing, Education, ScrollReveal, etc.) globally instead of per-component.
     <MotionConfig reducedMotion="user">
       {/* Keyboard skip link — first focusable element; jumps past the nav to content */}
-      {!isStudio && (
+      {isPortfolio && (
         <a
           href="#main-content"
           className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[400] focus-visible:rounded-md focus-visible:border focus-visible:border-accent/40 focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:font-mono focus-visible:text-sm focus-visible:text-accent focus-visible:shadow-panel"
@@ -196,14 +199,14 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
       {/* Without JS the boot effect never runs, so the SSR'd 'pending' cover
           would blanket the page forever — let no-JS visitors read the content. */}
-      {!isStudio && (
+      {isPortfolio && (
         <noscript>
           <style>{`[data-boot-cover]{display:none !important}`}</style>
         </noscript>
       )}
 
       {/* Static cover — shown only during the pending check to block the page */}
-      {bootPhase === 'pending' && !isStudio && (
+      {bootPhase === 'pending' && isPortfolio && (
         <div
           aria-hidden="true"
           data-boot-cover=""
@@ -219,18 +222,18 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
 
       {/* Full animated boot sequence — first tab-session load only. Visitors
           can skip via the button, Esc, or Space (see BootSequence). */}
-      {bootPhase === 'full' && !isStudio && <BootSequence onComplete={handleBootComplete} />}
+      {bootPhase === 'full' && isPortfolio && <BootSequence onComplete={handleBootComplete} />}
 
       {/* Session-restored micro-flash — same-tab repeat load. Very brief, not
           a blank skip; conveys "we picked up where you were" and auto-fades. */}
-      {bootPhase === 'flash' && !isStudio && (
+      {bootPhase === 'flash' && isPortfolio && (
         <SessionRestoredFlash onComplete={handleBootComplete} />
       )}
 
       {/* Exclude Navigation from Studio. Navigation lives outside <main>, so the
           boot overlay's inert on <main> never covers it — pass the boot state
           explicitly or its (invisible) controls stay Tab-reachable during boot. */}
-      {!isStudio && (
+      {isPortfolio && (
         <Navigation
           onOpenPalette={openPalette}
           isPaletteOpen={isPaletteOpen}
@@ -252,12 +255,12 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         }}
       >
         <PaletteProvider value={paletteContextValue}>
-          <BootProvider value={bootPhase === 'done' || !!isStudio}>{children}</BootProvider>
+          <BootProvider value={bootPhase === 'done' || !isPortfolio}>{children}</BootProvider>
         </PaletteProvider>
       </motion.main>
 
       {/* Exclude Command Palette from Studio */}
-      {!isStudio && (
+      {isPortfolio && (
         <CommandPalette
           isOpen={isPaletteOpen}
           onClose={closePalette}
@@ -266,11 +269,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
         />
       )}
 
-      {/* Vercel Analytics + Speed Insights — public-site only. Excluded from
-          /studio for the same reason nav/palette/boot are: Studio is authoring
-          traffic (owner-only) and shouldn't pollute the Core Web Vitals baseline
-          P5 exists to establish. Both packages self-gate to debug mode in dev
-          and only beacon /_vercel/insights/* on a Vercel deploy. */}
+      {/* Vercel Analytics + Speed Insights — public-site only. Studio authoring
+          traffic is excluded from the visitor performance baseline. Both
+          packages self-gate in development and beacon only on Vercel. */}
       {!isStudio && (
         <>
           <Analytics />

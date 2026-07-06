@@ -52,7 +52,7 @@ export function TerminalPrompt({ name, tagline }: TerminalPromptProps) {
       case '':
         return []
 
-      // help / --help / -h → hand off to the command palette (the real menu)
+      // help / --help / -h → open the command palette (the full menu)
       case 'help':
       case '--help':
       case '-h':

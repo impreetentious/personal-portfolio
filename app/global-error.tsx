@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect } from 'react'
+
 // Last-resort boundary for errors thrown in the root layout itself. It replaces
 // the entire document, so it must render its own <html>/<body> and cannot rely
 // on Tailwind/global styles being present — hence the inline styling.
@@ -10,6 +12,10 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    console.error(error)
+  }, [error])
+
   return (
     <html lang="en">
       <head>
@@ -60,7 +66,7 @@ export default function GlobalError({
               wordBreak: 'break-word',
             }}
           >
-            {error?.message || 'A critical error occurred. Please try again.'}
+            A critical error occurred. Please try again.
           </p>
           <button
             className="ge-retry"

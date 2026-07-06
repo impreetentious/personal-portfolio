@@ -24,8 +24,6 @@ const BASE_TYPE_DELAY = 22
 const MIN_TYPE_DELAY = 4
 const MAX_VELOCITY = 8
 
-const SHOW_WORKING_STATUS = false
-
 const DOWNLOAD_LABEL: Record<DownloadState, string> = {
   idle: '↓ resume.pdf',
   compiling: '[COMPILING...]',
@@ -97,11 +95,17 @@ const PropertyRow = memo(function PropertyRow({
       />
       <span className="text-foreground/[0.24] shrink-0">:</span>
       <span className="ml-2 text-[#ce9178] min-w-0 [overflow-wrap:anywhere]">
-        <span className="text-foreground/[0.18]">&quot;</span>
+        <span aria-hidden="true" className="text-foreground/[0.18]">
+          &quot;
+        </span>
         {valueNode}
-        <span className="text-foreground/[0.18]">&quot;</span>
+        <span aria-hidden="true" className="text-foreground/[0.18]">
+          &quot;
+        </span>
       </span>
-      <span className="ml-0.5 text-foreground/[0.14] shrink-0">;</span>
+      <span aria-hidden="true" className="ml-0.5 text-foreground/[0.14] shrink-0">
+        ;
+      </span>
     </div>
   )
 })
@@ -204,18 +208,6 @@ function PSIcon() {
   )
 }
 
-function WorkingStatus() {
-  return (
-    <div className="flex items-center gap-1.5">
-      <span
-        aria-hidden="true"
-        className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"
-      />
-      <span className="font-mono text-xs text-white/85 leading-none">Open to work</span>
-    </div>
-  )
-}
-
 function GitBranchIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
@@ -267,10 +259,6 @@ export function WindowsTerminal({
   const lastPointerRef = useRef<{ x: number; y: number; t: number } | null>(null)
   const velocityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const rafIdRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    setDisplayedChars(0)
-  }, [bio])
 
   useEffect(() => {
     if (!startTyping) return
@@ -369,7 +357,7 @@ export function WindowsTerminal({
         <div className="flex items-stretch flex-1 min-w-0">
           <div className="relative flex items-center gap-[7px] bg-[#0c0c0c] px-2.5 sm:px-3.5 border-r border-white/[0.08] select-none min-w-0 max-w-[52vw] sm:max-w-none">
             <PSIcon />
-            <span className="font-mono tracking-tight truncate text-foreground/55">
+            <span className="font-mono tracking-tight truncate text-foreground/70">
               <span className="text-[10px] sm:hidden">PS</span>
               <span className="hidden sm:inline text-xs whitespace-nowrap">Windows PowerShell</span>
             </span>
@@ -420,7 +408,7 @@ export function WindowsTerminal({
       <div className="js-terminal-scroll surface-2 overflow-y-auto flex-1 max-md:border-l-0">
         <div className="px-4 sm:px-6 md:px-10 pt-6 sm:pt-8 pb-6 sm:pb-8 border-b border-white/[0.04]">
           <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
-            <p className="font-mono text-[10px] sm:text-xs text-foreground/[0.22] tracking-tight select-none min-w-0 truncate">
+            <p className="font-mono text-[10px] sm:text-xs text-foreground/70 tracking-tight select-none min-w-0 truncate">
               {'/** @profile . latest */ - loading....'}
             </p>
 
@@ -436,7 +424,7 @@ export function WindowsTerminal({
               transition={{ delay: 1.8, type: 'tween', ease: 'easeOut', duration: 0.8 }}
               className="group hidden md:flex items-center gap-2 select-none shrink-0 ml-8"
             >
-              <span className="font-mono text-[10px] text-foreground/[0.38] transition-colors group-hover:text-foreground/60">
+              <span className="font-mono text-[10px] text-foreground/70 transition-colors group-hover:text-foreground">
                 {'// press '}
               </span>
               <motion.span
@@ -459,7 +447,7 @@ export function WindowsTerminal({
               >
                 Ctrl+K
               </motion.span>
-              <span className="font-mono text-[10px] text-foreground/[0.38] transition-colors group-hover:text-foreground/60">
+              <span className="font-mono text-[10px] text-foreground/70 transition-colors group-hover:text-foreground">
                 to navigate
               </span>
             </motion.button>
@@ -483,8 +471,8 @@ export function WindowsTerminal({
           <h1 className="font-display font-semibold tracking-tight text-white text-3xl md:text-5xl">
             {name}
           </h1>
-          <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/60 tracking-normal leading-snug">
-            <span className="text-foreground/20 select-none mr-1.5">{'//'}</span>
+          <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-accent/75 tracking-normal leading-snug">
+            <span className="text-foreground/70 select-none mr-1.5">{'//'}</span>
             {tagline}
           </p>
           <div className="relative mt-4 sm:mt-6">
@@ -606,25 +594,21 @@ export function WindowsTerminal({
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="hidden sm:flex items-center gap-[5px]">
             <GitBranchIcon />
-            <span className="font-mono text-xs text-white/85 leading-none">main</span>
+            <span className="font-mono text-xs text-white leading-none">main</span>
           </div>
-          <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
+          <span className="hidden sm:inline font-mono text-xs text-white leading-none">
             ✓ 0 errors
           </span>
-          <ISTClock className="sm:hidden font-mono text-xs text-white/85 leading-none tabular-nums" />
+          <ISTClock className="sm:hidden font-mono text-xs text-white leading-none tabular-nums" />
         </div>
 
         <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center pointer-events-none">
-          <ISTClock
-            className="font-mono text-xs text-white/90 leading-none tabular-nums"
-            ariaLabel
-          />
+          <ISTClock className="font-mono text-xs text-white leading-none tabular-nums" ariaLabel />
         </div>
 
         <div className="hidden sm:flex items-center gap-3 sm:gap-4 ml-auto">
-          {SHOW_WORKING_STATUS && <WorkingStatus />}
-          <span className="font-mono text-xs text-white/70 leading-none">UTF-8</span>
-          <span className="font-mono text-xs text-white/70 leading-none">TypeScript</span>
+          <span className="font-mono text-xs text-white leading-none">UTF-8</span>
+          <span className="font-mono text-xs text-white leading-none">TypeScript</span>
           {resumeUrl && (
             <>
               <span className="font-mono text-xs text-white/40 leading-none" aria-hidden="true">
@@ -669,7 +653,6 @@ export function WindowsTerminal({
             </>
           )}
         </div>
-        <div className="sm:hidden ml-auto shrink-0">{SHOW_WORKING_STATUS && <WorkingStatus />}</div>
       </div>
     </motion.div>
   )

@@ -167,6 +167,20 @@ test.describe('Production interaction QA matrix', () => {
     await expect(resumeControls.first()).toBeVisible()
   })
 
+  test('palette preserves text entered before opening timers run', async ({ page }) => {
+    await page.goto('/')
+    await dismissBoot(page)
+    const clockStart = new Date()
+    await page.clock.install({ time: clockStart })
+    await page.clock.pauseAt(new Date(clockStart.getTime() + 1000))
+    await page.keyboard.press('Control+k')
+    const search = page.getByRole('combobox', { name: /search commands/i })
+    await search.fill('experience')
+    await page.clock.runFor(100)
+    await expect(search).toHaveValue('experience')
+    await expect(page.getByRole('option', { name: /experience/i })).toHaveCount(1)
+  })
+
   test('404 page renders the themed not-found surface', async ({ page }) => {
     await page.goto('/this-route-does-not-exist')
     await expect(page.getByRole('link', { name: /cd \/home/i })).toBeVisible()

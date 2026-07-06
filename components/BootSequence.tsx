@@ -9,14 +9,14 @@ interface BootSequenceProps {
 const BOOT_LINES = [
   { ts: '[100ms]', msg: 'BIOS v1.4.7 — POST check', variant: 'ok' },
   { ts: '[200ms]', msg: 'Mounting filesystem', variant: 'ok' },
-  { ts: '[300ms]', msg: 'Loading modules: next@14 · framer-motion', variant: 'ok' },
-  { ts: '[400ms]', msg: 'DNS resolved → sidakpreetsingh.com', variant: 'ok' },
+  { ts: '[300ms]', msg: 'Loading modules: next@16 · framer-motion', variant: 'ok' },
+  { ts: '[400ms]', msg: 'DNS resolved → portfolio.sidakpreetsingh.com', variant: 'ok' },
   { ts: '[500ms]', msg: 'Sanity CMS · resume endpoint', variant: 'ok' },
   { ts: '[600ms]', msg: 'Compiling portfolio.exe', variant: 'comp' },
   { ts: '[700ms]', msg: 'All systems go', variant: 'ready' },
 ] as const
 
-// ── Timing constants (do not deviate) ─────────────────────────────────────────
+// ── Timing constants ──────────────────────────────────────────────────────────
 const firstDelay = 100 // ms before first line appears
 const lineInterval = 200 // ms between each line
 const taglinePad = 400 // ms after last line before tagline appears
@@ -190,7 +190,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
           style={{
             fontSize: 11,
             letterSpacing: '0.14em',
-            color: 'rgba(255,255,255,0.30)',
+            color: 'rgba(255,255,255,0.70)',
             marginBottom: 24,
           }}
         >
@@ -216,7 +216,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
               {/* Timestamp */}
               <span
                 style={{
-                  color: '#2c2c2c',
+                  color: '#858585',
                   fontSize: 11,
                   minWidth: 60,
                   flexShrink: 0,

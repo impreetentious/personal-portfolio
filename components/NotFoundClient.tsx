@@ -97,6 +97,7 @@ function Ln({ n, children, err = false }: { n: number; children: React.ReactNode
     >
       {/* Line number gutter */}
       <span
+        aria-hidden="true"
         className="select-none w-10 sm:w-12 text-right pr-4 sm:pr-5 shrink-0"
         style={{ color: err ? 'rgba(244,71,71,0.58)' : 'rgba(255,255,255,0.18)' }}
       >
@@ -134,9 +135,8 @@ const stagger = {
 }
 
 const lineIn = {
-  hidden: { opacity: 0, x: -14 },
+  hidden: { x: -14 },
   visible: {
-    opacity: 1,
     x: 0,
     transition: { type: 'tween', ease: 'easeOut', duration: 0.35 },
   },
@@ -169,18 +169,18 @@ export function NotFoundClient() {
       <div className="relative z-10 w-full max-w-2xl">
         {/* Pre-window error badge */}
         <motion.p
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ x: -12 }}
+          animate={{ x: 0 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.38 }}
-          className="mb-4 font-mono text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-red-500/45 select-none"
+          className="mb-4 font-mono text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-red-300 select-none"
         >
           error ts2307 · 404 not found
         </motion.p>
 
         {/* ╔══ VS Code editor window ══════════════════════════════════════════╗ */}
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ y: 18 }}
+          animate={{ y: 0 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.48, delay: 0.06 }}
           className="rounded-xl overflow-hidden border border-white/[0.08] shadow-panel"
         >
@@ -193,10 +193,13 @@ export function NotFoundClient() {
                 className="w-1.5 h-1.5 rounded-full bg-red-500/80 shrink-0"
                 aria-hidden="true"
               />
-              <span className="font-mono text-[10.5px] sm:text-xs text-white/50 truncate select-none flex-1">
+              <span className="font-mono text-[10.5px] sm:text-xs text-white/70 truncate select-none flex-1">
                 not-found.tsx
               </span>
-              <span className="font-mono text-sm text-white/15 hover:text-white/40 transition-colors duration-100 shrink-0 cursor-default ml-1">
+              <span
+                aria-hidden="true"
+                className="font-mono text-sm text-white/15 hover:text-white/40 transition-colors duration-100 shrink-0 cursor-default ml-1"
+              >
                 ×
               </span>
             </div>
@@ -217,9 +220,11 @@ export function NotFoundClient() {
 
           {/* ── Breadcrumb (desktop only) ── */}
           <div className="hidden sm:flex items-center gap-1.5 h-8 px-4 bg-[#0f1017] border-b border-white/[0.04] font-mono text-[11px] select-none">
-            <span className="text-white/[0.22] cursor-default">app</span>
-            <span className="text-white/[0.12] mx-0.5">›</span>
-            <span className="text-red-400/60">not-found.tsx</span>
+            <span className="text-white/70 cursor-default">app</span>
+            <span aria-hidden="true" className="text-white/[0.12] mx-0.5">
+              ›
+            </span>
+            <span className="text-red-300">not-found.tsx</span>
           </div>
 
           {/* ── Code editor area ── */}
@@ -274,7 +279,7 @@ export function NotFoundClient() {
                                 type declarations.
                               </p>
                             </div>
-                            <p className="mt-1.5 pl-4 font-mono text-[10px] text-white/[0.22] select-none">
+                            <p className="mt-1.5 pl-4 font-mono text-[10px] text-white/70 select-none">
                               ts(2307)
                             </p>
                           </div>
@@ -347,16 +352,11 @@ export function NotFoundClient() {
           </div>
 
           {/* ── Problems panel ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ type: 'tween', ease: 'easeOut', duration: 0.45, delay: 0.62 }}
-            className="border-t border-white/[0.06]"
-          >
+          <div className="border-t border-white/[0.06]">
             {/* Panel tab bar */}
             <div className="flex items-end h-[38px] bg-[#0f1017] border-b border-white/[0.05]">
               {/* Active: PROBLEMS */}
-              <div className="flex items-center gap-2 px-4 h-full bg-[#181825] border-t border-x border-white/[0.07] font-mono text-[10.5px] tracking-widest text-white/60 select-none -mb-px">
+              <div className="flex items-center gap-2 px-4 h-full bg-[#181825] border-t border-x border-white/[0.07] font-mono text-[10.5px] tracking-widest text-white/70 select-none -mb-px">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
                 PROBLEMS
               </div>
@@ -364,7 +364,7 @@ export function NotFoundClient() {
               {['OUTPUT', 'TERMINAL', 'DEBUG CONSOLE'].map((tab) => (
                 <div
                   key={tab}
-                  className="hidden sm:flex items-center px-4 h-full font-mono text-[10.5px] tracking-widest text-white/15 select-none border-t border-x border-transparent"
+                  className="hidden sm:flex items-center px-4 h-full font-mono text-[10.5px] tracking-widest text-white/70 select-none border-t border-x border-transparent"
                 >
                   {tab}
                 </div>
@@ -373,8 +373,8 @@ export function NotFoundClient() {
 
             {/* Error entry */}
             <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ x: -8 }}
+              animate={{ x: 0 }}
               transition={{ type: 'tween', ease: 'easeOut', duration: 0.3, delay: 0.76 }}
               className="flex items-start gap-2.5 px-4 sm:px-5 py-3.5 bg-[#181825] hover:bg-white/[0.02] transition-colors duration-150"
             >
@@ -385,31 +385,28 @@ export function NotFoundClient() {
                 <span className="text-red-300/80">
                   Cannot find module &apos;./this-page&apos; or its corresponding type declarations.
                 </span>
-                <span className="text-white/[0.22] text-[10px] ml-2">ts(2307)</span>
+                <span className="text-white/70 text-[10px] ml-2">ts(2307)</span>
                 <div className="mt-1 flex items-center gap-1.5">
-                  <span className="text-white/30 text-[10px] sm:text-[11px]">
+                  <span className="text-white/70 text-[10px] sm:text-[11px]">
                     app/not-found.tsx
                   </span>
                   <span className="text-white/15 text-[10px]" aria-hidden="true">
                     ·
                   </span>
-                  <span className="text-white/[0.22] text-[10px] tabular-nums">2:25</span>
+                  <span className="text-white/70 text-[10px] tabular-nums">2:25</span>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
 
           {/* ── Terminal prompt / navigation ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ type: 'tween', ease: 'easeOut', duration: 0.4, delay: 0.86 }}
-            className="bg-[#0e1014] border-t border-white/[0.04] px-4 sm:px-6 py-4 sm:py-5"
-          >
+          <div className="bg-[#0e1014] border-t border-white/[0.04] px-4 sm:px-6 py-4 sm:py-5">
             <p className="font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto whitespace-nowrap">
               <span className="text-[#4bd0e7ff] select-none">PS&nbsp;</span>
               <span className="text-[#4bd0e7ff]">C:\portfolio\app</span>
-              <span className="text-white/35 mx-1">{'>'}</span>
+              <span aria-hidden="true" className="text-white/35 mx-1">
+                {'>'}
+              </span>
               <Link
                 href="/"
                 className="group inline-flex items-center rounded-sm transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -420,7 +417,7 @@ export function NotFoundClient() {
                 </span>
               </Link>
             </p>
-          </motion.div>
+          </div>
 
           {/* ── Status bar — red for error state ── */}
           <div
@@ -430,21 +427,21 @@ export function NotFoundClient() {
             <div className="flex items-center gap-2.5">
               <div className="flex items-center gap-[5px]">
                 <GitBranchIcon />
-                <span className="font-mono text-xs text-white/85 leading-none">main</span>
+                <span className="font-mono text-xs text-white leading-none">main</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="font-mono text-xs text-white/90 leading-none">✕&nbsp;1 error</span>
+              <span className="font-mono text-xs text-white leading-none">✕&nbsp;1 error</span>
               <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">
                 |
               </span>
-              <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
+              <span className="hidden sm:inline font-mono text-xs text-white leading-none">
                 TypeScript
               </span>
               <span className="hidden sm:inline text-white/25 text-[10px]" aria-hidden="true">
                 |
               </span>
-              <span className="hidden sm:inline font-mono text-xs text-white/70 leading-none">
+              <span className="hidden sm:inline font-mono text-xs text-white leading-none">
                 Ln 2, Col 25
               </span>
             </div>
@@ -453,14 +450,9 @@ export function NotFoundClient() {
         {/* ╚═══════════════════════════════════════════════════════════════════╝ */}
 
         {/* Below-window caption */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ type: 'tween', ease: 'easeOut', duration: 0.5, delay: 1.02 }}
-          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/[0.18] select-none"
-        >
+        <p className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/70 select-none">
           The page you requested does not exist in this registry.
-        </motion.p>
+        </p>
       </div>
     </div>
   )

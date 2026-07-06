@@ -38,18 +38,18 @@ export default function Error({
       <div className="relative z-10 w-full max-w-2xl">
         {/* Pre-window error badge */}
         <motion.p
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ x: -12 }}
+          animate={{ x: 0 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.38 }}
-          className="mb-4 font-mono text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-red-500/45 select-none"
+          className="mb-4 font-mono text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-red-300 select-none"
         >
           uncaught exception · 500 runtime error
         </motion.p>
 
         {/* ╔══ VS Code editor window ══════════════════════════════════════════╗ */}
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ y: 18 }}
+          animate={{ y: 0 }}
           transition={{ type: 'tween', ease: 'easeOut', duration: 0.48, delay: 0.06 }}
           className="rounded-xl overflow-hidden border border-white/[0.08] shadow-panel"
         >
@@ -60,12 +60,12 @@ export default function Error({
                 className="w-1.5 h-1.5 rounded-full bg-red-500/80 shrink-0"
                 aria-hidden="true"
               />
-              <span className="font-mono text-[10.5px] sm:text-xs text-white/50 truncate select-none flex-1">
+              <span className="font-mono text-[10.5px] sm:text-xs text-white/70 truncate select-none flex-1">
                 error.tsx
               </span>
             </div>
             <div className="flex-1" />
-            <div className="hidden sm:flex items-center h-9 px-4 font-mono text-[10.5px] tracking-widest text-white/25 select-none">
+            <div className="hidden sm:flex items-center h-9 px-4 font-mono text-[10.5px] tracking-widest text-white/70 select-none">
               TERMINAL
             </div>
           </div>
@@ -75,15 +75,17 @@ export default function Error({
             <p className="whitespace-nowrap">
               <span className="text-[#4bd0e7ff] select-none">PS&nbsp;</span>
               <span className="text-[#4bd0e7ff]">C:\portfolio</span>
-              <span className="text-white/35 mx-1">{'>'}</span>
+              <span aria-hidden="true" className="text-white/35 mx-1">
+                {'>'}
+              </span>
               <span className="text-white/70">npm run start</span>
             </p>
-            <p className="text-white/30 mt-2">▲ Next.js — rendering route /</p>
+            <p className="text-white/70 mt-2">▲ Next.js — rendering route /</p>
             <p className="text-red-300/85 mt-3">✕ Unhandled Runtime Error</p>
             <p className="text-red-300/70 pl-4 break-words whitespace-pre-wrap">
-              {error?.message || 'An unexpected error occurred while rendering this page.'}
+              An unexpected error occurred while rendering this page.
             </p>
-            {error?.digest && <p className="text-white/25 pl-4 mt-1">digest: {error.digest}</p>}
+            {error?.digest && <p className="text-white/70 pl-4 mt-1">digest: {error.digest}</p>}
             <p className="text-[#6A9955] mt-3">
               {'// logged to the console — retry the render, or head home.'}
             </p>
@@ -110,21 +112,16 @@ export default function Error({
             className="flex items-center justify-between h-[22px] px-3 select-none shrink-0"
             style={{ backgroundColor: '#c42b1c' }}
           >
-            <span className="font-mono text-xs text-white/85 leading-none">main</span>
-            <span className="font-mono text-xs text-white/90 leading-none">✕&nbsp;1 error</span>
+            <span className="font-mono text-xs text-white leading-none">main</span>
+            <span className="font-mono text-xs text-white leading-none">✕&nbsp;1 error</span>
           </div>
         </motion.div>
         {/* ╚═══════════════════════════════════════════════════════════════════╝ */}
 
         {/* Below-window caption */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ type: 'tween', ease: 'easeOut', duration: 0.5, delay: 1.0 }}
-          className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/[0.18] select-none"
-        >
+        <p className="mt-5 sm:mt-6 text-center font-mono text-[10.5px] sm:text-[11px] text-white/70 select-none">
           Something threw while rendering. It&apos;s not you — it&apos;s the server.
-        </motion.p>
+        </p>
       </div>
     </div>
   )
