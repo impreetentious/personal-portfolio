@@ -1,6 +1,6 @@
 import type { HeroData, HeroProfileField, HeroTerminalSkill, SocialLink } from './queries'
 
-// Single source of truth for the owner's real identity + contact details.
+// Single source of truth for identity and contact details.
 //
 // These are the only fallbacks that stay always-on in production (see the
 // fallback policy in lib/config.ts): an absent identity is worse than a
@@ -11,7 +11,7 @@ import type { HeroData, HeroProfileField, HeroTerminalSkill, SocialLink } from '
 const email = 'work@sidakpreetsingh.com'
 const phoneDisplay = '+91 90344 31886'
 const phoneTel = 'tel:+919034431886'
-const whatsappUrl = 'https://wa.me/+919034431886'
+const whatsappUrl = 'https://wa.me/919034431886'
 const linkedinName = 'Sidakpreet Singh'
 const linkedinUrl = 'https://linkedin.com/in/sidakpreetsinghk'
 const githubUrl = 'https://github.com/ItsMonarch04'

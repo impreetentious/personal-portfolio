@@ -21,7 +21,7 @@ const config: Config = {
         success: '#d0752fff',
         metaphor: '#eded80ff',
         hairline: 'rgba(255,255,255,0.08)',
-        'muted-foreground': 'rgba(171,178,191,0.50)',
+        'muted-foreground': 'rgba(171,178,191,0.70)',
       },
       fontFamily: {
         sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],

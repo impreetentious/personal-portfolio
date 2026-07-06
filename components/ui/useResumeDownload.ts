@@ -38,10 +38,6 @@ export function useResumeDownload(
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const objectUrlRef = useRef<string | null>(null)
 
-  // Keep the latest onComplete without re-creating `start`/`cancel` every render.
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
-
   const clearTimer = useCallback(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current)
@@ -105,7 +101,7 @@ export function useResumeDownload(
         revokeUrl()
         if (session !== sessionRef.current) return
         setState('idle')
-        onCompleteRef.current?.()
+        onComplete?.()
       }, readyDelayMs)
     } catch (error) {
       if (session !== sessionRef.current) return
@@ -116,7 +112,7 @@ export function useResumeDownload(
         if (session === sessionRef.current) setState('idle')
       }, ERROR_RESET_MS)
     }
-  }, [resumeUrl, state, fileName, readyDelayMs, revokeUrl])
+  }, [resumeUrl, state, fileName, readyDelayMs, revokeUrl, onComplete])
 
   return { state, start, cancel }
 }

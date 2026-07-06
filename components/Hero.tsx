@@ -76,13 +76,9 @@ export function Hero({ data, resumeUrl }: HeroProps) {
       <motion.div className="absolute inset-0" style={{ background: gradientBg }} />
 
       <div className="relative mx-auto flex min-h-[calc(100vh-12rem)] max-w-6xl items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'tween', ease: 'easeOut', duration: 0.6 }}
-          className="w-full border-l-0 pl-0 md:border-l md:border-accent/30 md:pl-10"
-        >
+        <div className="w-full border-l-0 pl-0 md:border-l md:border-accent/30 md:pl-10">
           <WindowsTerminal
+            key={hero.bio}
             name={hero.name}
             tagline={hero.tagline}
             bio={hero.bio}
@@ -91,7 +87,7 @@ export function Hero({ data, resumeUrl }: HeroProps) {
             terminalSkills={hero.terminalSkills}
             startTyping={bootComplete}
           />
-        </motion.div>
+        </div>
       </div>
 
       <motion.div
