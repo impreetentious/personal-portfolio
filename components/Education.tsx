@@ -8,8 +8,6 @@ import { resolveSectionData } from '@/lib/content'
 import { demoContent } from '@/lib/demoContent'
 import type { EducationItem } from '@/lib/queries'
 
-// ─── Configuration ────────────────────────────────────────────────────────────
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 type EducationProps = {

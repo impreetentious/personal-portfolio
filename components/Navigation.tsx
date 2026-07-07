@@ -192,11 +192,7 @@ export function Navigation({
   const isSuppressed = isPaletteOpen || isBootBlocking
 
   return (
-    <div
-      aria-hidden={isSuppressed || undefined}
-      // Use the empty-string form so `inert` is emitted as a native HTML attribute.
-      inert={isSuppressed ? ('' as unknown as true) : undefined}
-    >
+    <div aria-hidden={isSuppressed || undefined} inert={isSuppressed || undefined}>
       {/* ── Scroll progress bar ── */}
       <motion.div
         aria-hidden="true"

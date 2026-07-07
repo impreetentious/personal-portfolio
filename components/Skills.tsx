@@ -59,7 +59,7 @@ export function Skills({ data }: SkillsProps) {
   const columns = [tools, skills].filter((entry) => entry.items.length > 0)
 
   // Production with no CMS data (or only empty categories): hide the section
-  // rather than show placeholders. Placed after hooks so hook order stays stable.
+  // rather than show placeholders.
   if (!columns.length) return null
 
   return (

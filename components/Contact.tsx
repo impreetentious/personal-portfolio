@@ -87,8 +87,6 @@ function ConsoleLine({ children, lineNumber, timestamp, delay = 0, isVisible }: 
   )
 }
 
-// ─── Brand Icons ──────────────────────────────────────────────────────────────
-
 // ─── Social Links Data ────────────────────────────────────────────────────────
 
 const PLATFORM_ICONS = {

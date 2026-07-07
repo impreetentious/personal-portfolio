@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
+import { fileURLToPath } from 'node:url'
 
 /**
  * Launch-gate pure logic mirrors app/robots.ts + app/sitemap.ts + lib/config.ts
@@ -107,25 +109,33 @@ describe('launch gate — sitemap', () => {
 })
 
 describe('launch gate — security headers contract', () => {
-  // Mirrors next.config.js securityHeaders — assert the contract the e2e suite
-  // also checks against live responses so a silent deletion fails unit tests too.
-  const expected = [
-    'Content-Security-Policy',
-    'X-Content-Type-Options',
-    'X-Frame-Options',
-    'Referrer-Policy',
-    'Permissions-Policy',
-    'Strict-Transport-Security',
-  ]
+  // Read the real config instead of restating it. A header dropped from
+  // next.config.js has to fail here, not only in the browser suite.
+  const nextConfigSource = readFileSync(
+    fileURLToPath(new URL('../next.config.js', import.meta.url)),
+    'utf8',
+  )
+  const declaredHeaderKeys = [...nextConfigSource.matchAll(/key:\s*'([^']+)'/g)].map((m) => m[1])
 
-  it('lists the conservative site-wide header set', () => {
-    assert.deepEqual(expected, [
+  it('declares the conservative site-wide header set', () => {
+    assert.deepEqual([...new Set(declaredHeaderKeys)].sort(), [
       'Content-Security-Policy',
+      'Permissions-Policy',
+      'Referrer-Policy',
+      'Strict-Transport-Security',
       'X-Content-Type-Options',
       'X-Frame-Options',
-      'Referrer-Policy',
-      'Permissions-Policy',
-      'Strict-Transport-Security',
     ])
+  })
+
+  it('keeps the deny-by-default CSP baseline on both the public and Studio policies', () => {
+    const defaultSrc = [...nextConfigSource.matchAll(/"default-src 'self'"/g)]
+    assert.equal(
+      defaultSrc.length,
+      2,
+      'expected a public and a Studio policy, both deny-by-default',
+    )
+    const objectSrc = [...nextConfigSource.matchAll(/"object-src 'none'"/g)]
+    assert.equal(objectSrc.length, 2, 'both policies must keep object-src none')
   })
 })

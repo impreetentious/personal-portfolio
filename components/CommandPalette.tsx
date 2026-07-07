@@ -353,7 +353,9 @@ const DOWNLOAD_COLOR_CLASS: Record<DownloadState, string> = {
 
 interface CommandPaletteProps {
   isOpen: boolean
-  onClose: () => void
+  // An optional scroll target is handed back to the closer: the body scroll
+  // lock is still engaged here, so the palette can't scroll there itself.
+  onClose: (scrollTarget?: string) => void
   resumeUrl?: string
   initialQuery?: string
 }
@@ -521,9 +523,10 @@ export function CommandPalette({
         return
       }
       if (action.href) {
-        const target = document.querySelector(action.href)
-        target?.scrollIntoView({ behavior: 'smooth' })
-        onClose()
+        // Hand the destination to LayoutShell instead of scrolling here. The
+        // open palette holds a position:fixed body lock, so scrollIntoView at
+        // this point is a no-op and the unlock restores this exact offset.
+        onClose(action.href)
       }
     },
     [handleDownload, onClose],
@@ -658,7 +661,7 @@ export function CommandPalette({
                     COMMAND PALETTE
                   </span>
                   <button
-                    onClick={onClose}
+                    onClick={() => onClose()}
                     aria-label="Close command palette"
                     className="flex h-5 w-5 items-center justify-center rounded text-foreground/30 transition-colors duration-150 hover:bg-white/[0.07] hover:text-foreground/80"
                   >

@@ -8,6 +8,10 @@ test.describe('Launch-gate consumers', () => {
     const res = await request.get('/')
     expect(res.ok()).toBeTruthy()
     const headers = res.headers()
+    // CSP is the header the unit contract leads with, so assert it on a live
+    // response too — the rest of the set can survive a policy being dropped.
+    expect(headers['content-security-policy']).toContain("default-src 'self'")
+    expect(headers['content-security-policy']).toContain("object-src 'none'")
     expect(headers['x-content-type-options']).toBe('nosniff')
     expect(headers['x-frame-options']).toBe('SAMEORIGIN')
     expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')

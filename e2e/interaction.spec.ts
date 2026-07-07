@@ -149,6 +149,11 @@ test.describe('Production interaction QA matrix', () => {
     await expect(resumeControls.first()).toBeVisible()
   })
 
+  test('404 page renders the themed not-found surface', async ({ page }) => {
+    await page.goto('/this-route-does-not-exist')
+    await expect(page.getByRole('link', { name: /cd \/home/i })).toBeVisible()
+  })
+
   test('palette preserves text entered before opening timers run', async ({ page }) => {
     await page.goto('/')
     await dismissBoot(page)
@@ -163,9 +168,33 @@ test.describe('Production interaction QA matrix', () => {
     await expect(page.getByRole('option', { name: /experience/i })).toHaveCount(1)
   })
 
-  test('404 page renders the themed not-found surface', async ({ page }) => {
-    await page.goto('/this-route-does-not-exist')
-    await expect(page.getByRole('link', { name: /cd \/home/i })).toBeVisible()
+  test('palette navigation scrolls to the selected section', async ({ page }) => {
+    await page.goto('/')
+    await dismissBoot(page)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+
+    await page.keyboard.press('Control+k')
+    const search = page.getByRole('combobox', { name: /search commands/i })
+    await expect(search).toBeVisible()
+    await search.fill('experience')
+    await expect(page.getByRole('option', { name: /experience/i })).toHaveCount(1)
+    await page.keyboard.press('Enter')
+
+    await expect(search).toHaveCount(0)
+    // The section has to actually come into view. Selecting an entry used to
+    // scroll while the palette's position:fixed body lock was still engaged,
+    // which is a no-op — the visitor stayed exactly where they started.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() =>
+            Math.round(document.getElementById('experience')!.getBoundingClientRect().top),
+          ),
+        { timeout: 5000 },
+      )
+      .toBeLessThan(200)
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
   })
 
   test('palette dialog moves focus into the combobox while open', async ({ page }) => {

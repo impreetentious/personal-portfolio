@@ -75,7 +75,22 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
     setPaletteQuery(typeof initialQuery === 'string' ? initialQuery : '')
     setIsPaletteOpen(true)
   }, [])
-  const closePalette = useCallback(() => setIsPaletteOpen(false), [])
+
+  // Where a palette navigation wants to land. The palette can't scroll there
+  // itself: while it is open the body scroll lock below is position:fixed,
+  // which collapses the document to viewport height and makes scrollIntoView a
+  // no-op — and the unlock would then restore the pre-open offset anyway. Park
+  // the target here so the unlock, the one place that knows the document is
+  // scrollable again, performs the scroll.
+  const pendingScrollTargetRef = useRef<string | null>(null)
+
+  const closePalette = useCallback((scrollTarget?: string) => {
+    // Only a string is a destination. Every other way the palette closes —
+    // Escape, the close button, an overlay click, a finished download — passes
+    // nothing and must leave the visitor where they were.
+    pendingScrollTargetRef.current = typeof scrollTarget === 'string' ? scrollTarget : null
+    setIsPaletteOpen(false)
+  }, [])
 
   // Stable context value so terminal/hero triggers can open the palette from
   // deep in the page tree without re-rendering consumers on every toggle
@@ -132,6 +147,13 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
       style.right = ''
       style.overflow = ''
       window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' })
+      // The document is scrollable again only now, so a palette navigation is
+      // resolved here rather than at the moment the entry was selected.
+      const pendingTarget = pendingScrollTargetRef.current
+      pendingScrollTargetRef.current = null
+      if (pendingTarget) {
+        document.querySelector(pendingTarget)?.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }, [isPaletteOpen, bootPhase, isStudio])
 
@@ -143,8 +165,9 @@ export function LayoutShell({ children, resumeUrl }: LayoutShellProps) {
   // an accepted trade for no-JS readability.
   const bootBlocking = isPortfolio && (bootPhase === 'full' || bootPhase === 'flash')
 
-  // Use the empty-string form so `inert` is emitted as a native HTML attribute.
-  const mainInert = isPaletteOpen || bootBlocking ? ('' as unknown as true) : undefined
+  // `undefined` rather than `false` so the attribute is omitted entirely when
+  // the tree is interactive.
+  const mainInert = isPaletteOpen || bootBlocking || undefined
 
   // Palette-open push-back: blur + scale <main> down. Scale rides framer's
   // declarative `animate` prop (scale:1 resolves to `transform: none` at rest,

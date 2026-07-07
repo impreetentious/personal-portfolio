@@ -68,13 +68,15 @@ npm run test:e2e
 ## Project structure
 
 ```text
-app/                  Routes, metadata, robots, sitemap, and Studio
-components/           Portfolio sections and UI primitives
-e2e/                  Playwright interaction and accessibility tests
-lib/                  Configuration, content policy, queries, and Sanity client
-sanity/schemas/        CMS document schemas
-scripts/               Version and performance gates
-tests/                 Node unit tests
+app/              Routes, metadata, robots, sitemap, and Studio
+components/       Portfolio sections and UI primitives
+docs/             Dependency override rationale
+e2e/              Playwright interaction and accessibility tests
+lib/              Configuration, content policy, queries, and Sanity client
+patches/          patch-package fixes applied after install
+sanity/schemas/   CMS document schemas
+scripts/          Version, bundle, and performance gates
+tests/            Node unit tests
 ```
 
 ## Deployment
@@ -87,4 +89,4 @@ MIT © Sidakpreet Singh. See [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.17.6
+**Version:** v3.18.0
