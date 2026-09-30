@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 
+// Content globs decide what Tailwind emits; a path missing here silently drops classes.
 const config: Config = {
   future: {
     hoverOnlyWhenSupported: true,

@@ -1,3 +1,4 @@
+// Schema shapes are the content contract; tests/content.test.ts asserts the app agrees.
 import { defineField, defineType } from 'sanity'
 
 export const achievementsSchema = defineType({

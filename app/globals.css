@@ -1,3 +1,4 @@
+/* Tailwind entrypoint. Design tokens are declared below the directives, not in the config. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

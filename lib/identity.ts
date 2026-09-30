@@ -14,7 +14,7 @@ const phoneTel = 'tel:+919034431886'
 const whatsappUrl = 'https://wa.me/919034431886'
 const linkedinName = 'Sidakpreet Singh'
 const linkedinUrl = 'https://linkedin.com/in/sidakpreetsinghk'
-const githubUrl = 'https://github.com/ItsMonarch04'
+const githubUrl = 'https://github.com/impreetentious'
 const location = 'Delhi NCR, India'
 
 export const identity = {

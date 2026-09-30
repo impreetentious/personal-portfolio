@@ -1,3 +1,4 @@
+// Used only by the `sanity` CLI for deploys; the app never imports this file.
 import { defineCliConfig } from 'sanity/cli'
 
 export default defineCliConfig({

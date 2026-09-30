@@ -83,10 +83,14 @@ tests/            Node unit tests
 
 Deploy with Node 22 and set the Sanity project, dataset, and canonical site URL in the hosting environment. Leave indexing disabled for preview deployments; enable it only on the canonical public deployment. The repository includes a GitHub Actions workflow that runs dependency, static-analysis, build, budget, unit, browser, and accessibility gates.
 
+## Contributing
+
+Issues and pull requests are welcome on [GitHub](https://github.com/impreetentious/personal-portfolio). Open an issue before anything substantial, keep changes focused and leave the checks under [Verification](#verification) green.
+
 ## License
 
-MIT © Sidakpreet Singh. See [LICENSE](LICENSE).
+Apache-2.0 © 2025-2026 Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.18.0
+**Version:** v3.18.1

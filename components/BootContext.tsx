@@ -1,3 +1,4 @@
+// Boot sequence state. First visit plays it; a return visit skips straight to content.
 'use client'
 
 import { createContext, useContext, type ReactNode } from 'react'

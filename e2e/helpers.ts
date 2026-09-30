@@ -1,3 +1,4 @@
+// Shared helpers for the Playwright suite; keep assertions out of here.
 import { expect, type Page } from '@playwright/test'
 
 /** Skip the first-boot overlay (Esc) so tests can reach interactive UI quickly. */

@@ -1,3 +1,4 @@
+// Studio configuration for the embedded /studio route.
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { schemaTypes } from '@/sanity/schemas'

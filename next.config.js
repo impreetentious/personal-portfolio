@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 
+// Headers are declared here rather than at the host so a preview and production
+// deploy cannot diverge.
+
 const { PHASE_PRODUCTION_BUILD } = require('next/constants')
 
 // The public portfolio and the embedded Studio get separate CSPs. The public
