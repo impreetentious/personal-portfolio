@@ -93,4 +93,4 @@ Apache-2.0 © 2025-2026 Sidakpreet Singh — see [LICENSE](LICENSE).
 
 ---
 
-**Version:** v3.18.1
+**Version:** v3.18.2

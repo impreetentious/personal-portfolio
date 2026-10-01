@@ -155,7 +155,7 @@ export function Metrics({ data }: MetricsProps) {
               {/* Decorative corner mark */}
               <span
                 aria-hidden="true"
-                className="absolute top-5 right-5 font-mono text-[10px] text-accent/20 select-none group-hover:text-accent/40 transition-colors duration-300"
+                className="absolute top-5 right-5 font-mono text-[10px] text-accent/70 select-none group-hover:text-accent transition-colors duration-300"
               >
                 {String(i + 1).padStart(2, '0')}
               </span>

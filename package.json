@@ -1,6 +1,6 @@
 {
   "name": "personal-portfolio",
-  "version": "3.18.1",
+  "version": "3.18.2",
   "private": true,
   "engines": {
     "node": ">=22.20.0"
@@ -24,44 +24,44 @@
     "verify": "npm run check:version && npm run typecheck && npm run lint && npm run format:check && npm run test"
   },
   "dependencies": {
-    "@sanity/client": "7.26.2",
+    "@sanity/client": "7.27.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "framer-motion": "^11.3.19",
+    "framer-motion": "^11.18.2",
     "lucide-react": "^0.451.0",
-    "next": "16.3.3",
-    "next-sanity": "13.3.1",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "sanity": "6.9.1",
-    "styled-components": "^6.5.1"
+    "next": "16.3.8",
+    "next-sanity": "13.3.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sanity": "6.17.0",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.12.1",
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^22.10.2",
-    "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.4",
-    "autoprefixer": "^10.4.20",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "autoprefixer": "^10.6.1",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.8",
     "patch-package": "8.0.1",
-    "postcss": "^8.5.26",
-    "prettier": "^3.9.5",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.6.3"
+    "postcss": "^8.5.28",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "@sanity/uuid": "~3.0.3",
-    "@module-federation/dts-plugin": "2.8.2",
+    "@module-federation/dts-plugin": "2.9.2",
     "minimatch@3": {
-      "brace-expansion": "1.1.18"
+      "brace-expansion": "1.1.21"
     },
     "minimatch@10": {
-      "brace-expansion": "5.0.9"
+      "brace-expansion": "5.0.12"
     },
-    "dompurify": "3.4.13",
-    "js-yaml": "5.2.3",
+    "dompurify": "3.4.16",
+    "js-yaml": "5.4.2",
     "nanoid@>=3.0.0 <3.3.17": "3.3.18",
     "@vercel/frameworks": {
       "smol-toml": "1.7.1"
